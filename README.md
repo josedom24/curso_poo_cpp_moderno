@@ -565,7 +565,7 @@ Aquí tienes un índice detallado y estructurado para tu **curso de Programació
     * Implementación de jerarquías de clases reutilizables
     * Mini-proyecto: sistema de gestión de biblioteca / inventario / juego simple por consola
 
-# Curso de patrones de diseño con C++
+# Curso de patrones de diseño con C++ moderno
 
 1. Principios SOLID y patrones de diseño
     * SOLID: Principios de diseño orientado a objetos
