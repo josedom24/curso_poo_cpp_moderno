@@ -59,8 +59,10 @@
     * Uso de plantillas para reutilización de código
     * Especialización de clases plantilla
     * Interacción con la STL desde la perspectiva de plantillas
-    * Clases functoras y uso de `operator()`
+    * Clases functoras y uso de `operator()` [Hay que nodificar modulo07/functoras.md]
     * Ventajas y precauciones en el uso de plantillas
+    * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
+    * Uso de `std::variant` y `std::visit` para patrones de diseño
 
 8. Principios de diseño orientado a objetos
 
