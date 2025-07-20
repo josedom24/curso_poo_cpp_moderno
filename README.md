@@ -36,21 +36,22 @@
     * El papel del `virtual` y el uso correcto de `override`
     * Finalización de métodos y clases con `final`
 
-5. Interfaces y diseño polimórfico
+5. Gestión avanzada de objetos
 
-    * Clases abstractas y métodos virtuales puros
-    * Interfaces puras y su implementación
-    * Devolución de interfaces mediante punteros inteligentes
-    * Separación entre interfaz y detalle de implementación
-    * Diseño orientado a contratos y principios de responsabilidad
-
-6. Gestión avanzada de objetos
-
+    * Uso de punteros inteligentes en la gestión de memoria dinámica
     * Semántica de copia y movimiento: constructor de copia, constructor de movimiento, operadores de asignación
     * Copias superficiales vs. profundas y su implicación en clases
     * Clonación de objetos mediante interfaces (`clone`)
     * Composición de objetos con punteros inteligentes
     * Uso práctico de `std::unique_ptr` y `std::shared_ptr` en clases
+
+6. Interfaces y diseño polimórfico
+
+    * Clases abstractas y métodos virtuales puros
+    * Interfaces puras y su implementación
+    * Devolución de interfaces mediante punteros inteligentes
+    * Separación entre interfaz y detalle de implementación (Pimpl idiom)
+    * Diseño orientado a contratos y principios de responsabilidad
 
 7. Plantillas de clases y programación genérica
 
