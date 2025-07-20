@@ -53,6 +53,17 @@
     * Separación entre interfaz y detalle de implementación (Pimpl idiom)
     * Diseño orientado a contratos y principios de responsabilidad
 
+
+#. Abstracción de comportamiento con funciones y lambdas
+
+    * Funciones como objetos: comportamiento configurable
+    * Expresiones lambda y contexto (`[=]`, `[&]`, `[this]`)
+    * `std::function`: almacenamiento y composición de comportamiento
+    * Comparación de estrategias: clase derivada vs función como parámetro
+    * Aplicaciones prácticas: callbacks, filtros, eventos, reglas de negocio
+    * Ejercicios: modelado flexible con lambdas y funciones
+
+
 7. Plantillas de clases y programación genérica
 
     * Introducción a las plantillas de clases
@@ -60,7 +71,7 @@
     * Uso de plantillas para reutilización de código
     * Especialización de clases plantilla
     * Interacción con la STL desde la perspectiva de plantillas
-    * Clases functoras y uso de `operator()` [Hay que nodificar modulo07/functoras.md]
+    * Clases functoras y uso de `operator()` [Hay que modificar modulo07/functoras.md]
     * Ventajas y precauciones en el uso de plantillas
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
     * Uso de `std::variant` y `std::visit` para patrones de diseño
