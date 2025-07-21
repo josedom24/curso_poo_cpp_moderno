@@ -2,20 +2,22 @@
 
 1. Fundamentos de la Programación Orientada a Objetos
 
-    * Introducción a la Programación Orientada a Objetos
-    * Clases y objetos en C++ moderno
+    * ¿Qué es la Programación Orientada a Objetos?
+    * Fundamentos de la Programación Orientada Objetos
+    * Los pilares de la Programación Orientada a Objetos
+
+
+2. Programación orientada a objetos en C++ moderno
+
+    * Clases y objetos
     * Miembros de instancia: atributos y métodos
     * Encapsulamiento y modificadores de acceso (`public`, `private`, `protected`)
-    * Atributos y métodos estáticos
-
-2. Diseño básico de clases
-
     * Constructores, destructores y métodos constantes
     * Inicialización de atributos con listas de inicialización
     * Métodos getter y setter: motivación, sintaxis y buenas prácticas
     * Sobrecarga de operadores aritméticos y de comparación
+    * Atributos y métodos estáticos
     * Fluidez de métodos (`return   *this`)
-    * Composición de objetos
 
 3. Introducción al modelado con UML
 
