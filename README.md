@@ -53,30 +53,29 @@
     * Separación entre interfaz y detalle de implementación (Pimpl idiom)
     * Diseño orientado a contratos y principios de responsabilidad
 
+7. Abstracción de comportamiento y composición flexible
 
-#. Abstracción de comportamiento con funciones y lambdas
-
-    * Funciones como objetos: comportamiento configurable
-    * Expresiones lambda y contexto (`[=]`, `[&]`, `[this]`)
-    * `std::function`: almacenamiento y composición de comportamiento
-    * Comparación de estrategias: clase derivada vs función como parámetro
-    * Aplicaciones prácticas: callbacks, filtros, eventos, reglas de negocio
-    * Ejercicios: modelado flexible con lambdas y funciones
-
-
-7. Plantillas de clases y programación genérica
+    * Motivación: comportamiento intercambiable y bajo acoplamiento
+    * Delegación de comportamiento mediante interfaces
+    * Representación de acciones con lambdas (funciones anónimas)
+    * Uso de std::function para encapsular comportamiento configurable
+    * Functores (objetos invocables) y clases con operator()
+    * Inyección de comportamiento: composición y estrategia
+    * Comparación entre interfaces, lambdas, functores y std::function
+    * Buenas prácticas para desacoplar lógica y facilitar pruebas
+ 
+8. Plantillas de clases y programación genérica
 
     * Introducción a las plantillas de clases
     * Clases genéricas con uno o varios parámetros de tipo
     * Uso de plantillas para reutilización de código
     * Especialización de clases plantilla
     * Interacción con la STL desde la perspectiva de plantillas
-    * Clases functoras y uso de `operator()` [Hay que modificar modulo07/functoras.md]
     * Ventajas y precauciones en el uso de plantillas
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
     * Uso de `std::variant` y `std::visit` para patrones de diseño
 
-8. Principios de diseño orientado a objetos
+9. Principios de diseño orientado a objetos
 
     * Abstracción, encapsulamiento, herencia y polimorfismo en profundidad
     * Introducción a los principios SOLID
@@ -84,7 +83,7 @@
     * Diseño de clases orientado al cambio y la extensión
     * Buenas prácticas en el diseño de APIs orientadas a objetos
 
-9. Ejercicios y mini-proyectos orientados a objetos
+10. Ejercicios y mini-proyectos orientados a objetos
 
     * Ejercicios integradores de modelado de clases
     * Ejercicios de herencia, polimorfismo y composición
