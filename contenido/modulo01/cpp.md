@@ -53,7 +53,7 @@ C++ permite la creación de **jerarquías de clases** mediante herencia, tanto *
             std::cout << "Sonido de animal" << std::endl;
         }
     };
-    
+
     class Perro : public Animal {
     public:
         void hacerSonido() {
@@ -70,27 +70,27 @@ C++ permite la creación de **jerarquías de clases** mediante herencia, tanto *
 
 * **Herencia Múltiple**: C++ permite que una clase derive de más de una clase base, lo cual puede ser útil, pero debe usarse con precaución para evitar ambigüedades.
 
-```cpp
-class Electrico {
-public:
-    void cargarBateria();
-};
-
-class Vehiculo {
-public:
-    void arrancar();
-};
-
-class CocheElectrico : public Vehiculo, public Electrico {
-    // Combina funcionalidades
-};
-```
-
-* `Electrico` es una clase que define el método `cargarBateria()`, relacionado con la carga eléctrica.
-* `Vehiculo` es otra clase que define el método `arrancar()`, relacionado con el funcionamiento general del vehículo.
-* `CocheElectrico` hereda **simultáneamente** de `Vehiculo` y de `Electrico`, combinando ambas funcionalidades en un solo objeto.
-* La herencia múltiple permite que `CocheElectrico` tenga tanto el comportamiento de un vehículo convencional (`arrancar()`) como el de un vehículo eléctrico (`cargarBateria()`).
-* En herencia múltiple, las ambigüedades ocurren cuando dos o más clases base tienen métodos o atributos con el mismo nombre, y el compilador no sabe cuál usar. Para resolverlo, se debe especificar explícitamente la clase base a la que pertenece el miembro mediante el operador de resolución de ámbito.
+    ```cpp
+    class Electrico {
+    public:
+        void cargarBateria();
+    };
+    
+    class Vehiculo {
+    public:
+        void arrancar();
+    };
+    
+    class CocheElectrico : public Vehiculo, public Electrico {
+        // Combina funcionalidades
+    };
+    ```
+    
+    * `Electrico` es una clase que define el método `cargarBateria()`, relacionado con la carga eléctrica.
+    * `Vehiculo` es otra clase que define el método `arrancar()`, relacionado con el funcionamiento general del vehículo.
+    * `CocheElectrico` hereda **simultáneamente** de `Vehiculo` y de `Electrico`, combinando ambas funcionalidades en un solo objeto.
+    * La herencia múltiple permite que `CocheElectrico` tenga tanto el comportamiento de un vehículo convencional (`arrancar()`) como el de un vehículo eléctrico (`cargarBateria()`).
+    * En herencia múltiple, las ambigüedades ocurren cuando dos o más clases base tienen métodos o atributos con el mismo nombre, y el compilador no sabe cuál usar. Para resolverlo, se debe especificar explícitamente la clase base a la que pertenece el miembro mediante el operador de resolución de ámbito.
 
 ## Polimorfismo en C++
 
