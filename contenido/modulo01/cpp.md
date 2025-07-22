@@ -86,28 +86,6 @@ class CocheElectrico : public Vehiculo, public Electrico {
 };
 ```
 
-Claro, aquí tienes la explicación en formato lista del ejemplo de herencia múltiple y las posibles ambigüedades:
-
----
-
-### Ejemplo de herencia múltiple:
-
-```cpp
-class Electrico {
-public:
-    void cargarBateria();
-};
-
-class Vehiculo {
-public:
-    void arrancar();
-};
-
-class CocheElectrico : public Vehiculo, public Electrico {
-    // Combina funcionalidades
-};
-```
-
 * `Electrico` es una clase que define el método `cargarBateria()`, relacionado con la carga eléctrica.
 * `Vehiculo` es otra clase que define el método `arrancar()`, relacionado con el funcionamiento general del vehículo.
 * `CocheElectrico` hereda **simultáneamente** de `Vehiculo` y de `Electrico`, combinando ambas funcionalidades en un solo objeto.
