@@ -19,16 +19,7 @@
     * Atributos y métodos estáticos
     * Fluidez de métodos (`return   *this`)
 
-3. Introducción al modelado con UML
-
-    * ¿Qué es UML y por qué es útil en programación orientada a objetos?
-    * Diagramas de clases UML: clases, atributos, métodos, visibilidad
-    * Representación de relaciones: asociación, agregación, composición
-    * Herencia y clases abstractas en UML
-    * De clases a código: cómo convertir diagramas UML en C++
-    * Ejercicios prácticos: dibujar y analizar diagramas UML simples
-
-4. Relaciones entre clases
+3. Relaciones entre clases
 
     * Agregación y composición: diferencias y ejemplos
     * Asociaciones entre objetos y responsabilidades
@@ -38,7 +29,7 @@
     * El papel del `virtual` y el uso correcto de `override`
     * Finalización de métodos y clases con `final`
 
-5. Gestión avanzada de objetos
+4. Gestión avanzada de objetos
 
     * Uso de punteros inteligentes en la gestión de memoria dinámica
     * Semántica de copia y movimiento: constructor de copia, constructor de movimiento, operadores de asignación
@@ -47,7 +38,7 @@
     * Composición de objetos con punteros inteligentes
     * Uso práctico de `std::unique_ptr` y `std::shared_ptr` en clases
 
-6. Interfaces y diseño polimórfico
+5. Interfaces y diseño polimórfico
 
     * Clases abstractas y métodos virtuales puros
     * Interfaces puras y su implementación
@@ -55,7 +46,7 @@
     * Separación entre interfaz y detalle de implementación (Pimpl idiom)
     * Diseño orientado a contratos y principios de responsabilidad
 
-7. Abstracción de comportamiento y composición flexible
+6. Abstracción de comportamiento y composición flexible
 
     * Motivación: comportamiento intercambiable y bajo acoplamiento
     * Delegación de comportamiento mediante interfaces
@@ -66,7 +57,7 @@
     * Comparación entre interfaces, lambdas, functores y std::function
     * Buenas prácticas para desacoplar lógica y facilitar pruebas
  
-8. Plantillas de clases y programación genérica
+7. Plantillas de clases y programación genérica
 
     * Introducción a las plantillas de clases
     * Clases genéricas con uno o varios parámetros de tipo
@@ -77,7 +68,7 @@
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
     * Uso de `std::variant` y `std::visit` para patrones de diseño
 
-9. Principios de diseño orientado a objetos
+8. Principios de diseño orientado a objetos
 
     * Abstracción, encapsulamiento, herencia y polimorfismo en profundidad
     * Introducción a los principios SOLID
@@ -85,7 +76,7 @@
     * Diseño de clases orientado al cambio y la extensión
     * Buenas prácticas en el diseño de APIs orientadas a objetos
 
-10. Ejercicios y mini-proyectos orientados a objetos
+9. Ejercicios y mini-proyectos orientados a objetos
 
     * Ejercicios integradores de modelado de clases
     * Ejercicios de herencia, polimorfismo y composición
