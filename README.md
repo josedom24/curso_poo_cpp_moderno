@@ -2,9 +2,10 @@
 
 1. Fundamentos de la Programación Orientada a Objetos
 
-    * ¿Qué es la Programación Orientada a Objetos?
-    * Fundamentos de la Programación Orientada Objetos
-    * Los pilares de la Programación Orientada a Objetos
+    * [¿Qué es la programación orientada a objetos?](contenido/modulo01/poo.md)
+    * [Los pilares de la programación orientada a objetos](contenido/modulo01/pilares.md)
+    * [La programación orientada a objetos en C++ moderno](contenido/modulo01/cpp.md)
+    
 
 
 2. Programación orientada a objetos en C++ moderno
