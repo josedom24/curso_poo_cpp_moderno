@@ -45,28 +45,28 @@ C++ permite la creación de **jerarquías de clases** mediante herencia, tanto *
 
 * **Herencia Simple**: Permite extender una clase base agregando o modificando funcionalidades.
 
-```cpp
-class Animal {
-public:
-    void hacerSonido() {
-        // Sonido genérico
-        std::cout << "Sonido de animal" << std::endl;
-    }
-};
-
-class Perro : public Animal {
-public:
-    void hacerSonido() {
-        // Sonido específico de perro
-        std::cout << "Guau guau" << std::endl;
-    }
-};
-```
-* `Animal` es la clase base que tiene un método `hacerSonido()` con una implementación genérica.
-* `Perro` es una clase derivada que **hereda** de `Animal` con `public`.
-* La clase `Perro` **sobrescribe** el método `hacerSonido()` para dar un comportamiento específico (el ladrido).
-* La herencia simple permite que `Perro` reutilice o modifique el comportamiento de `Animal`.
-* Cuando se llama a `hacerSonido()` en un objeto `Perro`, se ejecuta la versión específica del perro.
+    ```cpp
+    class Animal {
+    public:
+        void hacerSonido() {
+            // Sonido genérico
+            std::cout << "Sonido de animal" << std::endl;
+        }
+    };
+    
+    class Perro : public Animal {
+    public:
+        void hacerSonido() {
+            // Sonido específico de perro
+            std::cout << "Guau guau" << std::endl;
+        }
+    };
+    ```
+    * `Animal` es la clase base que tiene un método `hacerSonido()` con una implementación genérica.
+    * `Perro` es una clase derivada que **hereda** de `Animal` con `public`.
+    * La clase `Perro` **sobrescribe** el método `hacerSonido()` para dar un comportamiento específico (el ladrido).
+    * La herencia simple permite que `Perro` reutilice o modifique el comportamiento de `Animal`.
+    * Cuando se llama a `hacerSonido()` en un objeto `Perro`, se ejecuta la versión específica del perro.
 
 * **Herencia Múltiple**: C++ permite que una clase derive de más de una clase base, lo cual puede ser útil, pero debe usarse con precaución para evitar ambigüedades.
 
