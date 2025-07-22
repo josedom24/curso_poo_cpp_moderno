@@ -7,7 +7,6 @@
     * [La programación orientada a objetos en C++ moderno](contenido/modulo01/cpp.md)
     
 
-
 2. Programación orientada a objetos en C++ moderno
 
     * Clases y objetos
