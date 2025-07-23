@@ -60,9 +60,6 @@ Las clases y objetos:
 * Favorecen la **reutilización**, **mantenibilidad** y **extensibilidad** del software.
 * Son la base para aplicar principios como **encapsulamiento**, **herencia** y **polimorfismo**.
 
-
----
-
 ## Ejemplo práctico ampliado
 
 Supongamos que queremos definir una clase `Persona` más completa, con un constructor y un método para actualizar la edad.
@@ -98,7 +95,6 @@ int main() {
 }
 ```
 
----
 
 ## Representación UML del ejemplo ampliado
 
