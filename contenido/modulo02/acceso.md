@@ -76,8 +76,11 @@ private:
     double saldo;
 
 public:
-    CuentaBancaria(const std::string& nombre, double saldoInicial)
-        : titular(nombre), saldo(saldoInicial) {}
+    CuentaBancaria(const std::string& nombre, double saldoInicial) {
+        titular = nombre;
+        saldo = saldoInicial;
+    }
+
 
     void depositar(double cantidad) {
         if (cantidad > 0) {
