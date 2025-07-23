@@ -97,7 +97,7 @@ public:
 };
 
 int main() {
-    CuentaBancaria cuenta("Luis", 1000.0);
+    CuentaBancaria cuenta("Luis", 1000.0); //Aquí se llama al constructor y se inicializan los atributos privados.
     cuenta.mostrarInformacion();  // Titular: Luis, Saldo: $1000
 
     cuenta.depositar(250);
@@ -108,6 +108,8 @@ int main() {
 }
 ```
 
+* El método `CuentaBancaria` es un método especial, es un **constructor** que **inicializa** los atributos `titular` y `saldo` usando una **lista de inicialización**, asignando `nombre` a `titular` y `saldoInicial` a `saldo`. Lo veremos en apartados posteriores.
+* Cuando se crea el objeto: `CuentaBancaria cuenta("Luis", 1000.0);`, se ejecuta el constructor y se inicializan los atributos.
 * Los atributos `titular` y `saldo` se han declarado com privados. Sólo se pueden modificar por medio del uso de métodos.
 * Hemos creado varios métodos que modifican el estado interno de cada objeto.
 * En un objeto `CuentaBancaria` el saldo no puede ser negativo, los métodos públicos (como `retirar()`) deben garantizar que no se permita un saldo negativo, asegurando así la invarianza `saldo ≥ 0`.
