@@ -21,9 +21,9 @@ C++ define tres niveles de acceso para los miembros de una clase:
 
 
 * `public`:
-    1. **Accesible desde cualquier parte del programa**, incluida la clase, funciones externas y clases derivadas.
-    2. Se utiliza para definir la **interfaz pública** de la clase: los métodos que otros pueden usar.
-    3. No compromete la encapsulación **si se limita solo a lo necesario**.
+    * **Accesible desde cualquier parte del programa**, incluida la clase, funciones externas y clases derivadas.
+    * Se utiliza para definir la **interfaz pública** de la clase: los métodos que otros pueden usar.
+    * No compromete la encapsulación **si se limita solo a lo necesario**.
 
     ```cpp
     class Ejemplo {
@@ -33,9 +33,9 @@ C++ define tres niveles de acceso para los miembros de una clase:
     ```
 
 * `private`:
-    1. **Solo accesible dentro de la clase que lo declara**; ni funciones externas ni clases derivadas pueden usarlo.
-    2. Ideal para **ocultar detalles de implementación** y proteger los datos internos.
-    3. Permite mantener **invariantes de clase** al controlar completamente el acceso.
+    * **Solo accesible dentro de la clase que lo declara**; ni funciones externas ni clases derivadas pueden usarlo.
+    * Ideal para **ocultar detalles de implementación** y proteger los datos internos.
+    * Permite mantener **invariantes de clase** al controlar completamente el acceso.
 
     ```cpp
     class Ejemplo {
@@ -45,9 +45,9 @@ C++ define tres niveles de acceso para los miembros de una clase:
     ```
 
 * `protected`:
-    1. Accesible **dentro de la clase y en sus clases derivadas**, pero **no desde fuera**.
-    2. Útil cuando se desea **permitir herencia controlada**, donde las subclases pueden modificar ciertos elementos internos.
-    3. No es visible para usuarios externos, por lo tanto, ayuda a mantener cierto nivel de encapsulamiento.
+    * Accesible **dentro de la clase y en sus clases derivadas**, pero **no desde fuera**.
+    * Útil cuando se desea **permitir herencia controlada**, donde las subclases pueden modificar ciertos elementos internos.
+    * No es visible para usuarios externos, por lo tanto, ayuda a mantener cierto nivel de encapsulamiento.
 
     ```cpp
     class Ejemplo {
@@ -115,5 +115,5 @@ int main() {
 
 ## Representación UML del ejemplo
 
-![diagrama2](img/diagrama2.png
+![diagrama2](img/diagrama2.png)
 
