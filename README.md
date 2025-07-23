@@ -11,7 +11,7 @@
 
     * [Clases y objetos](contenido/modulo02/clases.md)
     * [Miembros de instancia: atributos y métodos](contenido/modulo02/miembros.md)
-    * Encapsulamiento y modificadores de acceso (`public`, `private`, `protected`)
+    * [Encapsulamiento y modificadores de acceso (`public`, `private`, `protected`)](contenido/modulo02/acceso.md)
     * Constructores, destructores y métodos constantes
     * Inicialización de atributos con listas de inicialización
     * Métodos getter y setter: motivación, sintaxis y buenas prácticas
