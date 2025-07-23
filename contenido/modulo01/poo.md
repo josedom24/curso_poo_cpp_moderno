@@ -80,3 +80,26 @@ persona1.cumplirAnios()
 ```
 
 Este ejemplo muestra cómo se define una clase con atributos y métodos, cómo se crea un objeto (instancia de la clase) y cómo se utiliza. No está vinculado a un lenguaje específico, lo cual permite entender los principios sin necesidad de saber sintaxis.
+
+
+## ¿Qué es UML?
+
+**UML (Unified Modeling Language)** es un lenguaje estándar para modelar sistemas orientados a objetos. Permite representar visualmente clases, objetos, relaciones, comportamientos y estructuras del sistema. El **diagrama de clases** es uno de los más utilizados en UML. Representa:
+
+* Las clases del sistema.
+* Sus atributos y métodos.
+* Las relaciones entre clases (asociaciones, herencias, dependencias, etc.).
+
+La notación básica es la siguiente:
+
+* `+`: significa atributo público.
+* `-`: significa atributo privado.
+* `#`: significa atributo protegido.
+
+
+## Representación UML del ejemplo `Persona`
+
+![diagrama1](img/diagrama1.png)
+
+Este diagrama indica que `Persona` tiene dos atributos públicos (`nombre` y `edad`) y un método público `saludar()` que no retorna ningún valor.
+

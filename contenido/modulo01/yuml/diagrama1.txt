@@ -1,0 +1,1 @@
+[Persona|+nombre: cadena;+edad: entero|+saludar()]
