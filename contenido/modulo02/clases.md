@@ -102,29 +102,5 @@ int main() {
 
 ## Representación UML del ejemplo ampliado
 
-```plaintext
-+----------------------------+
-|          Persona           |
-+----------------------------+
-| - nombre: std::string      |
-| - edad: int                |
-+----------------------------+
-| + Persona(nombre: string, edad: int) |
-| + saludar(): void          |
-| + cumplirAnios(): void     |
-+----------------------------+
-```
+![diagrama1](img/diagrama1.png)
 
----
-
-## Conclusión
-
-Las **clases y objetos** son los pilares fundamentales de la programación orientada a objetos en C++. Mediante clases definimos plantillas abstractas y con objetos generamos instancias concretas que permiten organizar el código de manera modular y reutilizable.
-
-Además, el uso de herramientas como **UML** facilita la comprensión, diseño y documentación de sistemas complejos antes de su implementación.
-
-En los siguientes apartados, profundizaremos en cómo enriquecer las clases mediante constructores, destructores, métodos constantes, encapsulamiento, y otros mecanismos esenciales de la POO.
-
----
-
-¿Deseas que prepare a continuación el segundo apartado (*Miembros de instancia: atributos y métodos*) con continuidad del ejemplo `Persona` o con otro ejemplo nuevo?

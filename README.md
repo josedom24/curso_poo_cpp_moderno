@@ -9,7 +9,7 @@
 
 2. Programación orientada a objetos en C++ moderno
 
-    * Clases y objetos
+    * [Clases y objetos](contenido/modulo02/clases.md)
     * Miembros de instancia: atributos y métodos
     * Encapsulamiento y modificadores de acceso (`public`, `private`, `protected`)
     * Constructores, destructores y métodos constantes
