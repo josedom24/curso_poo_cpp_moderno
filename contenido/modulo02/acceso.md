@@ -61,6 +61,52 @@ C++ define tres niveles de acceso para los miembros de una clase:
 * Se debe exponer una **interfaz pública controlada** mediante métodos que validen o regulen el acceso a los datos internos.
 * Los métodos `public` deben ser **coherentes y seguros**, protegiendo la invariancia del objeto. Es decir, no modifiquen los valores de los atributos que conviertan al bojeto en un estado no permitido.
 
+## Funciones friend
+
+En C++, una **función `friend`** (o función amiga) es una función que **no pertenece a una clase**, pero que **tiene acceso a los miembros privados y protegidos** de esa clase. Es una forma controlada de romper la encapsulación para permitir que funciones externas (o incluso otras clases) puedan operar directamente sobre la implementación interna de un objeto, **sin ser métodos de la clase**.
+
+Una función `friend` se declara dentro del cuerpo de la clase **con la palabra clave `friend`**, pero **se define fuera de la clase** como una función normal. La declaración le concede acceso privilegiado, pero no forma parte del conjunto de miembros de la clase.
+
+Veamos un ejemplo:
+
+```cpp
+#include <iostream>
+
+class Caja {
+private:
+    double ancho;
+
+public:
+    Caja(double a) {
+        ancho = a;
+    }
+
+    // Declaración de la función amiga
+    friend void mostrarAncho(const Caja& c);
+};
+
+// Definición de la función amiga
+void mostrarAncho(const Caja& c) {
+    std::cout << "Ancho de la caja: " << c.ancho << '\n'; // Tiene acceso a `ancho`, aunque es privado
+}
+
+int main() {
+    Caja c(3.5);
+    mostrarAncho(c); // Llamada a la función amiga
+}
+```
+
+Se utilizan principalmente cuando:
+
+* Una **función no miembro** necesita acceso directo a los detalles internos de una clase.
+* Se necesita **definir operadores sobrecargados** (como `operator<<` para `std::ostream`) que requieren acceso privado.
+* Dos clases colaboran estrechamente (por ejemplo, dos clases se declaran `friend` mutuamente).
+
+Hay que tener en cuenta:
+
+* El uso de `friend` **rompe parcialmente la encapsulación**, por lo que debe emplearse con moderación.
+* Una función `friend` **no puede ser llamada con sintaxis de método** (es decir, `obj.func()` no es válido).
+* Las funciones `friend` **no se heredan**, ni son virtuales.
 
 ## Ejemplo con encapsulamiento
 
