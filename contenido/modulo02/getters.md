@@ -1,5 +1,4 @@
-#  Métodos *getter* y *setter*: motivación, sintaxis y buenas prácticas
-
+#  Métodos getter y setter
 En diseño orientado a objetos, los atributos de una clase suelen declararse como `private` o `protected` para cumplir con el principio de **encapsulamiento**, impidiendo el acceso directo desde fuera de la clase.
 
 Para permitir el acceso controlado a estos atributos, se emplean los métodos conocidos como:

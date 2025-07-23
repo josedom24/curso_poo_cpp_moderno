@@ -14,7 +14,7 @@
     * [Encapsulamiento y modificadores de acceso (`public`, `private`, `protected`)](contenido/modulo02/acceso.md)
     * [Constructores, destructores y métodos constantes](contenido/modulo02/constructor.md)
     * [Inicialización de atributos con listas de inicialización](contenido/modulo02/inicializacion.md)
-    * [Métodos getter y setter: motivación, sintaxis y buenas prácticas](contenido/modulo02/getters.md)
+    * [Métodos getter y setter](contenido/modulo02/getters.md)
     * Sobrecarga de operadores aritméticos y de comparación
     * Atributos y métodos estáticos
     * Fluidez de métodos (`return   *this`)
