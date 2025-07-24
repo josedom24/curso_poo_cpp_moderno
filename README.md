@@ -16,7 +16,7 @@
     * [Inicialización de atributos con listas de inicialización](contenido/modulo02/inicializacion.md)
     * [Métodos getter y setter](contenido/modulo02/getters.md)
     * [Sobrecarga de operadores](contenido/modulo02/operadores.md)
-    * Atributos y métodos estáticos
+    * [Atributos y métodos estáticos](contenido/modulo02/estatico.md)
     * Fluidez de métodos (`return   *this`)
 
 3. Relaciones entre clases
