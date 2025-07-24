@@ -1,22 +1,26 @@
-Perfecto. A continuación tienes el material didáctico formal para el siguiente apartado:
+# Fluidez de métodos
 
----
-
-# 2.9 Fluidez de métodos (`return *this`)
-
-## Introducción
-
-En diseño de interfaces orientadas a objetos, especialmente en **APIs modernas**, es común permitir la **encadenación de llamadas a métodos** sobre el mismo objeto. Esta técnica se denomina **fluidez de métodos** (*method chaining* en inglés), y se basa en que cada método **retorne una referencia al propio objeto** (`*this`).
+En muchas ocasiones es necesario permitir la **encadenación de llamadas a métodos** sobre el mismo objeto. Esta técnica se denomina **fluidez de métodos** (*method chaining* en inglés), y se basa en que cada método **retorne una referencia al propio objeto** (`*this`).
 
 Este estilo mejora la legibilidad del código y permite construir objetos o configurar estados de forma más natural y expresiva.
-
----
 
 ## Fundamento: `return *this`
 
 En un método no estático, el puntero `this` apunta al objeto actual. Al hacer `return *this`, se devuelve una **referencia al propio objeto**, permitiendo que otras llamadas puedan encadenarse sobre él.
 
-### Ejemplo simple
+La sintaxis de este tipo de métodos es:
+
+```cpp
+Tipo& metodo(...args) {
+    // ...acciones...
+    return *this;
+}
+```
+
+Para evitar copias innecesarias, se recomienda **retornar por referencia** (`Tipo&`) o por referencia constante (`const Tipo&`) si no se desea modificar más.
+
+
+Veamos un ejemplo:
 
 ```cpp
 class Cadena {
@@ -41,20 +45,6 @@ int main() {
 }
 ```
 
----
-
-## Sintaxis general
-
-```cpp
-Tipo& metodo(...args) {
-    // ...acciones...
-    return *this;
-}
-```
-
-Para evitar copias innecesarias, se recomienda **retornar por referencia** (`Tipo&`) o por referencia constante (`const Tipo&`) si no se desea modificar más.
-
----
 
 ## Ejemplo práctico: Configuración encadenada
 
@@ -86,70 +76,17 @@ public:
                   << (segura ? " con SSL\n" : "\n");
     }
 };
-```
 
-### Uso
-
-```cpp
-Conexion c;
-c.setHost("localhost")
- .setPuerto(443)
- .usarSSL(true)
- .conectar();
-```
-
----
-
-## Ventajas de la fluidez de métodos
-
-| Ventaja                                 | Descripción                                                 |
-| --------------------------------------- | ----------------------------------------------------------- |
-| Código más legible                      | Las operaciones relacionadas se expresan en una única línea |
-| Construcción o configuración clara      | Evita múltiples líneas de código repetitivo                 |
-| Estilo similar al de librerías modernas | Adoptado por interfaces como STL, Qt, OpenCV, etc.          |
-
----
-
-## Consideraciones y buenas prácticas
-
-* Es importante retornar por **referencia** para evitar copias.
-* Puede combinarse con **constructores** o **métodos estáticos** para crear objetos con fluidez.
-* Puede usarse con `const` si los métodos no modifican el estado:
-
-```cpp
-const MiClase& metodo() const {
-    // ...
-    return *this;
+int main() {
+    Conexion c;
+    c.setHost("localhost")
+     .setPuerto(443)
+     .usarSSL(true)
+     .conectar();
 }
 ```
 
-* Si se necesita fluidez en jerarquías de clases, puede usarse el patrón **Curiously Recurring Template Pattern (CRTP)** (tema avanzado).
+* La **fluidez de métodos** nos permite realizar las operaciones relacionadas expresadas en una única línea, lo que mejora la claridad del flujo y la construcción de objetos.
+* Es importante retornar por **referencia** para evitar copias.
+* Puede usarse con `const` si los métodos no modifican el estado:
 
----
-
-## Representación UML (ejemplo `Conexion`)
-
-```plaintext
-+----------------------------+
-|          Conexion          |
-+----------------------------+
-| - host: string             |
-| - puerto: int              |
-| - segura: bool             |
-+----------------------------+
-| + setHost(h: string): Conexion& |
-| + setPuerto(p: int): Conexion&  |
-| + usarSSL(s: bool): Conexion&   |
-| + conectar(): void         |
-+----------------------------+
-```
-
----
-
-## Conclusión
-
-El estilo fluido basado en `return *this` es una técnica elegante y poderosa para diseñar interfaces intuitivas y expresivas. Mejora la legibilidad y facilita la construcción y configuración de objetos. Es ampliamente utilizada en patrones como *builder*, en DSLs internos, y en diseño de APIs modernas en C++ y otros lenguajes.
-
----
-
-¿Quieres que continuemos con otro módulo, por ejemplo **Herencia** o ¿prefieres revisar o reforzar alguno de los temas ya cubiertos?
