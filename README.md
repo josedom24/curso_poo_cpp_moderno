@@ -17,7 +17,7 @@
     * [Métodos getter y setter](contenido/modulo02/getters.md)
     * [Sobrecarga de operadores](contenido/modulo02/operadores.md)
     * [Atributos y métodos estáticos](contenido/modulo02/estatico.md)
-    * Fluidez de métodos (`return   *this`)
+    * [Fluidez de métodos](contenido/modulo02/fluidez.md)
 
 3. Relaciones entre clases
 
