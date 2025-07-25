@@ -18,25 +18,23 @@
     * [Sobrecarga de operadores](contenido/modulo02/operadores.md)
     * [Atributos y métodos estáticos](contenido/modulo02/estatico.md)
     * [Fluidez de métodos](contenido/modulo02/fluidez.md)
+    * Semántica de copia y movimiento: constructor de copia, constructor de movimiento, operadores de asignación
+    * Copias superficiales vs. profundas y su implicación en clases
+    * Clonación de objetos mediante interfaces (`clone`)
 
 3. Relaciones entre clases
 
+    * Uso de punteros inteligentes en la gestión de memoria dinámica
     * Agregación y composición
     * Asociaciones entre objetos y responsabilidades
+    * Uso práctico de `std::unique_ptr` y `std::shared_ptr` en clases
     * Introducción a la herencia: clases base y derivadas
     * Herencia y polimorfismo en C++
     * Conversiones implícitas y punteros base
     * El papel del `virtual` y el uso correcto de `override`
     * Finalización de métodos y clases con `final`
 
-4. Gestión avanzada de objetos
-
-    * Uso de punteros inteligentes en la gestión de memoria dinámica
-    * Semántica de copia y movimiento: constructor de copia, constructor de movimiento, operadores de asignación
-    * Copias superficiales vs. profundas y su implicación en clases
-    * Clonación de objetos mediante interfaces (`clone`)
-    * Composición de objetos con punteros inteligentes
-    * Uso práctico de `std::unique_ptr` y `std::shared_ptr` en clases
+    
 
 5. Interfaces y diseño polimórfico
 
