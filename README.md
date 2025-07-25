@@ -5,9 +5,8 @@
     * [¿Qué es la programación orientada a objetos?](contenido/modulo01/poo.md)
     * [Los pilares de la programación orientada a objetos](contenido/modulo01/pilares.md)
     * [La programación orientada a objetos en C++ moderno](contenido/modulo01/cpp.md)
-    
 
-2. Programación orientada a objetos en C++ moderno
+2. Fundamentos básicos de programación orientada a objetos en C++ moderno
 
     * [Clases y objetos](contenido/modulo02/clases.md)
     * [Miembros de instancia: atributos y métodos](contenido/modulo02/miembros.md)
@@ -15,16 +14,17 @@
     * [Constructores, destructores y métodos constantes](contenido/modulo02/constructor.md)
     * [Inicialización de atributos con listas de inicialización](contenido/modulo02/inicializacion.md)
     * [Métodos getter y setter](contenido/modulo02/getters.md)
-    * [Sobrecarga de operadores](contenido/modulo02/operadores.md)
     * [Atributos y métodos estáticos](contenido/modulo02/estatico.md)
-    * [Fluidez de métodos](contenido/modulo02/fluidez.md)
-    * Semántica de copia y movimiento: constructor de copia, constructor de movimiento, operadores de asignación
-    * Copias superficiales vs. profundas y su implicación en clases
-    * Clonación de objetos mediante interfaces (`clone`)
+    
+3. Gestión de memoria dinámica
 
-3. Relaciones entre clases
-
+    * Introducción a la gestión de recursos en C++ moderno
+    * Gestión manual de memoria dinámica
+    * Propiedad de recursos y patrón RAII
     * Uso de punteros inteligentes en la gestión de memoria dinámica
+
+4. Relaciones entre clases
+
     * Agregación y composición
     * Asociaciones entre objetos y responsabilidades
     * Uso práctico de `std::unique_ptr` y `std::shared_ptr` en clases
@@ -34,9 +34,14 @@
     * El papel del `virtual` y el uso correcto de `override`
     * Finalización de métodos y clases con `final`
 
-    
+5. Fundamentos avanzados de programación orientada a objetos en C++ moderno
+    * Ampliación de constructores: control de creación y copia de objetos en C++
+    * [Sobrecarga de operadores](contenido/modulo02/operadores.md)
+    * [Fluidez de métodos](contenido/modulo02/fluidez.md)
+    * [Semántica de copia y movimiento](contenido/modulo02/move.md)
+    * Clonación de objetos: copias superficiales y profundas
 
-5. Interfaces y diseño polimórfico
+6. Interfaces y diseño polimórfico
 
     * Clases abstractas y métodos virtuales puros
     * Interfaces puras y su implementación
@@ -44,7 +49,7 @@
     * Separación entre interfaz y detalle de implementación (Pimpl idiom)
     * Diseño orientado a contratos y principios de responsabilidad
 
-6. Abstracción de comportamiento y composición flexible
+7. Abstracción de comportamiento y composición flexible
 
     * Motivación: comportamiento intercambiable y bajo acoplamiento
     * Delegación de comportamiento mediante interfaces
@@ -55,7 +60,7 @@
     * Comparación entre interfaces, lambdas, functores y std::function
     * Buenas prácticas para desacoplar lógica y facilitar pruebas
  
-7. Plantillas de clases y programación genérica
+8. Plantillas de clases y programación genérica
 
     * Introducción a las plantillas de clases
     * Clases genéricas con uno o varios parámetros de tipo
@@ -65,6 +70,8 @@
     * Ventajas y precauciones en el uso de plantillas
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
     * Uso de `std::variant` y `std::visit` para patrones de diseño
+
+---
 
 8. Principios de diseño orientado a objetos
 
