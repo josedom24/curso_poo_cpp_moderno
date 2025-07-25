@@ -21,7 +21,7 @@
 
 3. Relaciones entre clases
 
-    * Agregación y composición: diferencias y ejemplos
+    * Agregación y composición
     * Asociaciones entre objetos y responsabilidades
     * Introducción a la herencia: clases base y derivadas
     * Herencia y polimorfismo en C++
