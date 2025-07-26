@@ -84,4 +84,3 @@ public:
 * El destructor de la clase base se invoca automáticamente después del destructor de la clase derivada.
 * Si la clase base gestiona recursos, su destructor debe ser virtual (se explicará más adelante).
 
-

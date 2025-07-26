@@ -103,3 +103,86 @@ int main() {
 * Es fundamental para diseñar interfaces y extender el comportamiento sin cambiar código cliente.
 * Siempre declarar destructores virtuales en clases base destinadas a ser heredadas para evitar fugas o comportamientos indefinidos.
 * El destructor virtual asegura que al eliminar un objeto derivado a través de un puntero base se invoquen correctamente los destructores.
+
+
+## La palabra clave `final`
+
+La palabra calve `final` sirve para **impedir** que un método sea sobrescrito o que una clase sea derivada.
+
+LAs ventajas de usar `final` son:
+
+* **Control del diseño:** evita que otros programadores (o tú mismo) modifiquen la jerarquía de herencia accidentalmente.
+* **Seguridad:** evita sobrescrituras no deseadas que pueden introducir bugs.
+* **Optimización:** algunos compiladores pueden optimizar llamadas a métodos marcados como `final` porque saben que no habrá sobrescritura adicional.
+
+
+### Uso de `final` en métodos
+
+Cuando se declara un método virtual como `final` en una clase derivada, se indica que **no puede ser sobrescrito en clases derivadas posteriores**.
+
+```cpp
+class Base {
+public:
+    virtual void metodo() {
+        std::cout << "Base::metodo\n";
+    }
+};
+
+class Derivada : public Base {
+public:
+    void metodo() final {  // Este método no puede ser sobrescrito más adelante
+        std::cout << "Derivada::metodo final\n";
+    }
+};
+
+class SubDerivada : public Derivada {
+public:
+    // Error: intentar sobrescribir metodo() está prohibido
+    // void metodo() override { }  // Error de compilación
+};
+```
+
+### Uso de `final` en clases
+
+Declarar una clase como `final` impide que sea utilizada como clase base para otras clases. Es decir, no puede ser heredada.
+
+```cpp
+class ClaseFinal final {
+public:
+    void funcion() {
+        std::cout << "ClaseFinal::funcion\n";
+    }
+};
+
+// Error: no se puede heredar de ClaseFinal
+// class Derivada : public ClaseFinal { };  // Error de compilación
+```
+
+### Ejemplo completo del uso de `final`
+
+```cpp
+#include <iostream>
+
+class Animal {
+public:
+    virtual void hacerSonido() const {
+        std::cout << "Sonido genérico\n";
+    }
+    virtual ~Animal() = default;
+};
+
+class Perro final : public Animal {
+public:
+    void hacerSonido() const final {
+        std::cout << "Guau\n";
+    }
+};
+
+// class PerroEspecial : public Perro { }; // Error: no se puede derivar de Perro
+
+int main() {
+    Perro p;
+    p.hacerSonido();
+}
+```
+
