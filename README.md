@@ -40,14 +40,14 @@
     * [Sobrecarga de operadores](contenido/modulo05/operadores.md)
     * [Fluidez de métodos](contenido/modulo05/fluidez.md)
     * [Semántica de copia y movimiento](contenido/modulo05/move.md)
-    * Clonación de objetos: copias superficiales y profundas
+    * [Clonación de objetos: copias superficiales y profundas](contenido/modulo05/clonacion.md)
 
 6. Interfaces y diseño polimórfico
 
-    * Clases abstractas y métodos virtuales puros
-    * Interfaces puras y su implementación
-    * Devolución de interfaces mediante punteros inteligentes
-    * Separación entre interfaz y detalle de implementación (Pimpl idiom)
+    * [Clases abstractas y métodos virtuales puros](contenido/modulo06/abstracta.md)
+    * [Interfaces puras y su implementación](contenido/modulo06/interface.md)
+    * [Devolución de interfaces mediante punteros inteligentes](contenido/modulo06/devolucion.md)
+    * [Separación entre interfaz y detalle de implementación (Pimpl idiom)](contenido/modulo06/separacion.md)
     * Diseño orientado a contratos y principios de responsabilidad
 
 7. Abstracción de comportamiento y composición flexible
