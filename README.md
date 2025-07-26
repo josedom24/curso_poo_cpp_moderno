@@ -48,7 +48,7 @@
     * [Interfaces puras y su implementación](contenido/modulo06/interface.md)
     * [Devolución de interfaces mediante punteros inteligentes](contenido/modulo06/devolucion.md)
     * [Separación entre interfaz y detalle de implementación (Pimpl idiom)](contenido/modulo06/separacion.md)
-    * Diseño orientado a contratos y principios de responsabilidad
+    * Ejercicios sobre interfaces
 
 7. Abstracción de comportamiento y composición flexible
 
