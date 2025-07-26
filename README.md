@@ -36,10 +36,10 @@
     * Ejercicios sobre herencia y polimorfismo
 
 5. Fundamentos avanzados de programación orientada a objetos en C++ moderno
-    * Ampliación de constructores: control de creación y copia de objetos en C++
-    * [Sobrecarga de operadores](contenido/modulo02/operadores.md)
-    * [Fluidez de métodos](contenido/modulo02/fluidez.md)
-    * [Semántica de copia y movimiento](contenido/modulo02/move.md)
+    * [Control de creación y copia de objetos en C++](contenido/modulo05/creacion.md)
+    * [Sobrecarga de operadores](contenido/modulo05/operadores.md)
+    * [Fluidez de métodos](contenido/modulo05/fluidez.md)
+    * [Semántica de copia y movimiento](contenido/modulo05/move.md)
     * Clonación de objetos: copias superficiales y profundas
 
 6. Interfaces y diseño polimórfico
