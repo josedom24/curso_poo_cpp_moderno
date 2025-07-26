@@ -1,16 +1,8 @@
-Claro, aquí tienes el material didáctico para **Conversiones implícitas y punteros base** en el contexto de herencia en C++:
-
----
-
 # Conversiones implícitas y punteros base
-
-## Introducción
 
 Cuando trabajamos con herencia en C++, es frecuente utilizar **punteros o referencias a la clase base** para manipular objetos derivados. Esto se debe a que C++ permite una conversión implícita desde un puntero o referencia a una clase derivada hacia un puntero o referencia a su clase base.
 
 Esta conversión es fundamental para el **polimorfismo dinámico**, ya que permite tratar distintos tipos derivados de forma uniforme mediante un tipo común (la clase base).
-
----
 
 ## Conversiones implícitas en herencia
 
@@ -27,15 +19,12 @@ int main() {
 }
 ```
 
----
-
-## ¿Por qué es segura esta conversión?
+Esta conversión es segura porque:
 
 * La clase derivada **es un tipo de** la clase base (relación “es-un”).
 * La parte de la clase base está siempre presente en el objeto derivado.
 * Por ello, acceder a través de punteros o referencias a la clase base es seguro y válido.
 
----
 
 ## Uso típico con polimorfismo
 
@@ -76,7 +65,6 @@ int main() {
 }
 ```
 
----
 
 ## Conversiones implícitas y punteros inteligentes
 
@@ -87,7 +75,6 @@ std::unique_ptr<Perro> pPerro = std::make_unique<Perro>();
 std::unique_ptr<Animal> pAnimal = std::move(pPerro); // Conversión implícita permitida
 ```
 
----
 
 ## Limitaciones y precauciones
 
@@ -96,15 +83,4 @@ std::unique_ptr<Animal> pAnimal = std::move(pPerro); // Conversión implícita p
 * El uso de punteros base sin métodos virtuales puede producir comportamientos inesperados.
 * Es fundamental tener destructores virtuales para evitar fugas.
 
----
 
-## Resumen
-
-* C++ permite conversiones implícitas de punteros o referencias de clases derivadas a clases base.
-* Esta característica es la base para manejar polimorfismo dinámico.
-* Facilita la creación de contenedores y estructuras que manipulan objetos heterogéneos de forma uniforme.
-* Se debe usar con cuidado, garantizando la correcta gestión del ciclo de vida y comportamiento virtual.
-
----
-
-¿Quieres que continúe con el apartado: **El papel del `virtual` y el uso correcto de `override`**?

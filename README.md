@@ -18,21 +18,22 @@
     
 3. Gestión de memoria dinámica
 
-    * Introducción a la gestión de recursos en C++ moderno
-    * Gestión manual de memoria dinámica
-    * Propiedad de recursos y patrón RAII
-    * Uso de punteros inteligentes en la gestión de memoria dinámica
+    * [Introducción a la gestión de recursos en C++ moderno](contenido/modulo03/introduccion.md)
+    * [Gestión manual de memoria dinámica](contenido/modulo03/memoria.md)
+    * [Propiedad de recursos y patrón RAII](contenido/modulo03/raii.md)
+    * [Uso de punteros inteligentes en la gestión de memoria dinámica](contenido/modulo03/inteligentes.md)
 
 4. Relaciones entre clases
-
-    * Agregación y composición
-    * Asociaciones entre objetos y responsabilidades
-    * Uso práctico de `std::unique_ptr` y `std::shared_ptr` en clases
-    * Introducción a la herencia: clases base y derivadas
-    * Herencia y polimorfismo en C++
-    * Conversiones implícitas y punteros base
-    * El papel del `virtual` y el uso correcto de `override`
-    * Finalización de métodos y clases con `final`
+    * [Introducción a las relaciones entre clases](contenido/modulo04/introduccion.md)
+    * [Dependencia entre clases](contenido/modulo04/dependencia.md)
+    * [Asociaciones entre clases](contenido/modulo04/asociacion.md)
+    * [Agregación entre clases](contenido/modulo04/agregacion.md)
+    * [Composición entre clases](contenido/modulo04/composicion.md)
+    * Ejercicios sobre relaciones de clases
+    * [Introducción a la herencia: clases base y derivadas](contenido/modulo04/herencia.md)
+    * [Herencia y polimorfismo](contenido/modulo04/polimorfismo.md)
+    * [Conversiones implícitas y punteros base](contenido/modulo04/conversiones.md)
+    * Ejercicios sobre herencia y polimorfismo
 
 5. Fundamentos avanzados de programación orientada a objetos en C++ moderno
     * Ampliación de constructores: control de creación y copia de objetos en C++
