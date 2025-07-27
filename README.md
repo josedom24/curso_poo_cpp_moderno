@@ -64,11 +64,10 @@
 
     * [Introducción a las plantillas de clases](contenido/modulo08/plantillas.md)
     * [Clases genéricas con uno o varios parámetros de tipo](contenido/modulo08/parametros.md)
-    * Especialización de clases plantilla
-    * Interacción con la STL desde la perspectiva de plantillas
-    * Ventajas y precauciones en el uso de plantillas
+    * [Especialización de plantillas de clase](contenido/modulo08/especializacion.md)
+    * [Las plantillas de clase y la STL](contenido/modulo08/stl.md)
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
-    * Uso de `std::variant` y `std::visit` para patrones de diseño
+    * [Plantillas de clase:`std::variant` y `std::visit`](contenido/modulo08/variant.md)
     * Ejercicios sobre programación genérica
 ---
 
