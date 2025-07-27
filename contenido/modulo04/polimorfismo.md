@@ -186,3 +186,40 @@ int main() {
 }
 ```
 
+Claro, aquí tienes una sección para material didáctico que explica el concepto de operadores virtuales en C++:
+
+## Polimorfismo aplicado a operadores
+
+En C++, los operadores sobrecargados no son más que funciones miembro con una sintaxis especial. Por ello, es posible declararlos como **virtuales** dentro de una clase base, permitiendo que su comportamiento pueda ser redefinido en clases derivadas y que se utilice el enlace dinámico (polimorfismo) en tiempo de ejecución.
+
+Ejemplo:
+
+```cpp
+#include <iostream>
+#include <memory>
+
+struct FuncionBase {
+    virtual int operator()(int x) const {
+        return x;
+    }
+    virtual ~FuncionBase() = default; // Destructor virtual
+};
+
+struct FuncionDoble : FuncionBase {
+    int operator()(int x) const override {
+        return x * 2;
+    }
+};
+
+void ejecutarFuncion(const FuncionBase& f, int valor) {
+    std::cout << f(valor) << "\n";
+}
+
+int main() {
+    FuncionDoble doble;
+    ejecutarFuncion(doble, 5);  // Imprime 10
+}
+```
+
+En este ejemplo, `operator()` está declarado virtual en la clase base `FuncionBase` y redefinido en la clase derivada `FuncionDoble`. Al pasar una referencia a `FuncionBase`, la llamada `f(valor)` se resuelve dinámicamente a la implementación de `FuncionDoble`.
+

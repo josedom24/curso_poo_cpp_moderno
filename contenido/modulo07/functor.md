@@ -1,122 +1,106 @@
-# Clases functoras y lambdas como objetos de primera clase
+# Functores y clases con `operator()`
 
-En C++ moderno, las funciones pueden tratarse como **objetos de primera clase**, es decir, pueden ser **almacenadas, pasadas como argumentos, devueltas desde funciones, y manipuladas** como cualquier otro objeto.
+En C++ una clase puede comportarse como una función si **sobrecarga el operador de llamada `operator()`**. A estas clases se les denomina **functores** (o *function objects*), y permiten encapsular lógica dentro de objetos que pueden ser **invocados como si fueran funciones**. Este mecanismo ofrece una forma poderosa y flexible de representar comportamiento configurable, con la ventaja de poder mantener **estado interno** y **estructurar el código orientado a objetos**.
 
-Dos herramientas fundamentales para representar funciones como objetos de primera clase son:
+Antes de la introducción de lambdas en C++11, los functores eran la principal forma de representar funciones genéricas. Aun hoy, tienen aplicaciones clave cuando se necesita combinar **invocabilidad y estado** de forma explícita.
 
-* **Clases functoras (o funtors)**: objetos que sobrecargan el operador de llamada `operator()`.
-* **Lambdas**: funciones anónimas, generalmente más concisas, que también se comportan como objetos invocables.
-
-
-## Clases functoras
-
-Una **functora** es una clase que implementa el operador de llamada `()` como miembro, lo que le permite comportarse como una función.
-
-Veamos un ejemplo:
+Un **functor** es cualquier objeto que sobrecarga el operador `()`:
 
 ```cpp
-#include <iostream>
-
-class MostrarCuadrado {
+class Sumar {
 public:
-    void operator()(int x) const {
-        std::cout << "Cuadrado: " << x * x << '\n';
+    int operator()(int a, int b) const {
+        return a + b;
     }
 };
-
 int main() {
-    MostrarCuadrado f;
-    f(5);  // Cuadrado: 25
+    Sumar sumar;
+    int resultado = sumar(3, 4); // 7
 }
 ```
 
-`MostrarCuadrado` es una clase que se comporta como una función, gracias al operador `()`. Este patrón se usa para encapsular comportamiento configurable en un objeto.
+Ventajas de los functores:
 
-## Lambdas como objetos de primera clase
+* **Permiten almacenar estado** en atributos internos.
+* **Pueden reutilizarse** como cualquier otra clase.
+* Son compatibles con **algoritmos de la STL**.
+* Funcionan en contextos donde se requiere un objeto invocable pero también configurable.
 
-Las **expresiones lambda** también son objetos invocables, aunque de tipos anónimos. Se comportan como clases functoras generadas automáticamente por el compilador.
-
-Veamos un ejemplo:
-
-```cpp
-auto f = [](int x) {
-    std::cout << "Cubo: " << x * x * x << '\n';
-};
-
-f(3);  // Cubo: 27
-```
-
-Aquí `f` es un objeto que puede invocarse como una función. Esto permite:
-
-* Almacenarlo en variables.
-* Pasarlo como parámetro a otras funciones.
-* Devolverlo desde funciones.
-* Usarlo en contenedores funcionales (`std::function`, etc.).
-
-## Uso de lambdas o clases functoras
-
-Esta lambda:
+## Ejemplo: functor con estado interno
 
 ```cpp
-auto f = [](int x) { return x + 1; };
-```
-
-Es conceptualmente equivalente a esta clase:
-
-```cpp
-class Incrementar {
+class Multiplicador {
 public:
-    int operator()(int x) const {
-        return x + 1;
-    }
-};
+    explicit Multiplicador(int factor) : factor_(factor) {}
 
-Incrementar f;
-```
-
-El compilador genera una clase similar automáticamente para cada lambda.
-
-
-## Ejemplo final
-
-```cpp
-#include <iostream>
-#include <vector>
-#include <functional>
-
-class Multiplicar {
-public:
-    explicit Multiplicar(int factor) : factor_(factor) {}
-    void operator()(int x) const {
-        std::cout << x << " * " << factor_ << " = " << x * factor_ << '\n';
+    int operator()(int valor) const {
+        return valor * factor_;
     }
 
 private:
     int factor_;
 };
-
-void aplicar(std::function<void(int)> f, const std::vector<int>& datos) {
-    for (int x : datos)
-        f(x);
-}
-
 int main() {
-    std::vector<int> datos = {1, 2, 3};
+    Multiplicador por2(2);
+    std::cout << por2(5); // 10
 
-    aplicar(Multiplicar(3), datos);  // Usa functor
-    aplicar([](int x) { std::cout << "Cuadrado: " << x * x << '\n'; }, datos);  // Usa lambda
+    Multiplicador por10(10);
+    std::cout << por10(3); // 30
 }
 ```
 
-* **Clases functoras** como `Multiplicar` permiten definir objetos que se comportan como funciones (`operator()`).
-* **Lambdas** son funciones anónimas y compactas, útiles para definir comportamiento directamente en línea.
-* **`std::function`** permite aceptar cualquier tipo de función o callable (functor, lambda, puntero a función) con una firma específica (`void(int)` en este caso).
-* La función `aplicar` demuestra cómo abstraer comportamiento y aplicarlo de forma genérica a una colección de datos (`std::vector`).
-* 
+Claro, aquí tienes la explicación del código en formato de lista:
 
-Para terminar este apartado tenemos que tener en cuenta:
+---
 
-* Las **functoras** son más adecuadas cuando se necesita mantener **estado complejo**, extender comportamiento mediante **herencia**, o reutilizar el tipo.
-* Las **lambdas** son preferibles cuando se necesita una **definición local, breve y sin reutilización**.
-* Ambos mecanismos se comportan como **objetos invocables** y pueden utilizarse con `std::function`, algoritmos estándar o funciones personalizadas.
+* Se declara la clase `Multiplicador`, que representa un *functor* (objeto invocable) configurable con un factor de multiplicación.
+* `explicit Multiplicador(int factor)` es el constructor que inicializa el atributo `factor_` con el valor proporcionado.* La palabra clave `explicit` evita conversiones implícitas no deseadas al construir objetos de esta clase a partir de un `int`.
+* Se define `int operator()(int valor) const`, lo que convierte al objeto en invocable como una función.
+* Este método toma un entero y devuelve su producto con `factor_`.
+* `factor_` almacena el valor del factor de multiplicación.
+* En el `main()`:**
+   * Se crean dos instancias de `Multiplicador`:
+     * `por2(2)` representa una función que multiplica por 2.
+     * `por10(10)` representa una función que multiplica por 10.
+   * Luego se invocan como si fueran funciones:
+     * `por2(5)` devuelve `5 * 2 = 10`.
+     * `por10(3)` devuelve `3 * 10 = 30`.
+   * Ambos resultados se imprimen en la salida estándar.
 
+Este ejemplo demuestra cómo los **funtores** permiten encapsular comportamiento configurable (en este caso, una operación de multiplicación con un factor dado), y cómo su uso es similar al de una lambda, pero con la ventaja de tener estado interno más explícito y organizado.
+
+
+## Uso con algoritmos de STL
+
+Muchos algoritmos estándar aceptan objetos invocables como criterios de orden, filtros, transformaciones, etc.
+
+```cpp
+#include <algorithm>
+#include <vector>
+#include <iostream>
+
+struct EsPar {
+    bool operator()(int valor) const {
+        return valor % 2 == 0;
+    }
+};
+
+int main() {
+    std::vector<int> datos = {1, 2, 3, 4, 5};
+    auto it = std::find_if(datos.begin(), datos.end(), EsPar{});
+    if (it != datos.end()) {
+        std::cout << "Primer número par: " << *it << '\n';
+    }
+}
+```
+
+## Uso de functores
+
+Los functores son especialmente adecuados cuando se desea **persistir comportamiento con configuración o estado interno**, y se prefiere un enfoque fuertemente tipado.
+
+
+* Usar functores cuando:
+  * Se necesita **configurar o parametrizar el comportamiento** mediante atributos.
+  * Se busca un diseño orientado a objetos claro y reutilizable.
+  * Se trabaja con algoritmos genéricos donde el tipo debe ser conocido en tiempo de compilación.
+* Si el comportamiento es simple y localizado, una **lambda** es más apropiada.

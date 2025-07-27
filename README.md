@@ -50,17 +50,16 @@
     * [Separación entre interfaz y detalle de implementación (Pimpl idiom)](contenido/modulo06/separacion.md)
     * Ejercicios sobre interfaces
 
-7. Abstracción de comportamiento y composición flexible
+7. Abstracción del comportamiento
 
-    * Motivación: comportamiento intercambiable y bajo acoplamiento
-    * Delegación de comportamiento mediante interfaces
-    * Representación de acciones con lambdas (funciones anónimas)
-    * Uso de std::function para encapsular comportamiento configurable
-    * Functores (objetos invocables) y clases con operator()
-    * Inyección de comportamiento: composición y estrategia
-    * Comparación entre interfaces, lambdas, functores y std::function
-    * Buenas prácticas para desacoplar lógica y facilitar pruebas
- 
+    * [Comportamiento intercambiable y bajo acoplamiento](contenido/modulo07/comportamiento.md)
+    * [Delegación de comportamiento mediante interfaces](contenido/modulo07/delegacion.md)
+    * [Representación de acciones con funciones lambdas](contenido/modulo07/lambda.md)
+    * [Uso de `std::function` para encapsular comportamiento configurable](contenido/modulo07/function.md)
+    * [Functores y clases con `operator()`](contenido/modulo07/functor.md)
+    * [Inyección de comportamiento: composición y estrategia](contenido/modulo07/inyeccion.md)
+    * Ejercicios sobre abstracción de comportamiento
+    
 8. Plantillas de clases y programación genérica
 
     * Introducción a las plantillas de clases
