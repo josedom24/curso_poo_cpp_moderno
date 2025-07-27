@@ -62,15 +62,14 @@
     
 8. Plantillas de clases y programación genérica
 
-    * Introducción a las plantillas de clases
-    * Clases genéricas con uno o varios parámetros de tipo
-    * Uso de plantillas para reutilización de código
+    * [Introducción a las plantillas de clases](contenido/modulo08/plantillas.md)
+    * [Clases genéricas con uno o varios parámetros de tipo](contenido/modulo08/parametros.md)
     * Especialización de clases plantilla
     * Interacción con la STL desde la perspectiva de plantillas
     * Ventajas y precauciones en el uso de plantillas
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
     * Uso de `std::variant` y `std::visit` para patrones de diseño
-
+    * Ejercicios sobre programación genérica
 ---
 
 8. Principios de diseño orientado a objetos
