@@ -6,7 +6,7 @@
     * [Los pilares de la programación orientada a objetos](contenido/modulo01/pilares.md)
     * [La programación orientada a objetos en C++ moderno](contenido/modulo01/cpp.md)
 
-2. Fundamentos básicos de programación orientada a objetos en C++ moderno
+2. Fundamentos básicos de programación orientada a objetos
 
     * [Clases y objetos](contenido/modulo02/clases.md)
     * [Miembros de instancia: atributos y métodos](contenido/modulo02/miembros.md)
@@ -35,7 +35,7 @@
     * [Conversiones implícitas y punteros base](contenido/modulo04/conversiones.md)
     * Ejercicios sobre herencia y polimorfismo
 
-5. Fundamentos avanzados de programación orientada a objetos en C++ moderno
+5. Fundamentos avanzados de programación orientada a objetos
     * [Control de creación y copia de objetos en C++](contenido/modulo05/creacion.md)
     * [Sobrecarga de operadores](contenido/modulo05/operadores.md)
     * [Fluidez de métodos](contenido/modulo05/fluidez.md)
