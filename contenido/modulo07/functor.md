@@ -104,3 +104,39 @@ Los functores son especialmente adecuados cuando se desea **persistir comportami
   * Se busca un diseño orientado a objetos claro y reutilizable.
   * Se trabaja con algoritmos genéricos donde el tipo debe ser conocido en tiempo de compilación.
 * Si el comportamiento es simple y localizado, una **lambda** es más apropiada.
+
+## Ejemplo final
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <functional>
+
+class Multiplicar {
+public:
+    explicit Multiplicar(int factor) : factor_(factor) {}
+    void operator()(int x) const {
+        std::cout << x << " * " << factor_ << " = " << x * factor_ << '\n';
+    }
+
+private:
+    int factor_;
+};
+
+void aplicar(std::function<void(int)> f, const std::vector<int>& datos) {
+    for (int x : datos)
+        f(x);
+}
+
+int main() {
+    std::vector<int> datos = {1, 2, 3};
+
+    aplicar(Multiplicar(3), datos);  // Usa functor
+    aplicar([](int x) { std::cout << "Cuadrado: " << x * x << '\n'; }, datos);  // Usa lambda
+}
+```
+
+* **Clases functoras** como `Multiplicar` permiten definir objetos que se comportan como funciones (`operator()`).
+* **Lambdas** son funciones anónimas y compactas, útiles para definir comportamiento directamente en línea.
+* **`std::function`** permite aceptar cualquier tipo de función o callable (functor, lambda, puntero a función) con una firma específica (`void(int)` en este caso).
+* La función `aplicar` demuestra cómo abstraer comportamiento y aplicarlo de forma genérica a una colección de datos (`std::vector`).
