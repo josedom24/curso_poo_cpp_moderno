@@ -1,99 +1,84 @@
-# Atributos estáticos de clases
+# Atributos y métodos estáticos
 
-En programación orientada a objetos, cada instancia de una clase suele tener sus propios atributos (miembros de datos), lo que permite que cada objeto mantenga su propio estado. Sin embargo, en ciertos casos, es necesario disponer de información **compartida por todas las instancias** de una clase. Para ello, C++ proporciona los **miembros estáticos**.
+En C++, los miembros de una clase pueden ser **estáticos**, lo que significa que pertenecen a la **clase en sí** y no a objetos individuales.
 
-## ¿Qué es un atributo estático?
+* Un **atributo estático** mantiene un único valor compartido por todas las instancias.
+* Un **método estático** puede llamarse sin necesidad de crear un objeto de la clase.
 
-Un **atributo estático** es un miembro de una clase que **pertenece a la clase en sí**, y no a las instancias individuales. Esto significa que:
+Son útiles cuando:
 
-* Existe una sola copia compartida por todas las instancias.
-* Puede accederse sin necesidad de crear un objeto (usando el nombre de la clase).
+* Se necesita información común a todos los objetos.
+* Se definen funciones auxiliares relacionadas con la clase, pero que no dependen de una instancia concreta.
 
-La declaración de un atributo estático se realiza dentro de la clase. Su definición (y posible inicialización) debe hacerse fuera de la clase, en un archivo fuente `.cpp` o tras la clase si está en un solo archivo.
+## Acceso a miembros estáticos
 
-```cpp
-class Contador {
-private:
-    static int totalObjetos;
+Los miembros estáticos se pueden acceder de dos formas:
 
-public:
-    Contador() {
-        ++totalObjetos;
-    }
+* A través del nombre de la clase: `Clase::miembro` (recomendado).
+* A través de un objeto de la clase (posible, pero menos claro).
 
-    static int obtenerTotal() {
-        return totalObjetos;
-    }
-};
+## Atributo estático
 
-// Definición del atributo estático
-int Contador::totalObjetos = 0;
-```
-
-##  Acceso a miembros estáticos
-
-Los miembros estáticos pueden ser accedidos:
-
-* A través del nombre de la clase: `Contador::obtenerTotal()`
-* A través de una instancia (aunque no es lo más recomendable): `obj.obtenerTotal()`
-
-```cpp
-int main() {
-    Contador a;
-    Contador b;
-    std::cout << "Total de objetos: " << Contador::obtenerTotal() << '\n';
-}
-```
-
-
-## Ejemplo práctico: ID automático por objeto
-
-Supongamos que deseamos que cada objeto creado reciba un identificador único incremental:
+Un atributo se declara como `static` dentro de la clase. Si no es `inline` o `constexpr`, debe definirse fuera de la clase.
 
 ```cpp
 #include <iostream>
 
-class Usuario {
+class Contador {
 private:
-    static int siguienteId;
-    int id;
+    static int totalObjetos; // Declaración
 
 public:
-    Usuario() : id(siguienteId++) {}
+    Contador() { ++totalObjetos; }
 
-    int obtenerId() const {
-        return id;
-    }
-
-    static int totalUsuarios() {
-        return siguienteId;
-    }
+    static int getTotalObjetos() { return totalObjetos; }
 };
 
-// Inicialización del atributo estático
-int Usuario::siguienteId = 1;
+// Definición obligatoria fuera de la clase
+int Contador::totalObjetos = 0;
 
 int main() {
-    Usuario u1;
-    Usuario u2;
-    Usuario u3;
-
-    std::cout << "ID u1: " << u1.obtenerId() << '\n';
-    std::cout << "ID u2: " << u2.obtenerId() << '\n';
-    std::cout << "ID u3: " << u3.obtenerId() << '\n';
-    std::cout << "Total creados: " << Usuario::totalUsuarios() - 1 << '\n';
+    Contador a, b, c;
+    std::cout << "Total objetos: " << Contador::getTotalObjetos() << "\n"; // 3
+    return 0;
 }
 ```
 
-## Instancia estática dentro de un método de una clase
+## Métodos estáticos
 
-Una **instancia estática dentro de un método (sea estático o no)** es una variable local que **se inicializa una única vez**, y conserva su valor entre llamadas. Esto se usa, por ejemplo, para implementar **estado persistente privado**. Veamos un ejemplo:
+Un método estático **no tiene acceso al puntero `this`**, por lo que no puede usar miembros no estáticos. Puede acceder a:
+
+* otros métodos estáticos,
+* atributos estáticos,
+* parámetros que reciba.
 
 ```cpp
+#include <iostream>
+
+class Calculadora {
+public:
+    static int suma(int a, int b) {
+        return a + b;
+    }
+};
+
+int main() {
+    std::cout << Calculadora::suma(3, 4) << "\n"; // 7
+    return 0;
+}
+```
+
+## Instancia estática dentro de un método
+
+Una **variable local estática** dentro de un método se inicializa solo la primera vez que se ejecuta, y mantiene su valor entre llamadas.
+
+```cpp
+#include <iostream>
+
 class Herramienta {
 public:
     int siguienteNumero() const {
-        static int numero = 0; // se inicializa solo una vez
+        static int numero = 0; // persiste entre llamadas
         return ++numero;
     }
 };
@@ -103,5 +88,13 @@ int main() {
     std::cout << h1.siguienteNumero() << '\n'; // 1
     std::cout << h2.siguienteNumero() << '\n'; // 2
     std::cout << h1.siguienteNumero() << '\n'; // 3
+    return 0;
 }
 ```
+
+## Consideraciones importantes
+
+* Los miembros estáticos existen incluso si no se han creado objetos.
+* Si no son `inline` o `constexpr`, deben definirse **una sola vez fuera de la clase**.
+* Los métodos estáticos no pueden ser virtuales.
+
