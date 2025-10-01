@@ -15,6 +15,7 @@
     * [Inicialización de atributos con listas de inicialización](contenido/modulo02/inicializacion.md)
     * [Métodos getter y setter](contenido/modulo02/getters.md)
     * [Atributos y métodos estáticos](contenido/modulo02/estatico.md)
+    * [Ejercicios sobre clases y objetos](contenido/modulo02/ejercicios.md)
     
 3. Gestión de memoria dinámica
 
