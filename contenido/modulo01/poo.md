@@ -1,72 +1,84 @@
 
 # ¿Qué es la programación orientada a objetos?
 
-La Programación Orientada a Objetos (POO) es un **paradigma de desarrollo de software** que permite modelar sistemas complejos mediante la construcción de **objetos** que representan entidades del mundo real o conceptual. Esta aproximación, basada en la interacción entre objetos que poseen atributos y comportamientos propios, ha transformado la manera en que se diseñan y desarrollan aplicaciones informáticas.
+La **Programación Orientada a Objetos (POO)** es un paradigma de desarrollo de software que permite **modelar sistemas complejos** mediante la construcción de **objetos**. Cada objeto representa una **entidad del mundo real o conceptual**, y combina **estado** (atributos) y **comportamiento** (métodos).
 
-La POO no solo mejora la capacidad de abstracción del programador, sino que también introduce principios que favorecen la reutilización de código, la modularidad, la escalabilidad y el mantenimiento a largo plazo del software.
+La POO transforma la manera en que diseñamos y desarrollamos aplicaciones, porque:
 
-## Origen y Motivación
+* **Aumenta la capacidad de abstracción**, al trabajar con modelos conceptuales en lugar de detalles técnicos inmediatos.
+* **Favorece la reutilización, modularidad y mantenibilidad**, permitiendo que el software crezca y se adapte con menor esfuerzo.
 
-La POO surgió como respuesta a las limitaciones observadas en paradigmas más tradicionales, especialmente en la programación estructurada. A medida que los sistemas crecían en tamaño y complejidad, se hacía evidente que una organización puramente secuencial y procedimental del código dificultaba su mantenimiento, extensión y comprensión.
+## Origen y motivación
 
-Inspirada en conceptos de simulación y en la forma en que interactuamos con el mundo (donde los objetos tienen identidad, estado y comportamiento), la POO propone un modelo de programación más cercano a la realidad.
+La POO surge como respuesta a las limitaciones de paradigmas previos, especialmente de la **programación estructurada**.
 
-## Comparación con la Programación Estructurada
+En la programación estructurada:
 
-En la programación estructurada, el enfoque principal está en **dividir el programa en funciones o procedimientos**. Los datos son globales o pasados como parámetros, y el control del flujo se gestiona mediante estructuras como condicionales y bucles. Este enfoque resulta adecuado para programas sencillos, pero presenta limitaciones cuando se trata de sistemas complejos. Esta forma de trabajar tiene algunas limitaciones:
+* El código se organiza en **procedimientos y funciones**.
+* Los **datos** se gestionan de forma global o mediante parámetros.
+* El control del flujo depende de **condicionales y bucles**.
+
+Este enfoque es adecuado en programas pequeños, pero presenta problemas en sistemas grandes:
 
 * **Acoplamiento excesivo** entre datos y funciones.
-* **Repetición de código** debido a la falta de mecanismos de reutilización.
-* **Difícil mantenimiento** al no haber separación clara de responsabilidades.
-* **Escalabilidad limitada**: al aumentar el tamaño del sistema, el código se vuelve difícil de gestionar.
+* **Repetición de código**, por falta de mecanismos de reutilización.
+* **Mantenimiento difícil**, al no existir separación clara de responsabilidades.
+* **Escalabilidad limitada**, porque el código se vuelve complejo y poco manejable.
 
-La POO, en cambio, **integra datos y funciones en una misma unidad lógica llamada "objeto"**. Cada objeto es una instancia de una "clase", y actúa como una unidad autónoma que contiene tanto el estado como el comportamiento relacionado. Las ventajas que obtenemos son:
+La **POO** responde a estas limitaciones integrando **datos y funciones** en una unidad lógica llamada **objeto**. Cada objeto es instancia de una **clase**, y se comporta como un módulo autónomo.
 
-* **Modularidad**: El código se organiza en clases independientes, facilitando el desarrollo colaborativo.
-* **Reutilización**: Las clases pueden reutilizarse en múltiples contextos y proyectos.
-* **Mantenibilidad**: Cambios en una clase pueden realizarse sin afectar el resto del sistema si se respetan las interfaces públicas.
-* **Abstracción**: Se puede trabajar con modelos conceptuales del problema, sin necesidad de conocer detalles internos de implementación.
-* **Escalabilidad**: El sistema puede crecer de forma controlada, agregando nuevas clases o especializando las existentes.
-* **Encapsulamiento**: Se protege el estado interno del objeto mediante niveles de acceso, reduciendo errores y aumentando la seguridad.
 
-## Conceptos Fundamentales
+## Ventajas de la POO
 
-* **Clase**: Es una plantilla o modelo que define las características (atributos) y comportamientos (métodos) comunes a un conjunto de objetos. No representa un objeto concreto, sino el concepto general.
-* **Objeto**: Es una instancia concreta de una clase. Tiene su propio estado y puede ejecutar los métodos definidos en la clase.
+* **Modularidad:** el código se organiza en clases independientes, lo que facilita el trabajo en equipo.
+* **Reutilización:** una misma clase puede emplearse en distintos programas y contextos.
+* **Mantenibilidad:** los cambios en una clase no afectan al resto si se respetan sus interfaces.
+* **Abstracción:** permite modelar entidades y relaciones sin necesidad de exponer detalles internos.
+* **Escalabilidad:** el sistema puede crecer añadiendo nuevas clases o extendiendo las existentes.
+* **Encapsulamiento:** protege el estado interno de un objeto mediante modificadores de acceso, reduciendo errores.
 
-Ejemplo conceptual: supongamos que estamos desarrollando un sistema para gestionar una biblioteca:
 
-* Podemos definir una **clase `Libro`** que tenga atributos como:
-    * `titulo`
-    * `autor`
-    * `añoPublicacion`
-* Y métodos como:
-    * `prestar()`
-    * `devolver()`
-Un **objeto** de esa clase podría representar un libro específico, como:
-    * `titulo`: *"Cien años de soledad"*
-    * `autor`: *"Gabriel García Márquez"*
-    * `añoPublicacion`: *1967*
+## Conceptos fundamentales
 
-Cada objeto "libro" tendrá sus propios datos, pero todos compartirán la estructura y el comportamiento definidos por la clase `Libro`.
+* **Clase:** plantilla que define atributos (estado) y métodos (comportamiento) comunes.
+* **Objeto:** instancia concreta de una clase, con valores propios para los atributos.
+* **Atributos:** variables que representan el estado interno del objeto.
+* **Métodos:** funciones que definen el comportamiento del objeto e interactúan con sus atributos u otros objetos.
+* **Mensajes:** la forma en que los objetos se comunican, normalmente mediante la invocación de métodos.
 
-* **Atributos**: Representan el estado del objeto. Son variables que se almacenan dentro de cada instancia.
-* **Métodos**: Representan el comportamiento del objeto. Son funciones que operan sobre los atributos del objeto o que permiten interactuar con otros objetos.
-* En la POO, los objetos **interactúan entre sí mediante el envío de mensajes**. Un mensaje es simplemente una llamada a un método. Esta comunicación permite que los objetos colaboren para resolver tareas complejas sin conocer los detalles internos unos de otros.
 
-## ¿Qué es UML?
+### Ejemplo conceptual: Biblioteca
 
-**UML (Unified Modeling Language)** es un lenguaje estándar para modelar sistemas orientados a objetos. Permite representar visualmente clases, objetos, relaciones, comportamientos y estructuras del sistema. El **diagrama de clases** es uno de los más utilizados en UML. Representa:
+**Clase:** `Libro`
+
+* **Atributos:** `titulo`, `autor`, `añoPublicacion`
+* **Métodos:** `prestar()`, `devolver()`
+
+**Objeto concreto:**
+
+* `titulo`: *Cien años de soledad*
+* `autor`: *Gabriel García Márquez*
+* `añoPublicacion`: 1967
+
+Cada objeto “libro” comparte la estructura de la clase `Libro`, pero mantiene sus propios valores.
+
+
+## UML: Lenguaje de Modelado Unificado
+
+El **UML (Unified Modeling Language)** es un estándar para representar sistemas orientados a objetos de forma visual.
+
+El **diagrama de clases** muestra:
 
 * Las clases del sistema.
 * Sus atributos y métodos.
-* Las relaciones entre clases (asociaciones, herencias, dependencias, etc.).
+* Relaciones entre clases (asociaciones, herencia, dependencias).
 
-La notación básica es la siguiente:
+Notación básica:
 
-* `+`: significa atributo público.
-* `-`: significa atributo privado.
-* `#`: significa atributo protegido.
+* `+` atributo o método **público**.
+* `-` atributo o método **privado**.
+* `#` atributo o método **protegido**.
+
 
 ## Representación UML del ejemplo `Libro`
 
@@ -100,9 +112,6 @@ persona1.cumplirAnios()
 ```
 
 Este ejemplo muestra cómo se define una clase con atributos y métodos, cómo se crea un objeto (instancia de la clase) y cómo se utiliza. No está vinculado a un lenguaje específico, lo cual permite entender los principios sin necesidad de saber sintaxis.
-
-
-
 
 
 ## Representación UML del ejemplo `Persona`
