@@ -1,172 +1,116 @@
 # Constructores, destructores y métodos constantes
 
-En C++, la creación, uso y destrucción de objetos es controlada mediante **constructores**, **destructores** y **métodos constantes**. Estos mecanismos garantizan que los objetos se inicialicen correctamente, liberen recursos cuando ya no se necesiten y permitan el uso seguro de funciones que no alteran su estado.
+En C++, la creación, uso y destrucción de objetos se gestionan mediante **constructores**, **destructores** y **métodos constantes**. Estos mecanismos garantizan que los objetos:
+
+* se **inicialicen correctamente**,
+* liberen recursos cuando ya no se necesiten,
+* y permitan operaciones seguras en objetos que no deben modificarse.
 
 ## Constructores
 
-Un **constructor** es una función especial cuyo nombre coincide con el de la clase y que **no tiene tipo de retorno**. Se ejecuta automáticamente al crear un objeto y se utiliza para inicializar sus atributos.
+Un **constructor** es una función especial cuyo nombre coincide con el de la clase y que no tiene tipo de retorno. Se ejecuta automáticamente al crear un objeto.
 
-Tipos de constructores:
+Tipos:
 
-* **Constructor por defecto**: no recibe argumentos.
-* **Constructor parametrizado**: recibe argumentos para inicializar atributos.
-* **Constructor delegante**: llama a otro constructor de la misma clase (se tratarán en otra sección).
-* **Constructores especiales**: como el de copia y el de movimiento (se tratarán en otra sección).
+* **Constructor por defecto:** no recibe argumentos.
+* **Constructor parametrizado:** recibe valores para inicializar atributos.
+* **Constructor delegante:** llama a otro constructor de la misma clase (se verá más adelante).
+* **Constructores especiales:** como el de copia y el de movimiento (se estudiarán más adelante).
 
-Veamos un ejemplo:
+Aunque lo estudiaremos en profundidad en el siguiente apartado, hay que indicar que en C++ moderno, se recomienda usar **listas de inicialización uniforme (`{}`)** para inicializar los atributos:
 
 ```cpp
-class Persona {
+#include <iostream>
+
+class Punto {
 private:
-    std::string nombre;
-    int edad;
+    int x;
+    int y;
 
 public:
-    // Constructor por defecto
-    Persona() {
-        nombre = "Desconocido";
-        edad = 0;
-    }
+    // Constructor por defecto con lista de inicialización
+    Punto() : x{0}, y{0} {}
 
-    // Constructor parametrizado
-    Persona(const std::string& n, int e) {
-        nombre = n;
-        edad = e;
-    }
+    // Constructor parametrizado con lista de inicialización
+    Punto(int valorX, int valorY) : x{valorX}, y{valorY} {}
 
-    void presentarse() const {
-        std::cout << "Soy " << nombre << " y tengo " << edad << " años.\n";
-    }
-};
-
-```
-* **Constructor por defecto**: Se utiliza cuando se desea crear un objeto sin proporcionar valores explícitos. Si no se define, el compilador lo genera automáticamente, aunque es buena práctica definirlo explícitamente y garantizar que los atributos tengan valores iniciales seguros
-* Con la **sobrecarga de constructores**, una clase en C++ puede tener tanto un constructor por defecto como varios constructores con parámetros. Hay que tener en cuenta que los constructores tienes que tener un número o tipos de datos de parámetros distinto.
-* Si defines constructores con parámetros y no defines un constructor por defecto, este no será generado automáticamente, y si lo necesitas, debes escribirlo manualmente.
-
-## El modificador `explicit`
-
-En C++, un constructor que recibe **un solo parámetro** puede usarse para convertir automáticamente (**de forma implícita**) un valor de ese tipo al tipo de la clase. Esto a veces puede causar errores difíciles de detectar.
-Para evitar esas conversiones implícitas, se usa el modificador `explicit`, que obliga a que la conversión sea explícita (es decir, que el programador la indique claramente).
-
-Veamos un ejemplo `explicit` (conversión implícita permitida):
-
-```cpp
-#include <iostream>
-
-class Entero {
-public:
-    int valor;
-
-    // Constructor sin 'explicit' y sin lista de inicialización
-    Entero(int v) {
-        valor = v;
-    }
-
+    // Método constante para mostrar el estado del objeto
     void mostrar() const {
-        std::cout << "Valor: " << valor << "\n";
+        std::cout << "Punto(" << x << ", " << y << ")\n";
     }
 };
-
-void imprimir(Entero e) {
-    e.mostrar();
-}
 
 int main() {
-    imprimir(5);  // Se convierte implícitamente a Entero(5)
-    return 0;
-}
+    Punto p1;            // Se usa el constructor por defecto
+    Punto p2{3, 4};      // Se usa el constructor parametrizado
 
-```
-
-* La función `imprimir` recibe un objeto `Entero`.
-* Cuando llamamos `imprimir(5);`, C++ **convierte implícitamente** el entero `5` a un objeto `Entero` usando el constructor `Entero(int v)`.
-* Esto puede ser conveniente, pero también puede generar errores si no es lo que queremos.
-
-Veamos ahora un ejemplo con `explicit` (conversión implícita prohibida):
-
-```cpp
-#include <iostream>
-
-class Entero {
-public:
-    int valor;
-
-    // Constructor con 'explicit' y sin lista de inicialización
-    explicit Entero(int v) {
-        valor = v;
-    }
-
-    void mostrar() const {
-        std::cout << "Valor: " << valor << "\n";
-    }
-};
-
-void imprimir(Entero e) {
-    e.mostrar();
-}
-
-int main() {
-    // imprimir(5);  // Error: conversión implícita no permitida
-
-    imprimir(Entero(5));  // Correcto: conversión explícita
+    p1.mostrar();        // Punto(0, 0)
+    p2.mostrar();        // Punto(3, 4)
 
     return 0;
 }
-
 ```
 
-* Al marcar el constructor con `explicit`, la llamada `imprimir(5);` genera un error de compilación porque la conversión implícita está prohibida.
-* En su lugar, debemos crear explícitamente el objeto: `imprimir(Entero(5));`.
+Este programa demuestra que:
 
+* El **constructor por defecto** inicializa `x` e `y` en `0`.
+* El **constructor parametrizado** usa la lista de inicialización para asignar directamente los valores recibidos.
+* La función `mostrar()` es **const** porque no modifica el estado del objeto.
+
+
+### Uso de `explicit`
+
+Si un constructor recibe un único parámetro, puede usarse como conversión implícita, lo que a veces causa errores. Para evitarlo se emplea la palabra clave **`explicit`**:
+
+```cpp
+class Entero {
+private:
+    int valor;
+
+public:
+    explicit Entero(int v) : valor{v} {}
+};
+```
+
+Esto impide hacer:
+
+```cpp
+Entero e = 5;   // Error
+Entero e(5);    // Correcto
+```
 
 ## Destructor
 
-El **destructor** es una función especial que se ejecuta automáticamente cuando un objeto se destruye. Su propósito principal es **liberar recursos** (memoria, archivos, conexiones, etc.). Su sintaxis es:
+Un **destructor** es una función especial que se ejecuta automáticamente cuando un objeto:
+
+* sale de su ámbito,
+* se elimina con `delete`,
+* o es destruido dentro de un contenedor.
+
+Su sintaxis es:
 
 ```cpp
 ~NombreDeClase();
 ```
 
-Un destructor  se ejecuta automáticamente cuando un objeto:
-
-* Sale de su ámbito de vida (final de un bloque de código).
-* Es eliminado explícitamente mediante delete.
-* Es destruido por un contenedor o estructura de datos.
-
-
-Veamos un ejemplo:
+Ejemplo:
 
 ```cpp
-class Persona {
+class Ejemplo {
 public:
-    Persona() {
-        std::cout << "Creando persona\n";
-    }
-
-    ~Persona() {
-        std::cout << "Destruyendo persona\n";
+    ~Ejemplo() {
+        std::cout << "Destructor invocado\n";
     }
 };
 ```
 
-Si no se define, el compilador genera uno por defecto. Sin embargo, es fundamental definirlo cuando se gestionan recursos manualmente. En ocasiones se recomienda definirlo expresamente.
-
-## Métodos constantes y objetoos constantes
-
-Un método puede declararse como const, lo que indica que:
-
-* No modifica los atributos del objeto.
-* Solo puede invocar otros métodos que también sean const.
-* Proporciona mayor seguridad y claridad en el diseño de clases.
-
-Un objeto puede declararse como const, lo que implica que:
-
-* Solo se pueden invocar en él métodos constantes.
-* No se pueden modificar sus atributos.
+Si no se define, el compilador genera uno por defecto. 
 
 
+## Métodos constantes y objetos constantes
 
+* Un **método constante** se declara con `const` y garantiza que no modifica el objeto.
+* Un **objeto constante** solo puede invocar métodos constantes y no puede modificar sus atributos.
 
 ```cpp
 class Persona {
@@ -174,50 +118,102 @@ private:
     std::string nombre;
 
 public:
-    Persona(const std::string& n) {
-        nombre = n
-    }
+    Persona(const std::string& n) : nombre{n} {}
 
-    // Método constante: no puede modificar el objeto
-    std::string getNombre() const {
-        return nombre;
-    }
+    std::string getNombre() const { return nombre; }
 };
-int main()
-{
-    const Persona p{"Luis"};
-    std::cout << p.getNombre() << std::endl; // Correcto
-    // p.setNombre("Pedro"); // Error: no se puede modificar un objeto constante
 ```
 
-Es recomendable marca todos los métodos que no modifican el estado del objeto como `const`. Que beneficios tenemos con el uso de `const`:
+Si declaramos:
 
-* Mejora la claridad del diseño.
-* Aumenta la seguridad: garantiza que no se alterará el estado del objeto.
-* Permite el uso en contextos donde solo se permite lectura.
+```cpp
+const Persona p{"Luis"};
+p.getNombre();     // Correcto
+// p.setNombre("Ana");  // Error
+```
+
+Recomendación: **marcar como `const` todos los métodos que no alteren el estado**.
 
 
 ## Uso de `=default` y `=delete`
 
 C++ permite controlar si ciertas funciones especiales (constructores, destructores, operadores, etc.) se deben **generadas automáticamente** (`=default`) o se deben **prohibir explícitamente** (`=delete`).
 
-* `=default`: Se utiliza para pedir al compilador que genere una implementación por defecto.
+```cpp
+class Ejemplo {
+public:
+    Ejemplo() = default;               // Constructor por defecto generado automáticamente
+    ~Ejemplo() = default;              // Destructor automático
+    Ejemplo(const Ejemplo&) = delete;  // Prohíbe la copia
+};
+```
 
-    ```cpp
-    class Persona {
-    public:
-        Persona() = default;  // Usa el constructor por defecto generado por el compilador
-        ~Persona() = default; // Destructor por defecto
-    };
-    ```
+Esto ofrece un control fino sobre la generación de constructores y destructores.
 
-* `=delete`: Se utiliza para **evitar** que una función especial pueda ser usada.
+## Ejemplo final
 
-    ```cpp
-    class Persona {
-    public:
-        Persona() = default;
-         Persona(const std::string& n) = delete; // Se prohíbe el uso de constructor que recibe solo el nombre
-    };
-    ```
+```cpp
+#include <iostream>
+#include <string>
+
+class Coche {
+private:
+    std::string marca;
+    std::string modelo;
+    int anio;
+
+public:
+    // Constructor por defecto
+    Coche() : marca{"Desconocida"}, modelo{"Desconocido"}, anio{0} {}
+
+    // Constructor con parámetros (explicit evita conversiones implícitas)
+    explicit Coche(const std::string& m, const std::string& mod, int a)
+        : marca{m}, modelo{mod}, anio{a} {}
+
+    // Destructor
+    ~Coche() {
+        std::cout << "Coche destruido: " << marca << " " << modelo << "\n";
+    }
+
+    // Método constante
+    std::string getMarca() const {
+        return marca;
+    }
+
+    // Setter con puntero this y encadenamiento
+    Coche& setMarca(const std::string& marca) {
+        this->marca = marca;
+        return *this;
+    }
+
+    // Mostrar información
+    void mostrar() const {
+        std::cout << "Marca: " << marca
+                  << ", Modelo: " << modelo
+                  << ", Año: " << anio << "\n";
+    }
+};
+
+int main() {
+    Coche c1{};  // Constructor por defecto
+    c1.mostrar();
+
+    Coche c2{"Toyota", "Corolla", 2020};  // Constructor parametrizado
+    c2.mostrar();
+
+    c2.setMarca("Honda").mostrar();  // Encadenamiento con this
+
+    const Coche c3{"Ford", "Fiesta", 2018};
+    std::cout << "Marca (objeto const): " << c3.getMarca() << "\n";
+
+    return 0;
+}
+```
+
+## Representación UML del ejemplo
+
+![diagrama4](img/diagrama4.png)
+
+
+
 

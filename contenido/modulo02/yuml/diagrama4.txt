@@ -1,0 +1,1 @@
+[Coche|- marca: string; - modelo: string; - anio: int| + Coche(): void; + Coche(m: string, mod: string, a: int): void; + ~Coche(): void; + getMarca(): string; + setMarca(marca: string): Coche&; + mostrar(): void]
