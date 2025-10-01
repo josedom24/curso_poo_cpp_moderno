@@ -157,7 +157,7 @@ int main() {
 }
 ```
 
-* El método `CuentaBancaria` es un método especial, es un **constructor** que **inicializa** los atributos `titular` y `saldo` usando una **lista de inicialización**, asignando `nombre` a `titular` y `saldoInicial` a `saldo`. Lo veremos en apartados posteriores.
+* El método `CuentaBancaria` es el **constructor** que **inicializa** los atributos `titular` y `saldo` usando una **lista de inicialización**, asignando `nombre` a `titular` y `saldoInicial` a `saldo`. Lo veremos en apartados posteriores.
 * Cuando se crea el objeto: `CuentaBancaria cuenta("Luis", 1000.0);`, se ejecuta el constructor y se inicializan los atributos.
 * Los atributos `titular` y `saldo` se han declarado com privados. Sólo se pueden modificar por medio del uso de métodos.
 * Hemos creado varios métodos que modifican el estado interno de cada objeto.

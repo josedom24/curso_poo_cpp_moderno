@@ -1,152 +1,150 @@
-# Composición de objetos con punteros inteligentes
+# Composición entre clases
 
-En el diseño de clases complejas, la **composición** es una técnica fundamental que permite construir objetos a partir de otros objetos más simples, favoreciendo la modularidad y la reutilización de código. En C++ moderno, el uso de **punteros inteligentes** en relaciones de composición aporta control explícito sobre la gestión de recursos, mejora la seguridad de memoria y habilita patrones de propiedad más flexibles.
+La **composición** es un tipo fuerte de asociación en programación orientada a objetos que representa una relación de **propiedad exclusiva** entre dos clases. En esta relación, una clase (denominada *compuesta* o *contenedora*) **posee completamente** a otra clase (denominada *componente*), siendo responsable directa tanto de su creación como de su destrucción.
 
-## Composición y agregación
+Características principales:
 
-Antes de entrar en los aspectos técnicos, es importante distinguir dos formas comunes de relación entre objetos:
+* El objeto contenido **no puede existir independientemente** del objeto que lo contiene.
+* La destrucción del objeto contenedor implica la destrucción automática y completa de los objetos contenidos.
+* La composición modela relaciones “parte-todo” estrictas, donde la parte no tiene sentido fuera del todo.
+* Es una relación estructural fuerte que implica un ciclo de vida dependiente.
 
-* **Composición** (ownership fuerte): un objeto "contiene" a otro, es responsable de su creación y destrucción, y su ciclo de vida está vinculado. Se modela naturalmente con `std::unique_ptr`.
+Ejemplo típico: un automóvil **contiene un motor propio**; si el automóvil desaparece, su motor también deja de existir.
 
-* **Agregación** (ownership débil o compartido): un objeto "utiliza" a otro, pero no es el único responsable de su existencia. Puede representarse con `std::shared_ptr` (para propiedad compartida) o `std::weak_ptr` (para evitar ciclos de referencia).
+## Formas de implementar la composición en C++ moderno
 
-## Composición con `std::unique_ptr`
+En C++ moderno, la composición se implementa comúnmente usando **miembros por valor** o **punteros inteligentes propietarios** para garantizar el control total sobre el ciclo de vida del objeto contenido.
 
-Cuando una clase es propietaria única de un subobjeto dinámico, se recomienda utilizar `std::unique_ptr`. Esta elección garantiza que el recurso será destruido automáticamente junto con el objeto contenedor, evitando fugas de memoria y reflejando adecuadamente la relación de propiedad. Ejemplo:
+### Composición por valor
+
+El objeto contenido se declara como un miembro de datos dentro de la clase contenedora. Su construcción y destrucción ocurren automáticamente con el ciclo de vida del objeto contenedor.
+
+```cpp
+class Motor {
+public:
+    void arrancar() const {
+        std::cout << "Motor arrancado.\n";
+    }
+};
+
+class Vehiculo {
+private:
+    Motor motor_;  // composición por valor
+public:
+    Vehiculo() = default;
+
+    void encender() const {
+        motor_.arrancar();
+    }
+};
+```
+
+**Ventajas:**
+
+* Control total y seguro del ciclo de vida.
+* Sin punteros ni riesgos de memoria.
+* Implementación sencilla.
+
+**Desventajas:**
+
+* El objeto contenido siempre existe mientras exista el contenedor.
+* No permite compartir el objeto contenido.
+
+### Composición con punteros inteligentes propietarios (`std::unique_ptr`)
+
+Cuando la composición requiere que el objeto contenido sea creado dinámicamente o inicializado con parámetros específicos, se puede usar un `std::unique_ptr` para asegurar la propiedad exclusiva y la destrucción automática.
 
 ```cpp
 #include <memory>
+
+class Motor {
+public:
+    void arrancar() const {
+        std::cout << "Motor arrancado.\n";
+    }
+};
+
+class Vehiculo {
+private:
+    std::unique_ptr<Motor> motor_;  // propietario exclusivo
+public:
+    Vehiculo() : motor_(std::make_unique<Motor>()) {}
+
+    void encender() const {
+        motor_->arrancar();
+    }
+};
+```
+
+**Ventajas:**
+
+* Permite inicialización dinámica.
+* Mantiene propiedad exclusiva y gestión automática.
+* Seguridad ante fugas de memoria.
+
+**Desventajas:**
+
+* Ligera sobrecarga por gestión dinámica.
+* No permite compartir el objeto contenido (como sí lo haría `shared_ptr`).
+
+## Ejemplo completo de composición: Vehículo y Motor
+
+Presentamos un ejemplo completo que ilustra la composición por valor, usando un `Motor` contenido dentro de un `Vehiculo`.
+
+```cpp
+#include <iostream>
 #include <string>
 
-class Engine {
-public:
-    explicit Engine(std::string type) : type_(std::move(type)) {}
-    void start() const { /* lógica de encendido */ }
-
+// Clase Motor
+class Motor {
 private:
-    std::string type_;
+    std::string tipo_;
+public:
+    Motor(const std::string& tipo) : tipo_(tipo) {}
+
+    void arrancar() const {
+        std::cout << "Motor tipo " << tipo_ << " arrancado.\n";
+    }
 };
 
-class Car {
-public:
-    Car(std::unique_ptr<Engine> engine) 
-        : engine_(std::move(engine)) {}
-
-    void start() {
-        engine_->start();
-    }
-
+// Clase Vehiculo que contiene un Motor (composición)
+class Vehiculo {
 private:
-    std::unique_ptr<Engine> engine_;
+    Motor motor_;  // composición: motor es parte integral del vehículo
+    std::string modelo_;
+public:
+    Vehiculo(const std::string& modelo, const std::string& tipoMotor)
+        : modelo_(modelo), motor_(tipoMotor) {}
+
+    void encender() const {
+        std::cout << "Vehículo modelo " << modelo_ << " arrancando motor...\n";
+        motor_.arrancar();
+    }
 };
 
 int main() {
-    auto engine = std::make_unique<Engine>("V8");
-    Car car(std::move(engine));
-    car.start();
+    Vehiculo auto1("Sedán", "Gasolina");
+
+    auto1.encender();
+
+    // El motor existe y es controlado exclusivamente por el vehículo
+    // No puede existir sin el vehículo
+
+    return 0;
 }
 ```
 
-Aquí, `Car` es responsable de la vida útil de `Engine`. La relación es fuerte y exclusiva, lo que concuerda con el principio de composición.
+* La clase `Vehiculo` contiene un objeto `Motor` como miembro por valor.
+* El `Motor` se crea junto con el vehículo y se destruye automáticamente al destruir el vehículo.
+* Esta relación representa claramente una **composición**, porque el motor no existe sin el vehículo.
+* El método `encender` accede directamente al motor para arrancarlo, mostrando la colaboración fuerte entre ambos.
+* No hay punteros ni gestión manual, lo que elimina riesgos de fugas o punteros colgantes.
 
+## Diagrama UML:
 
+![composicion](img/composicion.png)
 
-## Composición compartida con `std::shared_ptr`
-
-En algunos diseños, múltiples objetos pueden compartir la propiedad de un mismo componente. En estos casos, se utiliza `std::shared_ptr`, que lleva una cuenta de referencias y destruye el recurso cuando ya no hay más propietarios activos. Ejemplo:
-
-```cpp
-#include <memory>
-#include <vector>
-
-class Sensor {
-public:
-    void read() const { /* lectura de datos */ }
-};
-
-class MonitoringSystem {
-public:
-    void add_sensor(std::shared_ptr<Sensor> sensor) {
-        sensors_.push_back(sensor);
-    }
-
-private:
-    std::vector<std::shared_ptr<Sensor>> sensors_;
-};
-
-int main() {
-    auto shared_sensor = std::make_shared<Sensor>();
-    MonitoringSystem system1;
-    MonitoringSystem system2;
-
-    system1.add_sensor(shared_sensor);
-    system2.add_sensor(shared_sensor);
-}
-```
-
-Aquí, varios sistemas de monitoreo pueden compartir el mismo sensor sin duplicarlo. Esto es útil cuando los objetos son costosos de crear o deben mantenerse sincronizados entre múltiples entidades.
-
-## Evitar ciclos de referencia
-
-Cuando se utilizan `std::shared_ptr` en ambas direcciones de una relación (por ejemplo, en estructuras de árbol o grafos con enlaces padres-hijos), puede producirse una **fuga de memoria por ciclo de referencias**. Para evitar esto, se emplea `std::weak_ptr` en una de las direcciones. Ejemplo:
-
-```cpp
-#include <memory>
-#include <vector>
-
-class Node : public std::enable_shared_from_this<Node> {
-public:
-    void add_child(std::shared_ptr<Node> child) {
-        children_.push_back(child);
-        child->parent_ = shared_from_this();
-    }
-
-private:
-    std::vector<std::shared_ptr<Node>> children_;
-    std::weak_ptr<Node> parent_; // evita ciclo
-};
-```
-
-## Recomendaciones prácticas
-
-* Utilice `std::unique_ptr` cuando el objeto compuesto sea el único responsable del recurso.
-* Use `std::make_unique<T>(...)` o `std::make_shared<T>(...)` para construir punteros inteligentes de forma segura y eficiente.
-* Prefiera `std::shared_ptr` cuando haya múltiples propietarios legítimos del mismo recurso.
-* Introduzca `std::weak_ptr` en estructuras cíclicas para evitar fugas.
-* Encapsule punteros inteligentes como miembros privados y proporcione interfaces de acceso controladas.
-* Evite exponer punteros crudos que puedan comprometer la seguridad de la propiedad.
-
---
-
-## Ejemplo completo
-
-Vamos a crea un sistema modular de audio.
-
-```cpp
-class Amplifier {
-public:
-    void set_volume(int level) { /* ... */ }
-};
-
-class AudioSystem {
-public:
-    explicit AudioSystem(std::unique_ptr<Amplifier> amp)
-        : amplifier_(std::move(amp)) {}
-
-    void configure() {
-        amplifier_->set_volume(5);
-    }
-
-private:
-    std::unique_ptr<Amplifier> amplifier_;
-};
-
-int main() {
-    auto amp = std::make_unique<Amplifier>();
-    AudioSystem system(std::move(amp));
-    system.configure();
-}
-```
-
-La relación aquí representa claramente una composición: el sistema de audio posee y configura su amplificador, y se encarga de su destrucción al terminar su ciclo de vida.
-
+* Se muestra con una **línea con diamante negro** en el lado del objeto contenedor, y una flecha apuntando hacia el objeto contenido.
+* El **diamante negro indica composición**, es decir, propiedad exclusiva y dependencia de ciclo de vida.
+* La relación se establece entre **clases**, no entre objetos concretos.
+* Se puede incluir **multiplicidad** en los extremos (como `1`, `0..1`, `1..*`, etc.), aunque puede omitirse si el contexto es evidente.

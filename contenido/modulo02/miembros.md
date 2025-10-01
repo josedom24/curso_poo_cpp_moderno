@@ -170,8 +170,15 @@ nombre           // acceso implícito
 this->nombre     // acceso explícito
 ```
 
+## Introducción al puntero `this`
 
-## Ejemplo completo
+Dentro de los métodos de una clase, `this` es un puntero especial que apunta al objeto actual que invocó el método. Se usa para:
+
+* Diferenciar entre atributos y parámetros con el mismo nombre.
+* Permitir encadenamiento de métodos que devuelven una referencia al propio objeto.
+
+Veamos un ejemplo:
+
 
 ```cpp
 #include <iostream>
@@ -182,22 +189,38 @@ public:
     std::string nombre;
     int edad;
 
+    // Método que imprime una presentación usando 'this'
     void presentarse() {
-        std::cout << "Hola, me llamo " << nombre << " y tengo " << edad << " años.\n";
+        // Uso explícito de 'this' para acceder a los atributos del objeto actual
+        std::cout << "Hola, me llamo " << this->nombre
+                  << " y tengo " << this->edad << " años.\n";
     }
 
+    // Método que incrementa la edad
     void cumplirAnios() {
-        edad++;
+        this->edad++; // Equivale a: edad++; pero muestra el uso de 'this'
+    }
+
+    // Método que cambia el nombre, usando 'this' para diferenciar el atributo del parámetro
+    void cambiarNombre(const std::string& nombre) {
+        this->nombre = nombre; // Se distingue entre el parámetro y el atributo
     }
 };
 
 int main() {
     Persona p;
+
+    // Asignación directa a los atributos
     p.nombre = "Carlos";
     p.edad = 40;
 
     p.presentarse();  // Hola, me llamo Carlos y tengo 40 años.
-    p.cumplirAnios();
-    p.presentarse();  // Hola, me llamo Carlos y tengo 41 años.
+
+    p.cumplirAnios(); // Incrementa la edad
+    p.cambiarNombre("Carlos Alberto"); // Cambia el nombre
+
+    p.presentarse();  // Hola, me llamo Carlos Alberto y tengo 41 años.
+
+    return 0;
 }
 ```

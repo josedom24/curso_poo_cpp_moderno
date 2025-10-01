@@ -56,12 +56,7 @@ Punto operator+(const Punto& a, const Punto& b) {
 }
 ```
 
-
-## Ejemplo: clase `Fraccion`
-
-¡Entendido! Aquí tienes el programa basado en la clase `Punto` usando guiones bajos para los atributos y sobrecargando todos los operadores aritméticos (`+`, `-`, `*`, `/`), los operadores `==` y `!=`, y el operador de inserción en flujo `<<`, todo en un solo programa.
-
-### Programa en C++ con la clase `Punto`
+## Ejemplo: clase `Punto`
 
 ```cpp
 #include <iostream>
@@ -155,4 +150,34 @@ int main() {
    * **Igualdad**: `operator==` compara dos objetos `Punto` y devuelve `true` si ambos tienen las mismas coordenadas.
    * **Desigualdad**: `operator!=` devuelve `true` si los objetos `Punto` no son iguales.
    * **Operador de inserción en flujo (`<<`)**: Este operador imprime un objeto `Punto` en formato `(x, y)`.
+
+
+## El operador `operator()`
+
+Permite que una **clase defina un comportamiento que se ejecute cuando el objeto es llamado como función**. Los objetos que implementan este operador se llaman **functores** o **objetos invocables**.Son muy útiles para encapsular lógica con estado, que luego puede usarse en algoritmos o como callbacks.
+
+Veamos un ejemplo:
+
+```cpp
+#include <iostream>
+
+class Incrementador {
+private:
+    int valor;
+
+public:
+    Incrementador(int v) : valor(v) {}
+
+    int operator()(int x) const {
+        return x + valor;
+    }
+};
+
+int main() {
+    Incrementador inc(5);
+    std::cout << inc(10) << "\n";  // Imprime 15
+}
+```
+
+Aquí, `inc(10)` es equivalente a llamar a `inc.operator()(10)`.
 

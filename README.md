@@ -5,9 +5,8 @@
     * [¿Qué es la programación orientada a objetos?](contenido/modulo01/poo.md)
     * [Los pilares de la programación orientada a objetos](contenido/modulo01/pilares.md)
     * [La programación orientada a objetos en C++ moderno](contenido/modulo01/cpp.md)
-    
 
-2. Programación orientada a objetos en C++ moderno
+2. Fundamentos básicos de programación orientada a objetos
 
     * [Clases y objetos](contenido/modulo02/clases.md)
     * [Miembros de instancia: atributos y métodos](contenido/modulo02/miembros.md)
@@ -15,72 +14,58 @@
     * [Constructores, destructores y métodos constantes](contenido/modulo02/constructor.md)
     * [Inicialización de atributos con listas de inicialización](contenido/modulo02/inicializacion.md)
     * [Métodos getter y setter](contenido/modulo02/getters.md)
-    * [Sobrecarga de operadores](contenido/modulo02/operadores.md)
-    * Atributos y métodos estáticos
-    * Fluidez de métodos (`return   *this`)
+    * [Atributos y métodos estáticos](contenido/modulo02/estatico.md)
+    
+3. Gestión de memoria dinámica
 
-3. Relaciones entre clases
+    * [Introducción a la gestión de recursos en C++ moderno](contenido/modulo03/introduccion.md)
+    * [Gestión manual de memoria dinámica](contenido/modulo03/memoria.md)
+    * [Propiedad de recursos y patrón RAII](contenido/modulo03/raii.md)
+    * [Uso de punteros inteligentes en la gestión de memoria dinámica](contenido/modulo03/inteligentes.md)
 
-    * Agregación y composición: diferencias y ejemplos
-    * Asociaciones entre objetos y responsabilidades
-    * Introducción a la herencia: clases base y derivadas
-    * Herencia y polimorfismo en C++
-    * Conversiones implícitas y punteros base
-    * El papel del `virtual` y el uso correcto de `override`
-    * Finalización de métodos y clases con `final`
+4. Relaciones entre clases
+    * [Introducción a las relaciones entre clases](contenido/modulo04/introduccion.md)
+    * [Dependencia entre clases](contenido/modulo04/dependencia.md)
+    * [Asociaciones entre clases](contenido/modulo04/asociacion.md)
+    * [Agregación entre clases](contenido/modulo04/agregacion.md)
+    * [Composición entre clases](contenido/modulo04/composicion.md)
+    * Ejercicios sobre relaciones de clases
+    * [Introducción a la herencia: clases base y derivadas](contenido/modulo04/herencia.md)
+    * [Herencia y polimorfismo](contenido/modulo04/polimorfismo.md)
+    * [Conversiones implícitas y punteros base](contenido/modulo04/conversiones.md)
+    * Ejercicios sobre herencia y polimorfismo
 
-4. Gestión avanzada de objetos
+5. Fundamentos avanzados de programación orientada a objetos
+    * [Control de creación y copia de objetos en C++](contenido/modulo05/creacion.md)
+    * [Sobrecarga de operadores](contenido/modulo05/operadores.md)
+    * [Fluidez de métodos](contenido/modulo05/fluidez.md)
+    * [Semántica de copia y movimiento](contenido/modulo05/move.md)
+    * [Clonación de objetos: copias superficiales y profundas](contenido/modulo05/clonacion.md)
 
-    * Uso de punteros inteligentes en la gestión de memoria dinámica
-    * Semántica de copia y movimiento: constructor de copia, constructor de movimiento, operadores de asignación
-    * Copias superficiales vs. profundas y su implicación en clases
-    * Clonación de objetos mediante interfaces (`clone`)
-    * Composición de objetos con punteros inteligentes
-    * Uso práctico de `std::unique_ptr` y `std::shared_ptr` en clases
+6. Interfaces y diseño polimórfico
 
-5. Interfaces y diseño polimórfico
+    * [Clases abstractas y métodos virtuales puros](contenido/modulo06/abstracta.md)
+    * [Interfaces puras y su implementación](contenido/modulo06/interface.md)
+    * [Devolución de interfaces mediante punteros inteligentes](contenido/modulo06/devolucion.md)
+    * [Separación entre interfaz y detalle de implementación (Pimpl idiom)](contenido/modulo06/separacion.md)
+    * Ejercicios sobre interfaces
 
-    * Clases abstractas y métodos virtuales puros
-    * Interfaces puras y su implementación
-    * Devolución de interfaces mediante punteros inteligentes
-    * Separación entre interfaz y detalle de implementación (Pimpl idiom)
-    * Diseño orientado a contratos y principios de responsabilidad
+7. Abstracción del comportamiento
 
-6. Abstracción de comportamiento y composición flexible
+    * [Comportamiento intercambiable y bajo acoplamiento](contenido/modulo07/comportamiento.md)
+    * [Delegación de comportamiento mediante interfaces](contenido/modulo07/delegacion.md)
+    * [Representación de acciones con funciones lambdas](contenido/modulo07/lambda.md)
+    * [Uso de `std::function` para encapsular comportamiento configurable](contenido/modulo07/function.md)
+    * [Functores y clases con `operator()`](contenido/modulo07/functor.md)
+    * [Inyección de comportamiento: composición y estrategia](contenido/modulo07/inyeccion.md)
+    * Ejercicios sobre abstracción de comportamiento
+    
+8. Plantillas de clases y programación genérica
 
-    * Motivación: comportamiento intercambiable y bajo acoplamiento
-    * Delegación de comportamiento mediante interfaces
-    * Representación de acciones con lambdas (funciones anónimas)
-    * Uso de std::function para encapsular comportamiento configurable
-    * Functores (objetos invocables) y clases con operator()
-    * Inyección de comportamiento: composición y estrategia
-    * Comparación entre interfaces, lambdas, functores y std::function
-    * Buenas prácticas para desacoplar lógica y facilitar pruebas
- 
-7. Plantillas de clases y programación genérica
-
-    * Introducción a las plantillas de clases
-    * Clases genéricas con uno o varios parámetros de tipo
-    * Uso de plantillas para reutilización de código
-    * Especialización de clases plantilla
-    * Interacción con la STL desde la perspectiva de plantillas
-    * Ventajas y precauciones en el uso de plantillas
+    * [Introducción a las plantillas de clases](contenido/modulo08/plantillas.md)
+    * [Clases genéricas con uno o varios parámetros de tipo](contenido/modulo08/parametros.md)
+    * [Especialización de plantillas de clase](contenido/modulo08/especializacion.md)
+    * [Las plantillas de clase y la STL](contenido/modulo08/stl.md)
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
-    * Uso de `std::variant` y `std::visit` para patrones de diseño
-
-8. Principios de diseño orientado a objetos
-
-    * Abstracción, encapsulamiento, herencia y polimorfismo en profundidad
-    * Introducción a los principios SOLID
-    * Cohesión, acoplamiento y reutilización
-    * Diseño de clases orientado al cambio y la extensión
-    * Buenas prácticas en el diseño de APIs orientadas a objetos
-
-9. Ejercicios y mini-proyectos orientados a objetos
-
-    * Ejercicios integradores de modelado de clases
-    * Ejercicios de herencia, polimorfismo y composición
-    * Ejercicios de clonación, RAII y punteros inteligentes
-    * Implementación de jerarquías de clases reutilizables
-    * Mini-proyecto: sistema de gestión de biblioteca / inventario / juego simple por consola
-
+    * [Plantillas de clase:`std::variant` y `std::visit`](contenido/modulo08/variant.md)
+    * Ejercicios sobre programación genérica

@@ -1,4 +1,4 @@
-# Clases abstractas y métodos virtuales
+# Clases abstractas y métodos virtuales puros
 
 Las clases abstractas y los métodos virtuales permiten definir **acciones comunes** que pueden realizar distintos tipos de objetos, aunque cada uno las implemente de forma distinta. Esto hace posible escribir código que trabaje con objetos diferentes de manera uniforme, y al mismo tiempo mantener la flexibilidad para cambiar o extender el comportamiento sin modificar el código original.
 
