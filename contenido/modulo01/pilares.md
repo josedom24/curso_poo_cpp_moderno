@@ -2,7 +2,7 @@
 
 La Programación Orientada a Objetos (POO) se fundamenta en **cuatro pilares principales** que guían el diseño y construcción de sistemas de software bien estructurados: **encapsulación**, **abstracción**, **herencia** y **polimorfismo**. Estos pilares no solo permiten representar entidades del mundo real en términos computacionales, sino que también promueven principios sólidos de ingeniería de software como la modularidad, la reutilización y la escalabilidad.
 
-## *Encapsulación
+## Encapsulación
 
 La **encapsulación** consiste en **ocultar los detalles internos de un objeto** y exponer únicamente lo necesario para su uso externo. Esta técnica se basa en restringir el acceso directo al estado interno (atributos) de un objeto, permitiendo que dicho estado solo sea modificado o consultado a través de métodos específicos (interfaces públicas).
 
@@ -20,7 +20,7 @@ Obtenemos las siguientes ventajas:
 * Se garantiza que la lógica de control de velocidad sea coherente y segura.
 * El resto del sistema puede utilizar el objeto sin conocer cómo calcula la velocidad o cómo gestiona sus límites.
 
-## *Abstracción
+## Abstracción
 
 La **abstracción** implica **modelar entidades complejas del mundo real destacando únicamente sus características relevantes**, ignorando los detalles innecesarios para la interacción con otros objetos. Se enfoca en el "qué hace" un objeto, no en "cómo lo hace".
 
