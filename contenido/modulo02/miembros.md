@@ -19,7 +19,7 @@ Los atributos son variables definidas dentro de una clase. Cada objeto tendrá c
 
 Ejemplo conceptual:
 
-```
+```cpp
 class Persona {
     std::string nombre;
     int edad;
@@ -35,7 +35,7 @@ Los métodos son funciones que pueden acceder y modificar los atributos del obje
 
 1. **Declaración en la clase e implementación fuera de ella:**
 
-   ```
+   ```cpp
    class Persona {
        void saludar(); // Declaración
    };
@@ -45,7 +45,7 @@ Los métodos son funciones que pueden acceder y modificar los atributos del obje
 
 2. **Definición directa en la clase:**
 
-   ```
+   ```cpp
    class Persona {
        void saludar() { /* implementación */ }
    };
@@ -146,7 +146,7 @@ El puntero especial **`this`** apunta al objeto actual y se utiliza para:
 
 ## Ejemplo completo
 
-```
+```cpp
 #include <iostream>
 #include <string>
 
