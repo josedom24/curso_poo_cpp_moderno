@@ -1,14 +1,15 @@
-#  Métodos getter y setter
-En diseño orientado a objetos, los atributos de una clase suelen declararse como `private` o `protected` para cumplir con el principio de **encapsulamiento**, impidiendo el acceso directo desde fuera de la clase.
+# Métodos getter y setter
 
-Para permitir el acceso controlado a estos atributos, se emplean los métodos conocidos como:
+En diseño orientado a objetos, los atributos de una clase suelen declararse como **private** o **protected** para cumplir con el principio de **encapsulamiento**, impidiendo el acceso directo desde fuera de la clase.
 
-* **Getters**: permiten **consultar** el valor de un atributo.
-* **Setters**: permiten **modificar** el valor de un atributo, validando si es necesario.
+Para acceder a ellos de forma controlada se utilizan:
 
-## ¿Por qué no exponer los atributos como públicos?
+* **Getters**: métodos que devuelven el valor de un atributo.
+* **Setters**: métodos que permiten modificar el valor de un atributo, aplicando validaciones si es necesario.
 
-Aunque sería más simple hacer los atributos públicos, esto **rompería el encapsulamiento**, exponiendo el estado interno del objeto sin ningún tipo de control ni validación. Por ejemplo:
+## ¿Por qué no hacer los atributos públicos?
+
+Exponer directamente los atributos rompe el encapsulamiento y permite estados inválidos:
 
 ```cpp
 class Persona {
@@ -16,41 +17,36 @@ public:
     std::string nombre;
     int edad;
 };
+
+int main() {
+    Persona persona;
+    persona.edad = -99; // Estado inválido
+    return 0;
+}
 ```
 
-Cualquier parte del programa podría hacer:
-
-```cpp
-persona.edad = -99;  // Edad inválida
-```
-
-Esto es problemático porque **no hay garantía de integridad** del estado del objeto.
+En este caso, no existe ningún control que impida que un objeto tenga una edad negativa.
 
 ## Uso de getters y setters
 
-Declarando los atributos como `private` y exponiendo funciones públicas de acceso y modificación, se protege el estado interno de la clase. Veamos un ejemplo:
-
+Declarando los atributos como `private` y exponiendo funciones públicas de acceso y modificación, se protege el estado interno:
 
 ```cpp
+#include <iostream>
+#include <string>
+
 class Persona {
 private:
     std::string nombre;
     int edad;
 
 public:
-    // Getter
-    std::string getNombre() const {
-        return nombre;
-    }
+    // Getters: devuelven por referencia const para evitar copias
+    const std::string& getNombre() const { return nombre; }
+    int getEdad() const { return edad; }
 
-    int getEdad() const {
-        return edad;
-    }
-
-    // Setter
-    void setNombre(const std::string& nuevoNombre) {
-        nombre = nuevoNombre;
-    }
+    // Setters con validación
+    void setNombre(const std::string& nuevoNombre) { nombre = nuevoNombre; }
 
     void setEdad(int nuevaEdad) {
         if (nuevaEdad >= 0) {
@@ -65,20 +61,29 @@ int main() {
     p.setEdad(28);
 
     std::cout << p.getNombre() << " tiene " << p.getEdad() << " años.\n";
-}
 
+    return 0;
+}
 ```
 
-El uso de este tipo de métodos nos proporcionan las siguientes ventajas:
+En este ejemplo:
 
-* Añadir validación,
-* Registrar cambios (logs),
-* Lanzar excepciones,
-* Aplicar lógica de negocio.
+* Los atributos son **privados**.
+* El getter `getNombre()` devuelve por **referencia constante**, evitando copias innecesarias.
+* El método `getEdad()` está marcado como **const**, ya que no modifica el estado del objeto.
+* El setter `setEdad()` valida que la edad no sea negativa.
 
-Como buenas prácticas podemos apuntar:
-* Los *getters* deben marcarse como `const` si no modifican el estado del objeto.
-* Usar pasar por referencia `const` para evitar copias costosas. Esto evita una copia innecesaria cuando el tipo es complejo.
-* Usar validación en los setters, para permitir proteger la clase de estados inválidos.
-* Evitar setters innecesarios. No todo atributo necesita un setter. Si un atributo no debe cambiarse luego de inicializarse (por ejemplo, un identificador único), simplemente **no se proporciona el setter**.
+## Ventajas de getters y setters
+
+* Permiten añadir **validación** antes de modificar un atributo.
+* Facilitan **registrar cambios** (logs) o lanzar excepciones.
+* Refuerzan el **principio de encapsulamiento**.
+* Permiten aplicar **lógica de negocio** en el acceso a los atributos.
+
+## Buenas prácticas
+
+* Marcar los **getters como const**.
+* Usar **referencias constantes** en getters para tipos complejos, evitando copias costosas.
+* Implementar **validación en setters** para proteger la invariancia del objeto.
+* **Evitar setters innecesarios**: si un atributo no debe cambiar tras inicializarse (por ejemplo, un identificador único), simplemente no se proporciona el setter.
 
