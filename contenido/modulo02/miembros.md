@@ -1,76 +1,58 @@
 # Miembros de instancia: atributos y métodos
 
-En C++, una **clase** está compuesta por **miembros**, que se dividen en dos grandes categorías:
+En C++, una clase está compuesta por **miembros**, que se dividen en dos grandes categorías:
 
-* **Miembros de datos (atributos)**: variables asociadas a cada objeto, que representan su **estado**.
-* **Funciones miembro (métodos)**: funciones asociadas a cada objeto, que representan su **comportamiento**.
+* **Miembros de datos (atributos):** variables que representan el estado de cada objeto.
+* **Funciones miembro (métodos):** funciones que representan el comportamiento de los objetos.
 
-Estos elementos se conocen como **miembros de instancia** porque cada objeto creado a partir de una clase tiene su **propio conjunto de atributos** y puede invocar los **mismos métodos**, operando sobre sus propios datos. Los miembros de instancias:
+Se llaman *miembros de instancia* porque cada objeto creado a partir de una clase tiene su **propio conjunto de atributos**, pero puede invocar los mismos métodos sobre sus propios datos.
 
-* Permiten que cada objeto tenga su **estado propio**.
-* Hacen posible que un mismo método pueda **actuar sobre distintos objetos**, dependiendo de sus atributos.
-* Constituyen la **base de la encapsulación**, un principio fundamental de la POO.
+Esto permite que:
 
-## Atributos: miembros de datos
+* Cada objeto tenga un estado independiente.
+* Un mismo método actúe de forma diferente según los atributos del objeto.
+* Se logre encapsulación, uno de los principios básicos de la POO.
 
-Los atributos son variables definidas dentro de una clase que **almacenan información específica de cada objeto**. Veamos un ejemplo:
+## Atributos
 
-```cpp
+Los atributos son variables definidas dentro de una clase. Cada objeto tendrá copias propias de esos atributos.
+
+Ejemplo conceptual:
+
+```
 class Persona {
-public:
     std::string nombre;
     int edad;
 };
 ```
 
-Cada objeto de tipo `Persona` tendrá su propio `nombre` y `edad`.
+* Cada objeto de tipo `Persona` tendrá su propio `nombre` y `edad`.
+* Aunque todos los objetos comparten la misma estructura, sus datos son independientes.
 
-```cpp
-Persona p1;
-p1.nombre = "Ana";
-p1.edad = 30;
+## Métodos
 
-Persona p2;
-p2.nombre = "Luis";
-p2.edad = 25;
-```
+Los métodos son funciones que pueden acceder y modificar los atributos del objeto. Se pueden declarar de dos formas:
 
-Aunque ambos objetos comparten la misma estructura (la clase), sus datos son **independientes**.
+1. **Declaración en la clase e implementación fuera de ella:**
 
-## Métodos: funciones miembro
+   ```
+   class Persona {
+       void saludar(); // Declaración
+   };
 
-Los métodos son funciones que pueden acceder y manipular los atributos del objeto al que pertenecen. Los métodos se pueden declarar:
+   void Persona::saludar() { /* implementación */ }
+   ```
 
-* Dentro de la clase e implementarse fuera de ella:
+2. **Definición directa en la clase:**
 
-    ```cpp
-    class Persona {
-    public:
-        std::string nombre;
-        int edad;
+   ```
+   class Persona {
+       void saludar() { /* implementación */ }
+   };
+   ```
 
-        void saludar();  // declaración
-    };
+En este caso, se convierten en funciones *inline* por defecto, lo que puede mejorar el rendimiento al evitar el coste de la llamada.
 
-    // implementación
-    void Persona::saludar() {
-        std::cout << "Hola, soy " << nombre << " y tengo " << edad << " años.\n";
-    }
-    ```
-
-* Directamente dentro de la clase. Esto los convierte en funciones `inline` por defecto, es decir, el compilador puede insertar el código del método directamente en los lugares donde se invoque, es una **recomendación**, si se hace el código será más efiiciente porque nos ahorramos el coste de la llamada a la función.
-
-    ```cpp
-    class Persona {
-    public:
-        std::string nombre;
-        int edad;
-
-        void saludar() {
-            std::cout << "Hola, soy " << nombre << " y tengo " << edad << " años.\n";
-        }
-    };
-    ```
 
 ## Paso de parámetro y retorno en métodos
 
@@ -153,34 +135,18 @@ Es conveniente:
 * Al retornar referencias, asegurar que se refieren a datos **válidos y existentes**.
 
 
-## Acceso implícito a los atributos
+## Acceso implícito y puntero this
 
-Dentro de un método, se puede acceder directamente a los atributos sin usar prefijos:
+Dentro de un método, se puede acceder a los atributos de forma implícita (`nombre`) o explícita (`this->nombre`).
 
-```cpp
-void Persona::saludar() {
-    std::cout << nombre;  // se entiende que es this->nombre
-}
-```
-
-Internamente, C++ utiliza un puntero especial llamado `this`, que apunta al objeto actual. Por lo tanto, las siguientes expresiones son equivalentes:
-
-```cpp
-nombre           // acceso implícito
-this->nombre     // acceso explícito
-```
-
-## Introducción al puntero `this`
-
-Dentro de los métodos de una clase, `this` es un puntero especial que apunta al objeto actual que invocó el método. Se usa para:
+El puntero especial **`this`** apunta al objeto actual y se utiliza para:
 
 * Diferenciar entre atributos y parámetros con el mismo nombre.
-* Permitir encadenamiento de métodos que devuelven una referencia al propio objeto.
+* Implementar *fluidez de métodos* (cuando un método devuelve `*this`).
 
-Veamos un ejemplo:
+## Ejemplo completo
 
-
-```cpp
+```
 #include <iostream>
 #include <string>
 
@@ -189,38 +155,36 @@ public:
     std::string nombre;
     int edad;
 
-    // Método que imprime una presentación usando 'this'
-    void presentarse() {
-        // Uso explícito de 'this' para acceder a los atributos del objeto actual
-        std::cout << "Hola, me llamo " << this->nombre
-                  << " y tengo " << this->edad << " años.\n";
+    void presentarse() const {
+        std::cout << "Hola, me llamo " << nombre
+                  << " y tengo " << edad << " años.\n";
     }
 
-    // Método que incrementa la edad
     void cumplirAnios() {
-        this->edad++; // Equivale a: edad++; pero muestra el uso de 'this'
+        edad++;
     }
 
-    // Método que cambia el nombre, usando 'this' para diferenciar el atributo del parámetro
     void cambiarNombre(const std::string& nombre) {
-        this->nombre = nombre; // Se distingue entre el parámetro y el atributo
+        this->nombre = nombre; // Diferencia entre parámetro y atributo
     }
 };
 
 int main() {
     Persona p;
-
-    // Asignación directa a los atributos
     p.nombre = "Carlos";
     p.edad = 40;
 
-    p.presentarse();  // Hola, me llamo Carlos y tengo 40 años.
-
-    p.cumplirAnios(); // Incrementa la edad
-    p.cambiarNombre("Carlos Alberto"); // Cambia el nombre
-
-    p.presentarse();  // Hola, me llamo Carlos Alberto y tengo 41 años.
+    p.presentarse();       // Hola, me llamo Carlos y tengo 40 años.
+    p.cumplirAnios();
+    p.cambiarNombre("Carlos Alberto");
+    p.presentarse();       // Hola, me llamo Carlos Alberto y tengo 41 años.
 
     return 0;
 }
 ```
+
+## Representación UML del ejemplo Persona
+
+## Representación UML del ejemplo ampliado
+
+![diagrama1](img/diagrama3.png)
