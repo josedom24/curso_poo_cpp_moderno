@@ -1,6 +1,4 @@
-# Introducción a la herencia: clases base y derivadas
-
-## Concepto de herencia
+# Herencia: clases base y derivadas
 
 La **herencia** es uno de los pilares fundamentales de la programación orientada a objetos (POO). Permite definir una nueva clase basada en una clase existente, de modo que la nueva clase **herede atributos y comportamientos** de la clase original, pudiendo además agregar o modificar funcionalidades.
 
