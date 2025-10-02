@@ -1,1 +1,1 @@
-[Impresora]usa->[Documento]
+[Impresora]uses->[Documento]

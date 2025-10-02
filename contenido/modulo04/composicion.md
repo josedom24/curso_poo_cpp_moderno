@@ -91,3 +91,14 @@ int main() {
 * Ventajas: Permite inicialización dinámica. Mantiene propiedad exclusiva y gestión automática. Seguridad ante fugas de memoria.
 * Desventajas: No se puede compartir el objeto contenido.
 
+## Resumen
+
+
+| Relación        | Naturaleza                                                                                                            | Ciclo de vida                                                                 | Acoplamiento | Ejemplo en la vida real                                                                              |
+| --------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------- |
+| **Dependencia** | Relación **temporal y débil**. Una clase usa otra de forma puntual, normalmente como parámetro o dentro de un método. | No guarda referencia, solo necesita la otra clase mientras ejecuta la acción. | Muy bajo     | Una biblioteca utiliza un notificador para enviar un aviso puntual de retraso.                       |
+| **Asociación**  | Relación **estructural estable**. Una clase mantiene una referencia hacia otra, pero no la posee.                     | El objeto asociado existe independientemente.                                 | Medio        | Un curso tiene asociado un profesor, pero el profesor puede existir sin el curso.                    |
+| **Agregación**  | Relación de tipo **“tiene un” débil**. El contenedor mantiene referencia, pero **no es dueño** del objeto agregado.   | El agregado puede vivir de forma independiente al agregador.                  | Medio-alto   | Un vehículo agrega un motor, pero ese motor puede existir aparte o ser reutilizado en otro vehículo. |
+| **Composición** | Relación de tipo **“parte-todo” fuerte**. El contenedor es dueño exclusivo del objeto contenido.                      | El ciclo de vida del contenido depende totalmente del contenedor.             | Alto         | Un vehículo contiene un motor propio; si el vehículo desaparece, el motor también.                   |
+
+
