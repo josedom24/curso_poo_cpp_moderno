@@ -1,90 +1,107 @@
 # Gestión de memoria con punteros inteligentes
-**Falta por explicar las instrucciones make_. Que son los ciclos de recerencia.?**
-En C++, la gestión segura y eficiente de memoria dinámica es un aspecto crítico del desarrollo robusto. Tras comprender los conceptos de **RAII** y **propiedad**, resulta natural introducir los **punteros inteligentes**, que son herramientas diseñadas precisamente para aplicar estos principios en la gestión de memoria.
+
+En C++, la gestión segura y eficiente de memoria dinámica es un aspecto crítico del desarrollo robusto. Tras comprender los conceptos de RAII y propiedad, resulta natural introducir los **punteros inteligentes**, que son herramientas diseñadas para aplicar estos principios a la gestión de memoria.
 
 ## ¿Qué son los punteros inteligentes?
 
-Los punteros inteligentes son clases plantilla de la biblioteca estándar de C++ (`<memory>`) que encapsulan punteros crudos y gestionan automáticamente la vida útil de los objetos a los que apuntan, siguiendo el patrón **RAII**.
+Un puntero inteligente es una clase plantilla de la biblioteca estándar (`<memory>`) que encapsula un puntero crudo y gestiona automáticamente la vida útil del objeto al que apunta, aplicando RAII.
 
-Al utilizar punteros inteligentes:
+Al usarlos:
 
-* La **adquisición** de memoria ocurre al crear el puntero inteligente.
-* La **liberación** de memoria se realiza automáticamente al destruirse el puntero inteligente, sin necesidad de llamadas manuales a `delete`.
-* La **propiedad** del recurso es clara y controlada, reduciendo el riesgo de errores como fugas de memoria o accesos a memoria liberada.
+* La memoria se adquiere al crear el puntero.
+* La memoria se libera automáticamente al destruirse el puntero, sin necesidad de `delete`.
+* La propiedad del recurso es explícita, reduciendo fugas de memoria y accesos inválidos.
 
-Los punteros inteligentes más comunes son:
+Los más utilizados en C++ moderno son `std::unique_ptr`, `std::shared_ptr` y `std::weak_ptr`.
 
-### `std::unique_ptr`
 
-`std::unique_ptr` representa la **propiedad exclusiva** de un recurso. Solo puede existir un único propietario del recurso en un momento dado. Sus características son:
+## `std::unique_ptr`
 
-* No se puede copiar, solo mover (transferencia explícita de propiedad).
-* Al destruirse, libera automáticamente el recurso que posee.
-* Ideal para recursos que no deben compartirse, como objetos grandes o estructuras de datos dinámicas.
+Representa **propiedad exclusiva**. Solo un `unique_ptr` puede poseer un recurso.
 
-Ejemplo:
+* No se puede copiar, solo **mover** con `std::move`.
+* Libera el recurso automáticamente al destruirse.
+* Ideal para recursos que no deben compartirse.
 
 ```cpp
 #include <memory>
 #include <iostream>
 
 int main() {
+    // Creación segura con make_unique
     std::unique_ptr<int> ptr = std::make_unique<int>(42);
+    std::cout << *ptr << "\n";
 
-    std::cout << *ptr << std::endl;
-
-    // Transferencia de propiedad mediante std::move
+    // Transferencia de propiedad
     std::unique_ptr<int> ptr2 = std::move(ptr);
 
     if (!ptr) {
-        std::cout << "ptr ya no posee el recurso." << std::endl;
+        std::cout << "ptr ya no posee el recurso.\n";
     }
 
-    return 0; // El recurso se libera automáticamente al salir del ámbito
+    return 0; // ptr2 libera automáticamente la memoria
 }
 ```
 
+`std::make_unique` es la forma recomendada de crear `unique_ptr`:
+
+* Evita errores en expresiones complejas.
+* Hace el código más claro y seguro.
+* Introducido en C++14.
+
+
 ## `std::shared_ptr`
 
-`std::shared_ptr` permite la **propiedad compartida** de un recurso mediante un mecanismo de **conteo de referencias**. Varios objetos pueden compartir la responsabilidad de un recurso, que se libera automáticamente cuando el último propietario desaparece. Sus características son:
+Representa **propiedad compartida** mediante conteo de referencias.
 
-
-* Permite múltiples copias que comparten la propiedad.
+* Varias copias comparten el mismo recurso.
 * El recurso se libera cuando el contador de referencias llega a cero.
-* Útil en estructuras de datos compartidas o grafos.
-
-Ejemplo:
+* Útil en grafos, estructuras compartidas o cachés.
 
 ```cpp
 #include <memory>
 #include <iostream>
 
 int main() {
-    std::shared_ptr<int> sp1 = std::make_shared<int>(100);
+    auto sp1 = std::make_shared<int>(100);
 
     {
-        std::shared_ptr<int> sp2 = sp1; // Comparte propiedad
-        std::cout << "Valor: " << *sp2 << std::endl;
-        std::cout << "Conteo de referencias: " << sp1.use_count() << std::endl;
-    }
+        auto sp2 = sp1; // Copia: ambos comparten propiedad
+        std::cout << "Valor: " << *sp2 << "\n";
+        std::cout << "Conteo: " << sp1.use_count() << "\n";
+    } // sp2 se destruye → el conteo baja
 
-    std::cout << "Conteo tras salir del bloque: " << sp1.use_count() << std::endl;
-    // El recurso se libera cuando el último shared_ptr desaparece
+    std::cout << "Conteo tras salir del bloque: " << sp1.use_count() << "\n";
 
-    return 0;
+    return 0; // El recurso se libera cuando desaparece el último shared_ptr
 }
 ```
-El uso incorrecto de `shared_ptr` puede provocar **ciclos de referencias**, causando fugas de memoria. Para evitarlo, se utiliza `std::weak_ptr`.
 
-## `std::weak_ptr` 
+### Ciclos de referencias
 
-`std::weak_ptr` es un puntero inteligente que observa un recurso gestionado por `shared_ptr`, pero **sin poseerlo**. Se le suele llamar **observador sin propiedad**. Su principal finalidad es romper ciclos de referencias y sus características son:
+Un problema común con `shared_ptr` son los **ciclos de referencias**:
 
-* No contribuye al conteo de referencias.
+* Ocurren cuando dos (o más) objetos se apuntan entre sí mediante `shared_ptr`.
+* Ninguno de los contadores llega a cero, por lo que el recurso **nunca se libera** → fuga de memoria.
+
+Ejemplo de ciclo:
+
+```cpp
+struct Nodo {
+    std::shared_ptr<Nodo> siguiente;
+};
+```
+
+Si `nodo1.siguiente = nodo2` y `nodo2.siguiente = nodo1`, ambos quedan bloqueados en memoria.
+
+
+## `std::weak_ptr`
+
+Es un puntero **observador sin propiedad**.
+
+* No incrementa el contador de referencias.
+* Se usa junto a `shared_ptr` para **romper ciclos de referencias**.
 * Permite comprobar si el recurso aún existe mediante `.lock()`.
-* Ideal para estructuras de datos que requieren referencias débiles, como árboles o grafos con punteros hacia atrás.
-
-Ejemplo:
 
 ```cpp
 #include <memory>
@@ -92,14 +109,22 @@ Ejemplo:
 
 int main() {
     std::shared_ptr<int> sp = std::make_shared<int>(200);
-    std::weak_ptr<int> wp = sp;
+    std::weak_ptr<int> wp = sp; // Observador
 
-    if (auto spt = wp.lock()) { // Obtiene un shared_ptr temporal si el recurso aún existe
-        std::cout << *spt << std::endl;
+    if (auto spt = wp.lock()) { // Convierte temporalmente a shared_ptr
+        std::cout << *spt << "\n";
     } else {
-        std::cout << "El recurso ha sido liberado." << std::endl;
+        std::cout << "El recurso ya fue liberado.\n";
     }
 
     return 0;
 }
 ```
+
+En resumen:
+
+* `unique_ptr` → propiedad exclusiva.
+* `shared_ptr` → propiedad compartida.
+* `weak_ptr` → observador, evita ciclos de referencias.
+* `make_unique` y `make_shared` → formas seguras y modernas de crear punteros inteligentes.
+

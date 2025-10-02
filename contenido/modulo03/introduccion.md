@@ -1,60 +1,70 @@
 # Introducción a la gestión de recursos
 
-En el ámbito de la programación, **la gestión de recursos** se refiere al conjunto de técnicas y prácticas que permiten reservar, utilizar y liberar recursos del sistema de manera eficiente y segura. Estos recursos pueden incluir:
+En programación, la **gestión de recursos** se refiere al conjunto de técnicas que permiten reservar, utilizar y liberar recursos del sistema de manera eficiente y segura.
+
+Entre los recursos más habituales se encuentran:
 
 * **Memoria dinámica**
 * **Archivos abiertos**
-* **Conexiones de red o a bases de datos**
-* **Handles o descriptores de dispositivos**, entre otros.
+* **Conexiones de red o bases de datos**
+* **Descriptores de dispositivos o handles**
 
-El correcto manejo de estos recursos es crucial para evitar problemas como **fugas de memoria** (*memory leaks*), **fugas de recursos**, bloqueos, corrupción de datos o consumo innecesario de recursos del sistema. Todos estos errores pueden derivar en fallos graves de la aplicación o una mala experiencia para el usuario.
+Un manejo inadecuado puede causar:
+
+* **Fugas de memoria** (*memory leaks*)
+* **Bloqueos o corrupción de datos**
+* **Consumo excesivo de recursos**
+* **Fallas en la aplicación y mala experiencia de usuario**
 
 ## Gestión manual de recursos
 
-En C++, tradicionalmente, el programador es responsable de gestionar los recursos manualmente. Esto implica que debe reservar explícitamente un recurso y, una vez que ya no se necesita, liberarlo o cerrarlo adecuadamente.
+En C++, el enfoque tradicional obliga al programador a reservar y liberar los recursos manualmente.
 
 ### Ejemplo: gestión manual de memoria
 
-Lo estudiaremos más detenidamente en el siguiente apartado, pero si queremos reservar memoria para guardar nuestros datos, el programador será responsable de reservar la memoria (operador `new`) y posteriormente liberar dicha memoria (operador `delete`).
-
 ```cpp
-int* ptr = new int;        // Reserva de memoria dinámica
-// ... uso de ptr ...
-delete ptr;             // Liberación manual de memoria
+#include <iostream>
+
+int main() {
+    int* ptr = new int;    // Reserva de memoria dinámica
+    *ptr = 42;             // Uso de la memoria
+
+    std::cout << "Valor: " << *ptr << "\n";
+
+    delete ptr;            // Liberación manual de memoria
+
+    return 0;
+}
 ```
 
-Aquí, el recurso que gestionamos es **memoria**. Si olvidamos llamar a `delete`, se producirá una **fuga de memoria**, es decir, memoria reservada que nunca se libera.
+Si se omite `delete`, la memoria queda reservada sin liberarse → **fuga de memoria**.
 
 ### Ejemplo: gestión manual de archivos
 
 ```cpp
-#include <fstream>
+#include <cstdio>   // fopen, fclose
 
 int main() {
-    FILE* file = fopen("datos.txt", "r");  // Apertura manual del archivo
+    FILE* file = fopen("datos.txt", "r"); // Apertura manual del archivo
     if (file) {
         // ... uso del archivo ...
-        fclose(file);                      // Cierre manual del archivo
+        fclose(file); // Cierre manual obligatorio
     }
+
+    return 0;
 }
 ```
 
-En este caso, el recurso es el **descriptor de archivo** devuelto por `fopen`. Si olvidamos llamar a `fclose`, el descriptor permanece abierto, lo que puede causar una **fuga de recursos**, especialmente si el programa abre muchos archivos.
+Si se olvida `fclose`, el descriptor queda abierto, lo que puede causar **fugas de recursos** cuando se abren muchos archivos.
 
-## Problemas frecuentes de la gestión manual
+## Gestión moderna en C++
 
-Este enfoque manual, aunque flexible, es propenso a errores como:
+C++ moderno incorpora mecanismos que automatizan la gestión de recursos, reduciendo errores y mejorando la robustez del software.
 
-* **Fugas de memoria o recursos:** olvidar liberar un recurso después de su uso.
-* **Doble liberación:** intentar liberar un recurso dos veces, lo que puede provocar fallos o comportamientos indefinidos.
-* **Acceso a recursos liberados:** intentar utilizar memoria o recursos que ya han sido liberados, lo que suele provocar errores sutiles y difíciles de depurar.
+Los más importantes son:
 
-## Gestión moderna y automatizada de recursos en C++
+* **Punteros inteligentes (`std::unique_ptr`, `std::shared_ptr`)** → gestionan memoria automáticamente.
+* **Patrón RAII (Resource Acquisition Is Initialization)** → los recursos se adquieren en el constructor y se liberan en el destructor de un objeto, garantizando seguridad incluso si hay excepciones.
 
-Con el avance del lenguaje y las bibliotecas estándar, **C++ moderno** proporciona mecanismos para facilitar y automatizar la gestión de recursos. Estos mecanismos permiten minimizar errores y mejorar la robustez del código.
-
-Entre los conceptos y herramientas que exploraremos en los próximos apartados se encuentran:
-
-* **Punteros inteligentes**: objetos que gestionan automáticamente la memoria dinámica.
-* **El patrón RAII (*Resource Acquisition Is Initialization*)**, que garantiza que los recursos se liberen de forma automática y segura, vinculando su ciclo de vida al de un objeto.
+Estos conceptos los desarrollaremos en los apartados siguientes.
 
