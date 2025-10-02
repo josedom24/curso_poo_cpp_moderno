@@ -30,7 +30,7 @@
     * [Asociaciones entre clases](contenido/modulo04/asociacion.md)
     * [Agregación entre clases](contenido/modulo04/agregacion.md)
     * [Composición entre clases](contenido/modulo04/composicion.md)
-    * Ejercicios sobre relaciones de clases
+    * [Ejercicios sobre relaciones de clases](contenido/modulo04/ejercicio1.md)
     * [Introducción a la herencia: clases base y derivadas](contenido/modulo04/herencia.md)
     * [Herencia y polimorfismo](contenido/modulo04/polimorfismo.md)
     * [Conversiones implícitas y punteros base](contenido/modulo04/conversiones.md)
