@@ -11,58 +11,8 @@ En otras palabras:
 
 Esta relación es útil para modelar escenarios en los que un objeto está compuesto o utiliza a otro, pero sin poseerlo en exclusiva ni encargarse de su ciclo de vida. Un ejemplo clásico es un vehículo que tiene un motor: el motor puede existir antes, después o incluso compartirse entre distintos vehículos.
 
-## Formas de implementar la agregación en C++ moderno
 
-### Uso de punteros crudos (raw pointers)
-
-El agregador mantiene un puntero sin propiedad hacia el objeto agregado. Es responsabilidad del código externo garantizar que el objeto apuntado exista mientras se use.
-
-Perfecto, aquí tienes el ejemplo convertido en un **programa completo** en C++ con `main`, siguiendo las reglas que establecimos:
-
-```cpp
-#include <iostream>
-
-// Clase Motor
-class Motor {
-public:
-    void arrancar() const {
-        std::cout << "Motor arrancado.\n";
-    }
-};
-
-// Clase Vehiculo que agrega Motor
-class Vehiculo {
-private:
-    Motor* motor_;  // puntero crudo, no propietario
-public:
-    Vehiculo(Motor* motor) : motor_(motor) {}
-
-    void encender() const {
-        if (motor_) {
-            motor_->arrancar();
-        } else {
-            std::cout << "No hay motor asignado.\n";
-        }
-    }
-};
-
-int main() {
-    Motor motorPrincipal;              // Creamos un motor independiente
-    Vehiculo coche(&motorPrincipal);   // El vehículo agrega el motor (no lo posee)
-
-    coche.encender();                  // El coche utiliza el motor para arrancar
-
-    return 0;
-}
-```
-
-* `Motor` es independiente y no pertenece a `Vehiculo`.
-* `Vehiculo` recibe un puntero a `Motor`, pero no es responsable de su creación ni destrucción (esto es lo que caracteriza la **agregación**).
-* El objeto `Motor` existe fuera de `Vehiculo` y puede seguir existiendo incluso si `Vehiculo` desaparece.
-* Ventajas: Es simple de implementar.
-* Desventajas: Riesgo de punteros colgantes si el objeto agregado se destruye antes, ya que no hay gestión automática de ciclo de vida.
-
-### Uso de referencias
+## Agregación mediante referencias
 
 El agregador recibe y almacena una referencia al objeto agregado, garantizando que siempre existe mientras el agregador está vivo.
 
@@ -107,7 +57,7 @@ int main() {
 * Desventajas: La referencia debe inicializarse obligatoriamente en el constructor.
 
 
-### Uso de punteros inteligentes no propietarios (std::weak_ptr)
+### Agregación con punteros inteligentes no propietarios (std::weak_ptr)
 
 Cuando se trabaja con `std::shared_ptr`, la agregación puede representarse con `std::weak_ptr`, que mantiene una referencia débil sin afectar al conteo de referencias ni a la propiedad.
 

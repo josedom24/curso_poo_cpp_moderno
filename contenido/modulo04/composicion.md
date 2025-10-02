@@ -1,4 +1,4 @@
-## Composición entre clases
+# Composición entre clases
 
 La composición es un tipo fuerte de asociación en programación orientada a objetos que representa una relación de propiedad exclusiva entre dos clases. En esta relación, una clase (contenedora) posee completamente a otra clase (componente), siendo responsable directa tanto de su creación como de su destrucción.
 
@@ -11,7 +11,7 @@ Características principales:
 
 Ejemplo típico: un automóvil contiene un motor propio; si el automóvil desaparece, su motor también deja de existir.
 
-### Composición por valor
+## Composición por valor
 
 El objeto contenido se declara como miembro de datos dentro de la clase contenedora. Su construcción y destrucción ocurren automáticamente junto con el contenedor.
 
@@ -50,7 +50,7 @@ int main() {
 * Ventajas: Control total del ciclo de vida, sin punteros ni riesgos de memoria. Implementación sencilla.
 * Desventajas:  El objeto siempre existe mientras exista el contenedor. No se puede compartir el objeto contenido.
 
-### Composición con punteros inteligentes propietarios
+## Composición con punteros inteligentes propietarios
 
 Cuando la composición requiere inicialización dinámica, se puede usar `std::unique_ptr` para asegurar la propiedad exclusiva.
 
@@ -91,7 +91,7 @@ int main() {
 * Ventajas: Permite inicialización dinámica. Mantiene propiedad exclusiva y gestión automática. Seguridad ante fugas de memoria.
 * Desventajas: No se puede compartir el objeto contenido.
 
-## Resumen
+## Resumen de relaciones de clases
 
 
 | Relación        | Naturaleza                                                                                                            | Ciclo de vida                                                                 | Acoplamiento | Ejemplo en la vida real                                                                              |

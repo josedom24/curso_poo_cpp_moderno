@@ -13,54 +13,6 @@ Ejemplos de asociaciones típicas:
 * Un alumno pertenece a una clase.
 * Un coche tiene un conductor.
 
-## Asociación mediante punteros sin propiedad
-
-Una clase puede almacenar un puntero a otra sin ser dueña de su ciclo de vida.
-
-```cpp
-#include <iostream>
-#include <string>
-
-class Cliente {
-public:
-    Cliente(std::string nombre) : nombre_(std::move(nombre)) {}
-    std::string obtenerNombre() const { return nombre_; }
-private:
-    std::string nombre_;
-};
-
-class Pedido {
-public:
-    Pedido(int id, Cliente* cliente) : id_(id), cliente_(cliente) {}
-
-    void mostrar() const {
-        if (cliente_) {
-            std::cout << "Pedido " << id_ << " para cliente " 
-                      << cliente_->obtenerNombre() << "\n";
-        } else {
-            std::cout << "Pedido " << id_ << " sin cliente asignado\n";
-        }
-    }
-
-private:
-    int id_;
-    Cliente* cliente_; // asociación no propietaria
-};
-
-int main() {
-    Cliente c("Ana");
-    Pedido p(123, &c);
-    p.mostrar();
-    return 0;
-}
-```
-
-En este caso:
-
-* `Pedido` guarda un puntero a `Cliente`, pero **no lo gestiona**.
-* El ciclo de vida del cliente está gestionado fuera.
-* Es una asociación débil y no propietaria.
-
 ## Asociación mediante punteros inteligentes (`std::shared_ptr`)
 
 Cuando se quiere compartir la propiedad del objeto asociado, se usan punteros inteligentes con conteo de referencias.
