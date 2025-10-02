@@ -1,21 +1,19 @@
-# Agregación entre clases
+## Agregación entre clases
 
-La **agregación** es un tipo particular de asociación en programación orientada a objetos que representa una relación **débil y no exclusiva** entre dos clases. En esta relación, una clase (denominada *agregadora*) mantiene una referencia o vínculo hacia otra clase (denominada *agregada*), pero **no asume la propiedad ni el control exclusivo sobre el ciclo de vida del objeto agregado**.
+La agregación es un tipo particular de asociación en programación orientada a objetos que representa una relación débil y no exclusiva entre dos clases. En esta relación, una clase (denominada agregadora) mantiene una referencia o vínculo hacia otra clase (denominada agregada), pero no asume la propiedad ni el control exclusivo sobre el ciclo de vida del objeto agregado.
 
 En otras palabras:
 
 * El objeto agregado puede existir independientemente del objeto agregador.
-* La agregación implica una relación de "tiene un" o "usa un" pero sin una dependencia estricta en la existencia.
-* La destrucción del objeto agregador **no conlleva necesariamente** la destrucción del objeto agregado.
+* La agregación implica una relación de "tiene un" o "usa un", pero sin una dependencia estricta en la existencia.
+* La destrucción del objeto agregador no conlleva necesariamente la destrucción del objeto agregado.
 * La relación es estructuralmente más estable que una dependencia simple, ya que el objeto agregador conserva una referencia o vínculo durante su vida útil.
 
-Esta relación es útil para modelar escenarios en los que un objeto está compuesto o utiliza a otro, pero sin poseerlo en exclusiva ni encargarse de su ciclo de vida. Por ejemplo, un vehículo puede *tener un* motor, pero dicho motor puede existir y ser compartido en otras circunstancias o instancias.
+Esta relación es útil para modelar escenarios en los que un objeto está compuesto o utiliza a otro, pero sin poseerlo en exclusiva ni encargarse de su ciclo de vida. Un ejemplo clásico es un vehículo que tiene un motor: el motor puede existir antes, después o incluso compartirse entre distintos vehículos.
 
-## Formas de implementar la agregación en C++ moderno
+### Formas de implementar la agregación en C++ moderno
 
-En C++ moderno, la agregación puede implementarse de distintas maneras, según el grado de control sobre el ciclo de vida del objeto agregado y las necesidades de seguridad y eficiencia. A continuación, se describen las formas más habituales:
-
-### Uso de punteros crudos (`Raw pointers`)
+#### Uso de punteros crudos (raw pointers)
 
 El agregador mantiene un puntero sin propiedad hacia el objeto agregado. Es responsabilidad del código externo garantizar que el objeto apuntado exista mientras se use.
 
@@ -32,7 +30,6 @@ private:
     Motor* motor_;  // puntero crudo, no propietario
 public:
     Vehiculo(Motor* motor) : motor_(motor) {}
-
     void encender() const {
         if (motor_) motor_->arrancar();
         else std::cout << "No hay motor asignado.\n";
@@ -40,17 +37,17 @@ public:
 };
 ```
 
-**Ventajas:**
+Ventajas:
 
 * Simple y directo.
 * Sin sobrecarga adicional.
 
-**Desventajas:**
+Desventajas:
 
-* Riesgo de punteros colgantes o acceso inválido si el objeto agregado se destruye.
-* No hay gestión automática del ciclo de vida.
+* Riesgo de punteros colgantes si el objeto agregado se destruye antes.
+* No hay gestión automática de ciclo de vida.
 
-### Uso de referencias
+#### Uso de referencias
 
 El agregador recibe y almacena una referencia al objeto agregado, garantizando que siempre existe mientras el agregador está vivo.
 
@@ -60,26 +57,25 @@ private:
     Motor& motor_;  // referencia, no propietario
 public:
     Vehiculo(Motor& motor) : motor_(motor) {}
-
     void encender() const {
         motor_.arrancar();
     }
 };
 ```
 
-**Ventajas:**
+Ventajas:
 
-* Garantiza que la referencia es válida (no nula).
-* Claridad en la propiedad: el agregador no posee el objeto.
+* La referencia siempre es válida y no puede ser nula.
+* Claridad en que el agregador no es propietario.
 
-**Desventajas:**
+Desventajas:
 
 * La referencia debe inicializarse obligatoriamente en el constructor.
-* No puede cambiar la referencia durante la vida del objeto (a menos que se use puntero).
+* No puede reasignarse a otro objeto una vez inicializada.
 
-### Uso de punteros inteligentes no propietarios (`std::weak_ptr`)
+#### Uso de punteros inteligentes no propietarios (std::weak_ptr)
 
-Cuando se usa un sistema de gestión automática de memoria con `std::shared_ptr`, la agregación puede representarse con un `std::weak_ptr` que mantiene una referencia débil sin afectar el conteo de referencias ni la propiedad.
+Cuando se trabaja con `std::shared_ptr`, la agregación puede representarse con `std::weak_ptr`, que mantiene una referencia débil sin afectar al conteo de referencias ni a la propiedad.
 
 ```cpp
 #include <memory>
@@ -89,7 +85,6 @@ private:
     std::weak_ptr<Motor> motor_;  // referencia débil, no propietaria
 public:
     Vehiculo(std::shared_ptr<Motor> motor) : motor_(motor) {}
-
     void encender() const {
         if (auto motor_shared = motor_.lock()) {
             motor_shared->arrancar();
@@ -100,21 +95,17 @@ public:
 };
 ```
 
-**Ventajas:**
+Ventajas:
 
 * Seguridad frente a punteros colgantes.
-* Claridad en la no propiedad.
 * Compatible con gestión automática de memoria.
 
-**Desventajas:**
+Desventajas:
 
-* Ligera complejidad y sobrecarga.
-* Requiere que el objeto agregado sea gestionado por `std::shared_ptr`.
+* Ligera sobrecarga.
+* Requiere que el objeto agregado se gestione con `std::shared_ptr`.
 
-
-## Ejemplo completo de agregación: Vehículo y Motor
-
-A continuación se presenta un ejemplo completo de la relación de agregación entre un `Vehiculo` y un `Motor` usando punteros crudos, la forma más común y didáctica para ilustrar el concepto.
+### Ejemplo completo de agregación
 
 ```cpp
 #include <iostream>
@@ -126,11 +117,9 @@ private:
     std::string tipo_;
 public:
     Motor(const std::string& tipo) : tipo_(tipo) {}
-
     void arrancar() const {
         std::cout << "Motor tipo " << tipo_ << " arrancado.\n";
     }
-
     std::string obtenerTipo() const { return tipo_; }
 };
 
@@ -141,7 +130,6 @@ private:
     std::string modelo_;
 public:
     Vehiculo(const std::string& modelo, Motor* motor) : modelo_(modelo), motor_(motor) {}
-
     void encender() const {
         std::cout << "Vehículo modelo " << modelo_ << " arrancando motor...\n";
         if (motor_) motor_->arrancar();
@@ -155,23 +143,17 @@ int main() {
 
     camion.encender();
 
-    // El motorDiesel existe independientemente del Vehiculo
-    std::cout << "El motor sigue existiendo tras uso del vehículo: " << motorDiesel.obtenerTipo() << "\n";
+    std::cout << "El motor sigue existiendo tras uso del vehículo: " 
+              << motorDiesel.obtenerTipo() << "\n";
 
     return 0;
 }
 ```
 
-* El `Vehiculo` recibe un puntero crudo a un objeto `Motor`, que no crea ni destruye. Esto refleja que `Vehiculo` **no es dueño** del motor.
-* El motor es creado en `main` y puede existir independientemente, pudiendo ser reutilizado o compartido con otros vehículos.
-* El método `encender` usa la agregación para llamar al método `arrancar` del motor, mostrando la colaboración entre ambos objetos.
-* Al finalizar, la destrucción del vehículo no afecta al motor, ya que no hay propiedad ni ciclo de vida compartido.
+Explicación del ejemplo:
 
-## Diagrama UML
+* `Vehiculo` recibe un puntero crudo a un objeto `Motor`, pero no lo crea ni lo destruye.
+* El motor es creado en `main` y puede existir independientemente del vehículo.
+* El método `encender()` utiliza la relación de agregación para invocar `arrancar()` en el motor.
+* Al finalizar, la destrucción del vehículo no afecta al motor, ya que no hay propiedad exclusiva.
 
-![agrgación](img/agragacion.png)
-
-* Se muestra con una **línea con diamante blanco** en el lado del objeto agregador (contenedor) y una flecha apuntando hacia el objeto agregado (componente).
-* El **diamante indica la agregación**, pero no propiedad.
-* Se representan relaciones **entre clases**, no entre instancias concretas.
-* La notación puede incluir **multiplicidad** en los extremos (ej. `1`, `0..*`), aunque puede omitirse si el contexto es claro.
