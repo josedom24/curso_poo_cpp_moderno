@@ -14,6 +14,7 @@
     * [Constructores, destructores y métodos constantes](contenido/modulo02/constructor.md)
     * [Inicialización de atributos con listas de inicialización](contenido/modulo02/inicializacion.md)
     * [Métodos getter y setter](contenido/modulo02/getters.md)
+    * [Polimorfismo estático: sobrecarga de métodos](contenido/modulo02/sobrecarga.md)
     * [Atributos y métodos estáticos](contenido/modulo02/estatico.md)
     * [Ejercicios sobre clases y objetos](contenido/modulo02/ejercicios.md)
     
