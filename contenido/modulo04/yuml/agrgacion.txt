@@ -1,6 +1,0 @@
-// Clases
-[Profesor|-nombre_: std::string]
-[Curso|-nombre_: std::string; profesor_: Profesor&]
-[Curso]<>->[Profesor]
-
-

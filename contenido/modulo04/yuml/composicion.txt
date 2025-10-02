@@ -1,5 +1,0 @@
-// Clases
-[Motor|-marca_: std::string;]
-[Automovil|-marca_: std::string; motor_: Motor]
-// Composición: Automovil posee un Motor
-[Automovil]++-1>[Motor]
