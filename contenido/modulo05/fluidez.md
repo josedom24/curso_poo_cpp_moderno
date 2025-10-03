@@ -1,33 +1,38 @@
 # Fluidez de métodos
 
-En muchas ocasiones es necesario permitir la **encadenación de llamadas a métodos** sobre el mismo objeto. Esta técnica se denomina **fluidez de métodos** (*method chaining* en inglés), y se basa en que cada método **retorne una referencia al propio objeto** (`*this`).
+En C++ es común encontrar clases en las que necesitamos **configurar o modificar un objeto mediante varias llamadas consecutivas**. Para mejorar la legibilidad del código y evitar múltiples sentencias repetitivas, podemos emplear la **fluidez de métodos** (*method chaining* en inglés).
 
-Este estilo mejora la legibilidad del código y permite construir objetos o configurar estados de forma más natural y expresiva.
+La idea es que cada método retorne una **referencia al propio objeto** (`*this`), de manera que podamos encadenar llamadas de forma natural.
 
 ## Fundamento: `return *this`
 
-En un método no estático, el puntero `this` apunta al objeto actual. Al hacer `return *this`, se devuelve una **referencia al propio objeto**, permitiendo que otras llamadas puedan encadenarse sobre él.
+En todo método no estático, el puntero `this` apunta al objeto actual.
+Si hacemos `return *this;`, devolvemos una referencia al mismo objeto que está recibiendo la llamada. Esto nos permite continuar aplicando métodos en cadena.
 
-La sintaxis de este tipo de métodos es:
+La firma típica de un método fluido es:
 
 ```cpp
 Tipo& metodo(...args) {
-    // ...acciones...
+    // ...acciones sobre el objeto...
     return *this;
 }
 ```
 
-Para evitar copias innecesarias, se recomienda **retornar por referencia** (`Tipo&`) o por referencia constante (`const Tipo&`) si no se desea modificar más.
+Para evitar copias innecesarias, se devuelve **por referencia** (`Tipo&`).
+Si el método no modifica el objeto, también puede devolverse por **referencia constante** (`const Tipo&`).
 
-
-Veamos un ejemplo:
+## Ejemplo básico
 
 ```cpp
+#include <iostream>
+#include <string>
+
 class Cadena {
 private:
     std::string texto;
 
 public:
+    // Método fluido: retorna una referencia al propio objeto
     Cadena& agregar(const std::string& s) {
         texto += s;
         return *this;
@@ -40,15 +45,22 @@ public:
 
 int main() {
     Cadena c;
+    // Encadenamiento fluido
     c.agregar("Hola, ").agregar("mundo").agregar("!");
-    c.imprimir();  // Hola, mundo!
+    c.imprimir();  // Imprime: Hola, mundo!
 }
 ```
 
+En este ejemplo, cada llamada a `agregar` devuelve una referencia a `c`, lo que permite encadenar varias operaciones sobre el mismo objeto en una sola instrucción.
 
-## Ejemplo práctico: Configuración encadenada
+## Ejemplo práctico: configuración encadenada
+
+Veamos un caso más realista: configurar la conexión a un servidor.
 
 ```cpp
+#include <iostream>
+#include <string>
+
 class Conexion {
 private:
     std::string host;
@@ -73,12 +85,13 @@ public:
 
     void conectar() const {
         std::cout << "Conectando a " << host << ":" << puerto
-                  << (segura ? " con SSL\n" : "\n");
+                  << (segura ? " con SSL\n" : " sin SSL\n");
     }
 };
 
 int main() {
     Conexion c;
+    // Configuración fluida y expresiva
     c.setHost("localhost")
      .setPuerto(443)
      .usarSSL(true)
@@ -86,7 +99,5 @@ int main() {
 }
 ```
 
-* La **fluidez de métodos** nos permite realizar las operaciones relacionadas expresadas en una única línea, lo que mejora la claridad del flujo y la construcción de objetos.
-* Es importante retornar por **referencia** para evitar copias.
-* Puede usarse con `const` si los métodos no modifican el estado:
+Aquí, el objeto `Conexion` permite configurar de manera encadenada sus parámetros antes de ejecutar `conectar()`. Esto hace el código más claro y cercano a un lenguaje natural.
 
