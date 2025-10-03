@@ -170,3 +170,17 @@ using Base::f; // Reexpone las sobrecargas de Base
 * Si la clase base gestiona recursos, su destructor debe declararse como `virtual`.
 * Esto asegura que, al destruir un objeto derivado a través de un puntero a la clase base, se invoquen correctamente todos los destructores.
 
+## Herencia múltiple
+
+En C++, una clase puede heredar de varias clases base al mismo tiempo. A esta característica se la conoce como **herencia múltiple**.
+
+```cpp
+class ClaseDerivada : public Base1, public Base2 {
+    // ...
+};
+```
+
+Aunque el lenguaje la permite, **su uso no es recomendable en la mayoría de los casos**, ya que introduce complejidad adicional y puede provocar problemas de ambigüedad (como el llamado *problema del diamante*, cuando dos clases intermedias heredan de una misma base).
+
+En la práctica moderna, la herencia múltiple se utiliza solo en casos muy concretos, principalmente para combinar **interfaces (clases abstractas puras)**. Para el resto de situaciones, se recomienda emplear **herencia simple** junto con **composición** para modelar las relaciones entre clases de forma más clara y segura.
+
