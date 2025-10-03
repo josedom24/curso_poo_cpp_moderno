@@ -28,7 +28,7 @@ La herencia más común y recomendada en C++ es la **herencia pública**, en la 
 
 El modificador **protected** se emplea para permitir que las clases derivadas accedan a ciertos atributos o métodos internos, sin exponerlos en la interfaz pública.
 
-Veamos la sintaxis básica:
+Ejemplo básico:
 
 ```cpp
 #include <iostream>
@@ -51,20 +51,16 @@ public:
 
 int main() {
     Derivada obj;
-    obj.funcionBase();     // Heredada de Base
-    obj.funcionDerivada(); // Propia de Derivada
+    obj.funcionBase();     // Método heredado de Base
+    obj.funcionDerivada(); // Método propio de Derivada
+    return 0;
 }
 ```
-
-En este ejemplo, `Derivada` hereda de `Base`.
-El objeto `obj` puede invocar tanto el método heredado `funcionBase()` como su propio método `funcionDerivada()`.
 
 ## Constructores en la herencia
 
 Las clases derivadas deben **invocar explícitamente el constructor de la clase base** en su lista de inicialización.
 Si no se indica nada, se llama automáticamente al **constructor por defecto de la base** (si existe).
-
-Ejemplo:
 
 ```cpp
 #include <iostream>
@@ -76,7 +72,6 @@ private:
     std::string nombre;
 
 public:
-    // Constructor de la clase base
     Animal(const std::string& n) : nombre{n} {}
 
     void mostrarNombre() const {
@@ -90,12 +85,11 @@ private:
     std::string raza;
 
 public:
-    // El constructor de Perro debe llamar explícitamente al de Animal
     Perro(const std::string& n, const std::string& r)
         : Animal{n}, raza{r} {}
 
     void mostrar() const {
-        mostrarNombre();  // Método heredado
+        mostrarNombre();  // Método heredado de Animal
         std::cout << "Raza: " << raza << std::endl;
     }
 };
@@ -107,15 +101,72 @@ int main() {
 }
 ```
 
-En este programa:
+En este ejemplo, el constructor de `Perro` invoca al de `Animal` en su lista de inicialización.
 
-* La clase `Animal` inicializa su atributo `nombre` en el constructor.
-* La clase `Perro` extiende `Animal` añadiendo el atributo `raza` y debe llamar al constructor de `Animal` en su lista de inicialización.
-* Al ejecutar `p.mostrar()`, se imprimen tanto el nombre (definido en `Animal`) como la raza (definida en `Perro`).
+## Reescritura de métodos en clases derivadas
+
+Una clase derivada puede **redefinir un método heredado** de la base.
+Esto se conoce como **reescritura (overriding)** y permite especializar el comportamiento.
+
+```cpp
+#include <iostream>
+
+class Animal {
+public:
+    void hacerSonido() const {
+        std::cout << "Sonido genérico de animal" << std::endl;
+    }
+};
+
+class Perro : public Animal {
+public:
+    // Reescritura del método hacerSonido()
+    void hacerSonido() const {
+        std::cout << "Guau guau" << std::endl;
+    }
+};
+
+int main() {
+    Perro p;
+    p.hacerSonido();  // Llama a la versión de Perro, no a la de Animal
+    return 0;
+}
+```
+
+Si se desea invocar explícitamente el método de la clase base desde la derivada, se puede usar el **operador de resolución de ámbito**:
+
+```cpp
+Animal::hacerSonido();
+```
+
+### Ocultamiento de nombres
+
+En C++, si una clase derivada define un método con el mismo nombre que uno de la clase base, **todas las versiones de la base con ese nombre quedan ocultas**, incluso aunque tengan distinta firma.
+
+Ejemplo:
+
+```cpp
+class Base {
+public:
+    void f(int) {}
+    void f(double) {}
+};
+
+class Derivada : public Base {
+public:
+    void f(std::string) {} // Oculta todas las f() de Base
+};
+```
+
+Para evitar este problema, se puede usar:
+
+```cpp
+using Base::f; // Reexpone las sobrecargas de Base
+```
 
 ## Destructores en la herencia
 
-* Cuando se destruye un objeto derivado, **primero se ejecuta el destructor de la clase derivada y luego el de la clase base**.
-* Si la clase base gestiona recursos (memoria dinámica, archivos, etc.), **su destructor debe declararse como `virtual`**.
-* Esto asegura que, al destruir un objeto derivado a través de un puntero a la clase base, se invoquen correctamente ambos destructores.
+* Cuando se destruye un objeto derivado, **primero se ejecuta el destructor de la derivada y después el de la base**.
+* Si la clase base gestiona recursos, su destructor debe declararse como `virtual`.
+* Esto asegura que, al destruir un objeto derivado a través de un puntero a la clase base, se invoquen correctamente todos los destructores.
 

@@ -1,30 +1,39 @@
-# Herencia y polimorfismo
+# Herencia y polimorfismo dinámico
 
-El término *polimorfismo* significa “muchas formas”. En POO, permite que un puntero o referencia a una clase base pueda referirse a objetos de clases derivadas diferentes y ejecutar el método apropiado para cada tipo.
+El término **polimorfismo** significa “muchas formas”.
+En programación orientada a objetos, permite que un puntero o referencia a una clase base pueda referirse a objetos de distintas clases derivadas y ejecutar el método apropiado para cada tipo.
 
-Esto facilita la programación genérica y la extensión del código sin modificar la base.
+Esto facilita la **programación genérica** y la **extensión del código** sin necesidad de modificar la base.
 
 ## Tipos de polimorfismo en C++
 
-1. **Polimorfismo estático (en tiempo de compilación):**
-   * Sobrecarga de funciones.
-   * Plantillas (templates).
-2. **Polimorfismo dinámico (en tiempo de ejecución):**
-   * Uso de funciones virtuales en clases base.
-   * Permite que una llamada a función se resuelva en tiempo de ejecución según el tipo real del objeto.
+* **Polimorfismo estático (tiempo de compilación):**
 
-## Polimorfismo dinámico con funciones virtuales
+  * Sobrecarga de funciones y métodos.
+  * Plantillas (templates).
 
-Las **funciones virtuales** permiten el **polimorfismo dinámico**, es decir, decidir en tiempo de ejecución qué versión de un método invocar según el tipo real del objeto, no el tipo del puntero o referencia.
+* **Polimorfismo dinámico (tiempo de ejecución):**
 
+  * Uso de **funciones virtuales** en clases base.
+  * La llamada a un método se resuelve en tiempo de ejecución según el tipo real del objeto.
 
-## La palabra clave `virtual`
+En este apartado nos centraremos en el **polimorfismo dinámico**, ya que es el que aprovecha directamente la herencia.
 
-* Se declara en la clase base para marcar métodos que pueden ser redefinidos en clases derivadas.
-* Cuando un método es `virtual`, las llamadas a ese método a través de punteros o referencias a la clase base ejecutan la versión correspondiente al tipo real del objeto (polimorfismo dinámico).
-* Los destructores deben ser declarados `virtual` para asegurar que al destruir un objeto a través de un puntero base se invoquen todos los destructores correctamente.
+## Funciones virtuales
+
+Las **funciones virtuales** permiten que una clase derivada redefina el comportamiento de un método heredado.
+Se declaran con la palabra clave `virtual` en la clase base.
+
+Cuando un método es virtual:
+
+* Una llamada a ese método a través de un puntero o referencia a la clase base ejecuta la versión del tipo real del objeto.
+* El compilador construye una tabla de funciones virtuales (*vtable*) para resolver dinámicamente qué función llamar.
+
+Ejemplo básico:
 
 ```cpp
+#include <iostream>
+
 class Base {
 public:
     virtual void funcion() {
@@ -32,24 +41,31 @@ public:
     }
     virtual ~Base() = default; // Destructor virtual
 };
+
+class Derivada : public Base {
+public:
+    void funcion() override {
+        std::cout << "Función derivada\n";
+    }
+};
+
+int main() {
+    Base* b = new Derivada();
+    b->funcion();  // Llama a la versión de Derivada
+    delete b;
+}
 ```
 
 ## La palabra clave `override`
 
-* Se usa en la declaración de un método en una clase derivada para indicar que está **sobrescribiendo** un método virtual de la clase base.
-* Ayuda al compilador a verificar que el método realmente sobrescribe uno de la clase base, detectando errores si el nombre o la firma no coinciden.
-* Mejora la legibilidad y el mantenimiento del código.
+Se utiliza en clases derivadas para indicar explícitamente que un método está sobrescribiendo un método virtual de la base.
 
-```cpp
-class Derivada : public Base {
-public:
-    void funcion() override {  // Correcto uso de override
-        std::cout << "Función derivada\n";
-    }
-};
-```
+Ventajas:
 
-## Ejemplo
+* El compilador detecta errores si la firma no coincide.
+* Mejora la legibilidad.
+
+Veamos un ejemplo:
 
 ```cpp
 #include <iostream>
@@ -89,137 +105,97 @@ int main() {
     hacerHablar(p);  // "El perro ladra."
     hacerHablar(g);  // "El gato maúlla."
 
-    Animal* ptrAnimal = new Perro{};
-    ptrAnimal->hablar();  // "El perro ladra."
-    delete ptrAnimal;
+    Animal* ptr = new Perro{};
+    ptr->hablar();   // "El perro ladra."
+    delete ptr;
 
     return 0;
 }
 ```
 
-* El polimorfismo dinámico se consigue con métodos declarados `virtual` en la clase base.
-* La palabra clave `virtual` indica que el método puede ser redefinido en clases derivadas.
-* Permite usar punteros o referencias a la clase base para manipular objetos derivados.
-* Es fundamental para diseñar interfaces y extender el comportamiento sin cambiar código cliente.
-* Siempre declarar destructores virtuales en clases base destinadas a ser heredadas para evitar fugas o comportamientos indefinidos.
-* El destructor virtual asegura que al eliminar un objeto derivado a través de un puntero base se invoquen correctamente los destructores.
+En este ejemplo, gracias al polimorfismo dinámico:
 
+* Una referencia o puntero a `Animal` puede comportarse como `Perro` o `Gato`.
+* El método llamado depende del tipo **real** del objeto, no del tipo declarado del puntero.
 
 ## La palabra clave `final`
 
-La palabra calve `final` sirve para **impedir** que un método sea sobrescrito o que una clase sea derivada.
-
-LAs ventajas de usar `final` son:
-
-* **Control del diseño:** evita que otros programadores (o tú mismo) modifiquen la jerarquía de herencia accidentalmente.
-* **Seguridad:** evita sobrescrituras no deseadas que pueden introducir bugs.
-* **Optimización:** algunos compiladores pueden optimizar llamadas a métodos marcados como `final` porque saben que no habrá sobrescritura adicional.
-
-
-### Uso de `final` en métodos
-
-Cuando se declara un método virtual como `final` en una clase derivada, se indica que **no puede ser sobrescrito en clases derivadas posteriores**.
-
-```cpp
-class Base {
-public:
-    virtual void metodo() {
-        std::cout << "Base::metodo\n";
-    }
-};
-
-class Derivada : public Base {
-public:
-    void metodo() final {  // Este método no puede ser sobrescrito más adelante
-        std::cout << "Derivada::metodo final\n";
-    }
-};
-
-class SubDerivada : public Derivada {
-public:
-    // Error: intentar sobrescribir metodo() está prohibido
-    // void metodo() override { }  // Error de compilación
-};
-```
-
-### Uso de `final` en clases
-
-Declarar una clase como `final` impide que sea utilizada como clase base para otras clases. Es decir, no puede ser heredada.
-
-```cpp
-class ClaseFinal final {
-public:
-    void funcion() {
-        std::cout << "ClaseFinal::funcion\n";
-    }
-};
-
-// Error: no se puede heredar de ClaseFinal
-// class Derivada : public ClaseFinal { };  // Error de compilación
-```
-
-### Ejemplo completo del uso de `final`
+Sirve para **impedir que un método virtual sea sobrescrito** en clases derivadas posteriores, o para evitar que una clase sea heredada. Veamos un ejemplo:
 
 ```cpp
 #include <iostream>
+#include <string>
 
+// Clase base general
 class Animal {
 public:
     virtual void hacerSonido() const {
-        std::cout << "Sonido genérico\n";
+        std::cout << "Sonido genérico de animal\n";
     }
+
+    // Destructor virtual recomendado en jerarquías
     virtual ~Animal() = default;
 };
 
-class Perro final : public Animal {
+// Clase Perro que hereda de Animal
+class Perro : public Animal {
 public:
-    void hacerSonido() const final {
-        std::cout << "Guau\n";
+    // Redefinimos el método virtual y lo marcamos como final
+    // Esto significa que ninguna clase derivada de Perro podrá sobrescribirlo
+    void hacerSonido() const final override {
+        std::cout << "Guau guau\n";
     }
 };
 
-// class PerroEspecial : public Perro { }; // Error: no se puede derivar de Perro
+// Clase derivada de Perro (para demostrar el error si intentamos sobrescribir)
+class PerroEspecial : public Perro {
+public:
+    // Si descomentamos este método, el compilador dará error
+    /*
+    void hacerSonido() const override {
+        std::cout << "Guau especial\n";
+    }
+    */
+};
+
+// Clase Gato declarada como final: no puede tener clases derivadas
+class Gato final : public Animal {
+public:
+    void hacerSonido() const override {
+        std::cout << "Miau miau\n";
+    }
+};
+
+// Si intentamos heredar de Gato, el compilador también dará error
+/*
+class GatoSiames : public Gato {
+};
+*/
 
 int main() {
     Perro p;
-    p.hacerSonido();
+    Gato g;
+
+    Animal* a1 = &p;
+    Animal* a2 = &g;
+
+    a1->hacerSonido();  // Llama a Perro::hacerSonido -> "Guau guau"
+    a2->hacerSonido();  // Llama a Gato::hacerSonido  -> "Miau miau"
+
+    return 0;
 }
 ```
 
-Claro, aquí tienes una sección para material didáctico que explica el concepto de operadores virtuales en C++:
+* En `Perro`, el método `hacerSonido()` está marcado como **`final`**, por lo que **ninguna subclase** puede volver a redefinirlo.
+* En `Gato`, la clase entera está marcada como **`final`**, de manera que **no puede servir como base** para ninguna otra clase.
+* Si descomentas los ejemplos marcados, el compilador producirá un error, asegurando que el diseño de la jerarquía se respete.
 
-## Polimorfismo aplicado a operadores
 
-En C++, los operadores sobrecargados no son más que funciones miembro con una sintaxis especial. Por ello, es posible declararlos como **virtuales** dentro de una clase base, permitiendo que su comportamiento pueda ser redefinido en clases derivadas y que se utilice el enlace dinámico (polimorfismo) en tiempo de ejecución.
+## Buenas prácticas
 
-Ejemplo:
+* Usar **`override` siempre** al redefinir métodos virtuales.
+* Declarar **destructores virtuales** en clases base pensadas para herencia.
+* Usar **`final`** cuando se quiera cerrar explícitamente una jerarquía.
+* Aplicar el polimorfismo dinámico solo cuando sea necesario: si el comportamiento es conocido en tiempo de compilación, preferir plantillas o sobrecarga (polimorfismo estático).
 
-```cpp
-#include <iostream>
-#include <memory>
-
-struct FuncionBase {
-    virtual int operator()(int x) const {
-        return x;
-    }
-    virtual ~FuncionBase() = default; // Destructor virtual
-};
-
-struct FuncionDoble : FuncionBase {
-    int operator()(int x) const override {
-        return x * 2;
-    }
-};
-
-void ejecutarFuncion(const FuncionBase& f, int valor) {
-    std::cout << f(valor) << "\n";
-}
-
-int main() {
-    FuncionDoble doble;
-    ejecutarFuncion(doble, 5);  // Imprime 10
-}
-```
-
-En este ejemplo, `operator()` está declarado virtual en la clase base `FuncionBase` y redefinido en la clase derivada `FuncionDoble`. Al pasar una referencia a `FuncionBase`, la llamada `f(valor)` se resuelve dinámicamente a la implementación de `FuncionDoble`.
-
+-
