@@ -41,9 +41,10 @@
     * [Control de creación y copia de objetos en C++](contenido/modulo05/creacion.md)
     * [Sobrecarga de operadores](contenido/modulo05/operadores.md)
     * [Fluidez de métodos](contenido/modulo05/fluidez.md)
-    * [Semántica de copia y movimiento](contenido/modulo05/move.md)
     * [Clonación de objetos: copias superficiales y profundas](contenido/modulo05/clonacion.md)
-
+    * [Semántica de copia](contenido/modulo05/copy.md)
+    * [Semántica de movimiento](contenido/modulo05/move.md)
+    
 6. Interfaces y diseño polimórfico
 
     * [Clases abstractas y métodos virtuales puros](contenido/modulo06/abstracta.md)
