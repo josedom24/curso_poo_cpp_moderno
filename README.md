@@ -44,7 +44,8 @@
     * [Clonación de objetos: copias superficiales y profundas](contenido/modulo05/clonacion.md)
     * [Semántica de copia](contenido/modulo05/copy.md)
     * [Semántica de movimiento](contenido/modulo05/move.md)
-    
+    * [Ejercicios sobre conceptos avanzados de programación orientada a objetos](contenido/modulo05/ejercicios.md)
+
 6. Interfaces y diseño polimórfico
 
     * [Clases abstractas y métodos virtuales puros](contenido/modulo06/abstracta.md)
