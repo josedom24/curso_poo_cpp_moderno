@@ -1,108 +1,64 @@
 # Sobrecarga de operadores
 
-En C++, los **operadores** como `+`, `-`, `==`, `<`, entre otros, pueden **sobrecargarse** para que funcionen con objetos definidos por el programador. Esto permite que los objetos se comporten de manera intuitiva y natural cuando se combinan con estos operadores, como ocurre con los tipos integrados.
+En C++, los operadores como `+`, `-`, `==`, `<`, `<<`, entre otros, pueden sobrecargarse para que funcionen con objetos definidos por el programador.
+Esto permite que los objetos se comporten de manera intuitiva y natural, de forma similar a los tipos integrados.
 
-La sobrecarga de operadores es especialmente útil en clases que representan **valores numéricos, geométricos, temporales, cadenas, unidades físicas**, etc.
+La sobrecarga de operadores es un ejemplo de **polimorfismo estático**, ya que la resolución de qué función llamar se realiza en tiempo de compilación en función de los tipos de los operandos.
 
-La **sobrecarga de un operador** consiste en **definir una función con una sintaxis especial** que indica cómo debe comportarse el operador cuando se utiliza con objetos de una clase.
-
-Por ejemplo, para que el operador `+` funcione con objetos de tipo `Punto2D`, se puede definir:
-
-```cpp
-Punto2D operator+(const Punto2D& a, const Punto2D& b);
-```
-
-## Sobrecarga como función miembro vs función libre
-
-Se puede utilizar una **función miembro**:
-
-* Se usa cuando el operando izquierdo es el propio objeto (`this`).
-* Se define dentro de la clase.
-
-```cpp
-class Punto {
-public:
-    int _x, _y;  // Usando guion bajo en los atributos para diferenciarlos
-
-    Punto(int x, int y) : _x(x), _y(y) {}  // Los parámetros sin guion bajo, para evitar confusión
-
-    Punto operator+(const Punto& otro) const {
-        return Punto(_x + otro._x, _y + otro._y);  // Se suman los atributos correctos
-    }
-};
-```
-
-También lo podemos utilizar con una **función fuera de la clase**:
-
-* Se usa cuando se desea permitir simetría, es decir, para funcionar de la misma manera independientemente de cuál de los operandos es el primero o el segundo,  o cuando el operando izquierdo no es de la clase.
-* Puede ser función amiga (`friend`) si necesita acceso a miembros privados.
-
-```cpp
-class Punto {
-private:
-    int _x, _y;  // Atributos con guion bajo
-
-public:
-    Punto(int x_, int y_) : _x(x_), _y(y_) {}  // Parametros con guion bajo
-
-    int getX() const { return _x; }
-    int getY() const { return _y; }
-
-    friend Punto operator+(const Punto& a, const Punto& b);
-};
-
-Punto operator+(const Punto& a, const Punto& b) {
-    return Punto(a._x + b._x, a._y + b._y);  // Usando los atributos con guion bajo
-}
-```
+Este mecanismo es especialmente útil en clases que representan **valores numéricos, geométricos, cadenas, fechas, unidades físicas o estructuras matemáticas**, donde resulta natural sumar, restar o comparar objetos con operadores en lugar de con métodos.
 
 ## Ejemplo: clase `Punto`
 
+Vamos a implementar una clase `Punto` que representa un punto en un plano 2D.
+Queremos que se pueda **sumar y restar** con otros puntos, **multiplicar y dividir** por escalares, y **comparar** para saber si dos puntos son iguales o diferentes.
+
+En lugar de escribir métodos como `p1.sumar(p2)`, sobrecargamos los operadores y escribimos `p1 + p2`, que resulta más claro y natural. Con esta implementación, trabajar con objetos `Punto` es tan natural como trabajar con enteros o flotantes.
+
 ```cpp
 #include <iostream>
+#include <stdexcept>
 
 class Punto {
 private:
-    int _x, _y;  // Atributos con guion bajo
+    int _x, _y;
 
 public:
-    // Constructor
-    Punto(int x_, int y_) : _x(x_), _y(y_) {}
+    Punto(int x, int y) : _x(x), _y(y) {}
 
-    // Sobrecarga del operador +
+    // Sobrecarga de la suma (+)
     Punto operator+(const Punto& otro) const {
         return Punto(_x + otro._x, _y + otro._y);
     }
 
-    // Sobrecarga del operador -
+    // Sobrecarga de la resta (-)
     Punto operator-(const Punto& otro) const {
         return Punto(_x - otro._x, _y - otro._y);
     }
 
-    // Sobrecarga del operador *
-    Punto operator*(int scalar) const {
-        return Punto(_x * scalar, _y * scalar);
+    // Multiplicación por escalar (*)
+    Punto operator*(int escalar) const {
+        return Punto(_x * escalar, _y * escalar);
     }
 
-    // Sobrecarga del operador /
-    Punto operator/(int scalar) const {
-        if (scalar == 0) {
+    // División por escalar (/)
+    Punto operator/(int escalar) const {
+        if (escalar == 0) {
             throw std::invalid_argument("División por cero");
         }
-        return Punto(_x / scalar, _y / scalar);
+        return Punto(_x / escalar, _y / escalar);
     }
 
-    // Sobrecarga del operador ==
+    // Comparación de igualdad (==)
     bool operator==(const Punto& otro) const {
-        return (_x == otro._x && _y == otro._y);
+        return _x == otro._x && _y == otro._y;
     }
 
-    // Sobrecarga del operador !=
+    // Comparación de desigualdad (!=)
     bool operator!=(const Punto& otro) const {
-        return !(*this == otro);  // Utiliza el operador == ya sobrecargado
+        return !(*this == otro);
     }
 
-    // Sobrecarga del operador <<
+    // Operador de salida (<<) – debe ser función externa
     friend std::ostream& operator<<(std::ostream& os, const Punto& p) {
         os << "(" << p._x << ", " << p._y << ")";
         return os;
@@ -110,53 +66,62 @@ public:
 };
 
 int main() {
-    // Creación de objetos de la clase Punto
     Punto p1(3, 4);
     Punto p2(1, 2);
 
-    // Operaciones aritméticas
     Punto suma = p1 + p2;
     Punto resta = p1 - p2;
-    Punto multiplicacion = p1 * 2; // Multiplicación por un escalar
-    Punto division = p1 / 2;       // División por un escalar
+    Punto multiplicacion = p1 * 2;
+    Punto division = p1 / 2;
 
-    // Comparaciones
-    if (p1 == p2) {
-        std::cout << "p1 es igual a p2\n";
-    } else {
-        std::cout << "p1 no es igual a p2\n";
-    }
-
-    if (p1 != p2) {
-        std::cout << "p1 es diferente de p2\n";
-    }
-
-    // Mostrar resultados
     std::cout << "Suma: " << suma << "\n";
     std::cout << "Resta: " << resta << "\n";
     std::cout << "Multiplicación: " << multiplicacion << "\n";
     std::cout << "División: " << division << "\n";
 
-    return 0;
+    if (p1 != p2) {
+        std::cout << "p1 y p2 son diferentes\n";
+    }
 }
 ```
 
-
-* **Operadores sobrecargados**:
-   * **Suma**: `operator+` toma dos objetos `Punto` y devuelve un nuevo `Punto` con la suma de las coordenadas.
-   * **Resta**: `operator-` toma dos objetos `Punto` y devuelve un nuevo `Punto` con la resta de las coordenadas.
-   * **Multiplicación por escalar**: `operator*` multiplica las coordenadas de un `Punto` por un valor escalar.
-   * **División por escalar**: `operator/` divide las coordenadas de un `Punto` por un valor escalar. Se incluye un control para evitar la división por cero.
-   * **Igualdad**: `operator==` compara dos objetos `Punto` y devuelve `true` si ambos tienen las mismas coordenadas.
-   * **Desigualdad**: `operator!=` devuelve `true` si los objetos `Punto` no son iguales.
-   * **Operador de inserción en flujo (`<<`)**: Este operador imprime un objeto `Punto` en formato `(x, y)`.
+* **`operator+` y `operator-`**: devuelven un nuevo punto con la suma o resta de las coordenadas.
+* **`operator*` y `operator/`**: permiten escalar el punto. La división incluye un control de errores para evitar la división por cero.
+* **`operator==` y `operator!=`**: comparan puntos para ver si son iguales o distintos.
+* **`operator<<`**: imprime un punto en formato `(x, y)`; este operador debe ser externo porque el flujo de salida (`std::cout`) está a la izquierda de la expresión.
 
 
-## El operador `operator()`
+### El operador de inserción en flujo `<<`
 
-Permite que una **clase defina un comportamiento que se ejecute cuando el objeto es llamado como función**. Los objetos que implementan este operador se llaman **functores** o **objetos invocables**.Son muy útiles para encapsular lógica con estado, que luego puede usarse en algoritmos o como callbacks.
+En el ejemplo anterior, hemos definido la sobrecarga de `operator<<` como una **función externa** en lugar de un método miembro, utilizando la palabra calve `friend`.
+Esto se debe a que, en una expresión como:
 
-Veamos un ejemplo:
+```cpp
+std::cout << p;
+```
+
+el operando izquierdo es `std::cout` (un objeto de tipo `std::ostream`), y no un `Punto`.
+En C++, cuando un operador se define como método miembro, el operando izquierdo debe ser siempre un objeto de esa clase.
+Como no podemos modificar la clase `std::ostream` de la biblioteca estándar, debemos definir `operator<<` como **función externa**, que reciba:
+
+* una referencia a `std::ostream` como primer parámetro (lado izquierdo),
+* un objeto `Punto` como segundo parámetro (lado derecho).
+
+De esta forma, el compilador sabe que al escribir `std::cout << p;` debe llamar a nuestra función sobrecargada:
+
+```cpp
+friend std::ostream& operator<<(std::ostream& os, const Punto& p) {
+    os << "(" << p._x << ", " << p._y << ")";
+    return os;
+}
+```
+
+## El operador `operator()`: objetos invocables (functores)
+
+Además de operadores aritméticos y de comparación, en C++ se puede sobrecargar el operador `()` (paréntesis).
+Esto permite que un objeto se utilice **como si fuera una función**. Los objetos que implementan este operador se llaman **functores** u **objetos invocables**.
+
+Esto es útil cuando queremos encapsular lógica que depende de un **estado interno** y poder reutilizarla como si fuera una función.
 
 ```cpp
 #include <iostream>
@@ -175,33 +140,31 @@ public:
 
 int main() {
     Incrementador inc(5);
-    std::cout << inc(10) << "\n";  // Imprime 15
+    std::cout << inc(10) << "\n";  // Llama a inc.operator()(10) → imprime 15
 }
 ```
 
-Aquí, `inc(10)` es equivalente a llamar a `inc.operator()(10)`.
+En este ejemplo:
 
+* `Incrementador` guarda un número `valor`.
+* Al invocar el objeto con `inc(10)`, se ejecuta `operator()`, que devuelve `10 + valor`.
+* Así podemos usar `Incrementador` en cualquier sitio donde se espere una función.
 
+## Operadores virtuales
 
-## Habría que meter
+Hasta ahora hemos visto **polimorfismo estático**: el compilador decide qué función llamar según los tipos.
+Pero los operadores también pueden participar en **polimorfismo dinámico** si se declaran como `virtual` en una clase base.
 
-Este apartado estaba en herencia y polimorfismo
-
-## Polimorfismo aplicado a operadores
-
-En C++, los operadores sobrecargados no son más que funciones miembro con una sintaxis especial. Por ello, es posible declararlos como **virtuales** dentro de una clase base, permitiendo que su comportamiento pueda ser redefinido en clases derivadas y que se utilice el enlace dinámico (polimorfismo) en tiempo de ejecución.
-
-Ejemplo:
+Esto permite que las clases derivadas redefinan el comportamiento del operador y que la decisión de qué código ejecutar se tome en tiempo de ejecución.
 
 ```cpp
 #include <iostream>
-#include <memory>
 
 struct FuncionBase {
     virtual int operator()(int x) const {
-        return x;
+        return x;  // identidad
     }
-    virtual ~FuncionBase() = default; // Destructor virtual
+    virtual ~FuncionBase() = default;
 };
 
 struct FuncionDoble : FuncionBase {
@@ -220,4 +183,6 @@ int main() {
 }
 ```
 
-En este ejemplo, `operator()` está declarado virtual en la clase base `FuncionBase` y redefinido en la clase derivada `FuncionDoble`. Al pasar una referencia a `FuncionBase`, la llamada `f(valor)` se resuelve dinámicamente a la implementación de `FuncionDoble`.
+* `FuncionBase` define `operator()` como virtual.
+* `FuncionDoble` redefine el operador para multiplicar por dos.
+* Al llamar `ejecutarFuncion(doble, 5)`, el parámetro es una referencia a `FuncionBase`, pero en tiempo de ejecución se invoca la versión redefinida en `FuncionDoble`.
