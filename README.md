@@ -35,7 +35,7 @@
     * [Herencia: clases base y derivadas](contenido/modulo04/herencia.md)
     * [Herencia y polimorfismo dinámico](contenido/modulo04/polimorfismo.md)
     * [Conversiones implícitas y punteros base](contenido/modulo04/conversiones.md)
-    * Ejercicios sobre herencia y polimorfismo
+    * [Ejercicios sobre herencia y polimorfismo](contenido/modulo04/ejercicio2.md)
 
 5. Fundamentos avanzados de programación orientada a objetos
     * [Control de creación y copia de objetos en C++](contenido/modulo05/creacion.md)
