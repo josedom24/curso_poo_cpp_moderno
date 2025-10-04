@@ -2,7 +2,6 @@
 
 ## Ejercicio 1: Herencia básica
 
-**Tema:** Clases base y derivadas con reutilización de código.
 
 En una empresa, todos los empleados tienen un nombre y un método para mostrarlo. Los programadores, además, tienen un lenguaje principal, y los diseñadores, un programa de diseño favorito.
 
@@ -16,17 +15,11 @@ Usa herencia para evitar duplicar el código relacionado con el nombre.
 
 ### UML
 
-```yuml
-[Empleado|-nombre:string; +mostrarInfo():void]
-[Programador|-lenguaje:string; +mostrarInfo():void]^- [Empleado]
-[Disenador|-herramienta:string; +mostrarInfo():void]^- [Empleado]
-```
+![ejercicio](img/ejercicio21.png)
 
----
 
 ## Ejercicio 2: Polimorfismo dinámico
 
-**Tema:** Funciones virtuales y `override`.
 
 Queremos simular diferentes tipos de **instrumentos musicales**. Todos tienen un método `tocar()`, pero cada instrumento produce un sonido distinto.
 
@@ -41,18 +34,11 @@ Escribe un programa que use un `std::vector<std::unique_ptr<Instrumento>>` para 
 
 ### UML
 
-```yuml
-[Instrumento|+tocar():void]
-[Guitarra|+tocar():void]^-.- [Instrumento]
-[Piano|+tocar():void]^-.- [Instrumento]
-[Bateria|+tocar():void]^-.- [Instrumento]
-```
+![ejercicio](img/ejercicio22.png)
 
----
 
 ## Ejercicio 3: Conversión implícita y punteros base
 
-**Tema:** Uso de punteros inteligentes y polimorfismo en colecciones.
 
 En un zoológico queremos representar distintos animales, pero tratarlos de forma uniforme para poder listarlos y hacerlos emitir sonidos.
 
@@ -67,10 +53,5 @@ En el `main`, crea un `std::vector<std::unique_ptr<Animal>>` y almacena distinto
 
 ### UML
 
-```yuml
-[Animal|+hacerSonido():void; +~Animal()] 
-[Leon|+hacerSonido():void]^-.- [Animal]
-[Elefante|+hacerSonido():void]^-.- [Animal]
-[Mono|+hacerSonido():void]^-.- [Animal]
-```
+![ejercicio](img/ejercicio23.png)
 

@@ -1,0 +1,4 @@
+[Animal|+hacerSonido():void; +~Animal()] 
+[Animal]^-[Leon|+hacerSonido():void]
+[Animal]^-[Elefante|+hacerSonido():void]
+[Animal]^-[Mono|+hacerSonido():void]
