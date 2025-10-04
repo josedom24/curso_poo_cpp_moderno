@@ -2,19 +2,11 @@
 
 ## Ejercicio 1: Control de creación de objetos
 
-**Enunciado**
 Un sistema de seguridad quiere generar identificadores únicos (`Token`) que no puedan ser creados libremente por cualquier parte del programa, solo mediante una función controlada. Implementa la clase `Token` con constructor privado y una función `crearTokenSeguro()` que devuelva un token válido.
 Prohíbe además la copia de objetos `Token`.
 
-**Diagrama UML (yUML)**
-
-```
-[Token|-valor:string; -Token(valor:string); +mostrar():void]
-```
-
 ## Ejercicio 2: Sobrecarga de operadores
 
-**Enunciado**
 Crea una clase `Punto2D` que represente un punto en el plano. Implementa la sobrecarga de operadores para:
 
 * `+` (suma de dos puntos).
@@ -22,46 +14,43 @@ Crea una clase `Punto2D` que represente un punto en el plano. Implementa la sobr
 * `==` (comparación de igualdad).
 * `<<` (impresión en flujo en formato `(x, y)`).
 
-**Diagrama UML (yUML)**
-
-```
-[Punto2D|-x:int; -y:int; +Punto2D(x:int, y:int); +operator+(otro:Punto2D):Punto2D; 
-+operator-(otro:Punto2D):Punto2D; +operator==(otro:Punto2D):bool; +mostrar():void]
-```
-
 ## Ejercicio 3: Fluidez de métodos
 
-**Enunciado**
-Diseña una clase `Conexion` que permita configurar la conexión a un servidor de manera fluida, encadenando llamadas a métodos como `setHost`, `setPuerto` y `usarSSL`.
-Al final, implementa un método `conectar()` que muestre la configuración utilizada.
+Queremos diseñar una clase que permita construir y configurar un **pedido en línea** (por ejemplo, de una tienda digital) de forma **fluida y legible**.
 
-**Diagrama UML (yUML)**
+Crea una clase `Pedido` que permita encadenar métodos para configurar distintos aspectos del pedido:
 
-```
-[Conexion|-host:string; -puerto:int; -segura:bool; +setHost(h:string):Conexion&; 
-+setPuerto(p:int):Conexion&; +usarSSL(s:bool):Conexion&; +conectar():void]
+* `setCliente(const std::string&)`: establece el nombre del cliente.
+* `addProducto(const std::string&, double)`: añade un producto con su precio.
+* `aplicarDescuento(double)`: aplica un porcentaje de descuento al total.
+* `mostrarResumen()`: muestra el resumen del pedido: cliente, productos, subtotal, descuento y total final.
+
+El método `mostrarResumen()` debe cerrar el encadenamiento.
+
+El programa principal deberá construir un pedido mediante llamadas encadenadas que simulen un flujo natural, por ejemplo:
+
+```cpp
+pedido.setCliente("Ana")
+      .addProducto("Portátil", 1200.0)
+      .addProducto("Ratón", 25.0)
+      .aplicarDescuento(10.0)
+      .mostrarResumen();
 ```
 
 ## Ejercicio 4: Clonación de objetos
 
-**Enunciado**
 Crea una jerarquía de clases clonables:
 
 * Una clase abstracta `Figura` con un método virtual `clone()`.
-* Dos clases derivadas (`Circulo` y `Rectangulo`) que implementen la clonación profunda.
+* Dos clases derivadas (`Circulo` y `Rectangulo`) que implementen la clonación profunda. 
+    * La clase `Circulo` tendrá un atributo `radio` de tipo `double`. 
+    * La clase `Rectangulo` tendrá dos atributos, `ancho` y `alto` también de tipo `double`.
+    * Las dos clases tendrán un método `mostrar()` que imprimirán los atributos y las áreas de las figuras.
 
 Permite duplicar objetos desde punteros a `Figura` sin conocer el tipo concreto.
 
-**Diagrama UML (yUML)**
-
-```
-[Figura|+clone():Figura*; {abstract}]^-[Circulo|-radio:double; +clone():Figura*]
-[Figura]^-[Rectangulo|-ancho:double; -alto:double; +clone():Figura*]
-```
-
 ## Ejercicio 5: Semántica de copia y movimiento
 
-**Enunciado**
 Implementa una clase `Buffer` que gestione un vector de enteros. Define explícitamente:
 
 * Constructor de copia y operador de asignación por copia.
@@ -69,11 +58,4 @@ Implementa una clase `Buffer` que gestione un vector de enteros. Define explíci
 
 Prueba en `main()` la diferencia entre copiar y mover objetos para observar qué operaciones se ejecutan.
 
-**Diagrama UML (yUML)**
-
-```
-[Buffer|-datos:vector<int>; +Buffer(); +Buffer(lista:{int}); 
-+Buffer(const Buffer&); +operator=(const Buffer&):Buffer&; 
-+Buffer(Buffer&&); +operator=(Buffer&&):Buffer&; +mostrar():void]
-```
 
