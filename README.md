@@ -78,4 +78,4 @@
 
 9. Proyecto final: Sistema de dispositivos inteligentes
 
-    * [Planteamiento general del proyecto]
+    * [Planteamiento general del proyecto](contenido/modulo09/planteamiento.md)
