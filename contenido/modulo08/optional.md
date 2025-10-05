@@ -1,127 +1,144 @@
 # Plantilla de clase: `std::optional`
 
-En la programación tradicional en C++, el uso de punteros nulos (`nullptr`) ha sido una técnica común para representar la **ausencia de valor**. Sin embargo, este enfoque tiene múltiples limitaciones: falta de seguridad de tipo, posibilidad de errores en tiempo de ejecución (como desreferenciar punteros nulos), y escasa expresividad semántica.
+En C++ clásico, la ausencia de valor se representaba con punteros nulos (`nullptr`) o valores especiales como `-1` o `""`.
+Este enfoque era poco seguro y propenso a errores en tiempo de ejecución, además de poco expresivo desde el punto de vista semántico.
 
-Para abordar estos problemas, C++17 introdujo la clase plantilla `std::optional`, una herramienta que permite **representar explícitamente un valor que puede estar presente o ausente** de forma segura y expresiva. Se trata de una solución moderna, fuertemente tipada y alineada con prácticas de diseño robusto.
+C++17 introduce la plantilla de clase **`std::optional<T>`**, que permite **representar de manera explícita y segura un valor que puede o no estar presente**.
+Su uso mejora la claridad, la seguridad y la legibilidad del código moderno.
 
-`std::optional<T>` es una plantilla de clase que encapsula un valor de tipo `T`, o la ausencia de dicho valor. Permite evitar el uso de punteros o valores especiales (como `-1` o `""`) para indicar condiciones especiales, y mejora la claridad del código.
+## Concepto básico
 
-Para utilizar `std::optional`, es necesario incluir el encabezado `<optional>`.
-
-La sintaxis básica es:
+`std::optional<T>` encapsula un valor de tipo `T` o la ausencia de él. Cuando no contiene valor, se encuentra en el estado **vacío**, representado por la constante `std::nullopt`.
 
 ```cpp
+#include <iostream>
 #include <optional>
 
+// Función que puede devolver un número o ningún valor
 std::optional<int> obtenerNumero(bool exito) {
-    if (exito) {
-        return 42;
-    } else {
-        return std::nullopt;
+    if (exito)
+        return 42;           // Valor presente
+    else
+        return std::nullopt; // Sin valor
+}
+
+int main() {
+    // Caso 1: la función devuelve un valor
+    std::optional<int> resultado1 = obtenerNumero(true);
+
+    if (resultado1.has_value()) {
+        std::cout << "Valor encontrado: " << resultado1.value() << '\n';
     }
+
+    // También puede usarse directamente como condición lógica
+    if (resultado1) {
+        std::cout << "Acceso con *resultado1: " << *resultado1 << '\n';
+    }
+
+    // Caso 2: la función no devuelve valor
+    std::optional<int> resultado2 = obtenerNumero(false);
+
+    // Usar value_or() para obtener un valor por defecto
+    int numero = resultado2.value_or(0);
+    std::cout << "Valor devuelto o 0 por defecto: " << numero << '\n';
+
+    // Comprobar si está vacío
+    if (!resultado2) {
+        std::cout << "Sin valor en resultado2.\n";
+    }
+
+    return 0;
 }
 ```
 
-Aquí, `std::nullopt` representa la ausencia de valor. La función puede retornar un número válido o ninguno, sin necesidad de punteros ni valores centinela.
+* `std::optional<int>` encapsula un entero que puede o no estar presente.
+* `std::nullopt` representa la ausencia de valor.
+* `has_value()` o `if (resultado)` permiten comprobar si existe valor.
+* `value()` o `*resultado` acceden al valor almacenado.
+* `value_or(valor_defecto)` devuelve un valor alternativo si el `optional` está vacío.
 
-## Operaciones comunes
+En este ejemplo, la función puede devolver un entero válido o ninguno, sin recurrir a punteros ni valores centinela.
 
-* Puede estar en **estado vacío** (no contiene valor).
-* Puede estar en **estado ocupado** (contiene un valor de tipo `T`).
-* Proporciona operadores y funciones miembro para:
-    * Consultar si hay valor (`has_value()`, `operator bool` (se puede usar como una expresión lógica por ejemplo en un `if`)).
-    * Acceder al valor (`*`, `value()`).
-    * Obtener un valor por defecto (`value_or()`).
-    * Construir y destruir el valor de forma controlada.
+## Métodos y operaciones principales
 
-
-**Comprobar si contiene un valor**
+El siguiente programa muestra el uso de los métodos más importantes de `std::optional` y cómo comprobar, obtener y modificar su valor de forma segura:
 
 ```cpp
-if (resultado.has_value()) {
-    std::cout << "Valor: " << resultado.value() << "\n";
-    std::cout << "Valor: " << *resultado << "\n";  //Devuelve el valor como con value()
+#include <iostream>
+#include <optional>
+#include <string>
+
+int main() {
+    // Declaración vacía: no contiene valor
+    std::optional<std::string> mensaje;
+
+    // Comprobar si contiene un valor
+    if (!mensaje.has_value()) {
+        std::cout << "Sin valor inicial.\n";
+    }
+
+    // Asignar un valor
+    mensaje = "Hola mundo";
+
+    // Comprobar valor usando operator bool()
+    if (mensaje) {
+        std::cout << "Valor asignado: " << *mensaje << '\n';
+    }
+
+    // Acceder al valor con value()
+    std::cout << "Con value(): " << mensaje.value() << '\n';
+
+    // Obtener valor con valor por defecto
+    std::optional<std::string> otroMensaje;
+    std::cout << "Valor o por defecto: " << otroMensaje.value_or("Vacío") << '\n';
+
+    // Reiniciar (vaciar) el optional
+    mensaje.reset();
+    std::cout << "Tras reset(), has_value(): "
+              << std::boolalpha << mensaje.has_value() << '\n';
+
+    return 0;
 }
 ```
 
-**Obtener el valor con valor por defecto**
-
-```cpp
-int valor = resultado.value_or(0);  // Si no hay valor, devuelve 0
-```
-
-**Asignar y modificar**
-
-```cpp
-std::optional<std::string> nombre;
-nombre = "Carlos";
-```
-
-## Ventajas de `std::optional`
-
-* Mejora la **expresividad del código** al declarar explícitamente cuándo un valor puede no estar presente.
-* Elimina la necesidad de usar **punteros nulos** o valores mágicos.
-* Proporciona **seguridad de tipo** en tiempo de compilación.
-* Compatible con operaciones funcionales como encadenamiento y composición (a partir de C++23 con `and_then`, `transform`, etc.).
-
-A tener en cuenta:
-
-* El método `value()` lanza una excepción (`std::bad_optional_access`) si se accede al valor sin comprobar su presencia.
-* `std::optional<T>` debe usarse principalmente con tipos **ligeros o triviales**. Para tipos grandes o costosos de copiar, puede implicar sobrecarga.
-* Ideal para funciones que **pueden fallar pero no requieren detalles del error**.
+* `*opcional`: Permite acceder directamente al valor, igual que `value()`.
+* `reset()`: Elimina el valor contenido, dejando el objeto vacío.
 
 ## Ejemplo completo
-
-Ejemplo: Buscar un número en un vector:
 
 ```cpp
 #include <iostream>
 #include <vector>
 #include <optional>
 
-// Función que busca un valor en un vector
+// Busca un número en un vector y devuelve un std::optional<int>
 std::optional<int> buscar(const std::vector<int>& datos, int objetivo) {
     for (int valor : datos) {
-        if (valor == objetivo) {
-            return valor;  // Estado ocupado
-        }
+        if (valor == objetivo)
+            return valor;          // Valor encontrado
     }
-    return std::nullopt;   // Estado vacío
+    return std::nullopt;           // Sin valor
 }
 
 int main() {
     std::vector<int> numeros = {3, 5, 7, 9};
 
-    std::optional<int> resultado = buscar(numeros, 5);
+    auto resultado = buscar(numeros, 5);
 
-    // Consultar si hay valor
-    if (resultado.has_value()) {
-        std::cout << "Encontrado con has_value(): " << *resultado << '\n';
-    }
-
-    // También se puede usar como condición lógica
     if (resultado) {
-        std::cout << "Encontrado con if(resultado): " << resultado.value() << '\n';
+        std::cout << "Encontrado: " << *resultado << '\n';
     }
 
-    // Obtener el valor o un valor por defecto si está vacío
-    std::cout << "Valor o -1 si no está: " << resultado.value_or(-1) << '\n';
+    std::cout << "Valor o -1: " << resultado.value_or(-1) << '\n';
 
-    // Buscar un valor que no está
-    std::optional<int> resultado2 = buscar(numeros, 100);
-
+    auto resultado2 = buscar(numeros, 100);
     if (!resultado2) {
-        std::cout << "No se encontró el número 100.\n";
+        std::cout << "No encontrado.\n";
     }
 
-    std::cout << "Resultado2 con value_or(-1): " << resultado2.value_or(-1) << '\n';
+    std::cout << "Resultado2 con valor por defecto: "
+              << resultado2.value_or(-1) << '\n';
 }
 ```
 
-* `std::optional<int> resultado` puede estar vacío (`std::nullopt`) o contener un entero.
-* Se retorna `std::nullopt` si no se encuentra el valor.
-* `resultado.has_value()` devuelve `true` si contiene valor.
-* También puede usarse `if (resultado)` gracias a `operator bool`.
-* `*resultado` desreferencia el valor.
-* `resultado.value()` lanza una excepción (`std::bad_optional_access`) si no hay valor.
-* `resultado.value_or(-1)` devuelve el valor si existe, o `-1` si no.
+`std::optional` es una herramienta esencial del C++ moderno: combina seguridad de tipo, expresividad y simplicidad.
