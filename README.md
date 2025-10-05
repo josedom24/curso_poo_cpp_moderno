@@ -82,3 +82,6 @@
     * [Planteamiento general del proyecto](contenido/modulo09/planteamiento.md)
     * [Clases base y derivadas: diseño de la jerarquía de dispositivos](contenido/modulo09/jerarquia.md)
     * [Implementación del controlador del sistema](contenido/modulo09/controlador.md)
+    * Manejo de eventos genéricos mediante std::variant y std::visit.
+    * Integración en un programa principal
+    * Análisis del diseño resultante
