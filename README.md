@@ -52,7 +52,7 @@
     * [Interfaces puras y diseño orientado a contratos](contenido/modulo06/interface.md)
     * [El problema de devolver tipos concretos y objetos polimórficos](contenido/modulo06/concretos.md)
     * [Devolución de interfaces mediante punteros inteligentes](contenido/modulo06/devolucion.md)
-    * Ejercicios sobre interfaces
+    * [Ejercicios sobre interfaces y diseño polimórfico](contenido/modulo06/ejercicios.md)
 
 7. Abstracción del comportamiento
 

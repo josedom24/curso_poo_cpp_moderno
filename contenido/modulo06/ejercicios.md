@@ -1,4 +1,4 @@
-# Ejercicios sobre 
+# Ejercicios sobre interfaces y diseño polimórfico
 
 ## Ejercicio 1: Jerarquía de clases con métodos virtuales puros
 
