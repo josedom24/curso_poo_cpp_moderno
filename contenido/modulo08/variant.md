@@ -1,23 +1,46 @@
-# Plantillas de clase:`std::variant` y `std::visit`
+# Plantillas de clase: `std::variant` y `std::visit`
 
-En el desarrollo de software, existen situaciones en las que una variable debe poder almacenar **uno de varios tipos posibles**, pero **solo uno a la vez**. Tradicionalmente, este problema se resolvía mediante uniones (`union`) en C o jerarquías de clases con polimorfismo dinámico en C++. Sin embargo, estas soluciones tienen limitaciones: la unión carece de seguridad de tipo y el polimorfismo implica sobrecarga en tiempo de ejecución.
+En el desarrollo de software, es habitual que una variable deba poder almacenar **uno de varios tipos posibles**, pero **solo uno a la vez**.
+Tradicionalmente, este problema se resolvía con *uniones* (`union`) en C o mediante jerarquías de clases y polimorfismo dinámico en C++.
+Sin embargo, ambos enfoques presentan limitaciones:
 
-C++17 introduce `std::variant`, una clase plantilla que representa una **alternativa segura en tiempo de compilación** a estos enfoques. Se trata de una forma moderna y robusta de implementar **tipos discriminados** o **sum types** (comunes en lenguajes funcionales), permitiendo escribir código más expresivo, seguro y eficiente.
+* las uniones no ofrecen **seguridad de tipo**,
+* el polimorfismo dinámico añade **sobrecarga en tiempo de ejecución**.
+
+C++17 introduce **`std::variant`**, una clase plantilla que representa una **alternativa segura en tiempo de compilación** a estos mecanismos.
+Se trata de una herramienta moderna para implementar **tipos discriminados** (*sum types*), comunes en lenguajes funcionales, que aporta expresividad, seguridad y eficiencia.
 
 ## ¿Qué es `std::variant`?
 
-`std::variant<Ts...>` es una clase plantilla que puede contener un valor de uno (y solo uno) de los tipos especificados como parámetros. Internamente, es similar a una unión discriminada con un índice que indica qué tipo está activo.
+`std::variant<Ts...>` es una plantilla que puede almacenar **un valor de uno (y solo uno)** de los tipos indicados como parámetros.
+Internamente mantiene un índice que indica cuál de los tipos está activo.
 
 ```cpp
+#include <iostream>
 #include <variant>
 
-std::variant<int, float> valor;
-valor = 10;     // contiene un int
-valor = 3.14f;  // ahora contiene un float
+int main() {
+    // Un std::variant que puede contener un int o un float
+    std::variant<int, float> valor;
+
+    valor = 10;      // Contiene un int
+    std::cout << "Valor entero: " << std::get<int>(valor) << '\n';
+
+    valor = 3.14f;   // Ahora contiene un float
+    std::cout << "Valor flotante: " << std::get<float>(valor) << '\n';
+
+    return 0;
+}
 ```
+
+* En este ejemplo, `valor` puede guardar un `int` o un `float`, pero nunca ambos a la vez. 
+* El tipo activo se rastrea automáticamente en tiempo de compilación.
+* `std::get<int>(variant)` devuelve el valor almacenado en el std::variant si el tipo activo es int, lanzando una excepción si no coincide.
+
 ## ¿Qué es `std::visit`?
 
-`std::variant` es como una **caja** que puede guardar **un valor de varios tipos posibles**, pero **solo uno a la vez**. Al no saber el tipo que está guardado, necesitamos un mecanismo para descubrirlo, este es el objetivo de usar `std::visit`. Lo vemos con un ejemplo:
+Cuando un `std::variant` puede contener distintos tipos, necesitamos una forma segura de **acceder al valor almacenado sin conocer su tipo concreto**.
+Esa función la cumple `std::visit`.
 
 ```cpp
 #include <iostream>
@@ -33,32 +56,18 @@ int main() {
 ```
 
 * `dato` puede contener un `int` o un `std::string`.
-* `std::visit` llama a una **función** que tú le pasas (en este caso una *lambda*).
-* Esa función se ejecuta **automáticamente con el tipo correcto** del valor que está guardado.
-* No necesitas preguntar “¿es un `int` o un `std::string`?”
-* `std::visit` ya lo sabe, y le pasa el valor correcto a tu función.
-* `[](auto&& valor)` es una **lambda genérica**, como decir: *"Cuando me des el valor, lo imprimo sin importar si es un número o un texto"*.
+* `std::visit` ejecuta la función proporcionada (una *lambda* en este caso) con el valor actual.
+* La lambda genérica `[](auto&& valor)` se adapta automáticamente al tipo del valor almacenado.
+* En `[](auto&& valor)`:
+    * `auto` significa que el tipo se deduce automáticamente (puede ser `int`, `std::string`, etc.).
+    * `&&` significa que la función acepta el valor **por referencia universal**, es decir, **sirve para cualquier tipo** y **no hace copias innecesarias**.
+* `auto&&` permite que la lambda funcione con **cualquier tipo** que contenga el `std::variant`, de forma eficiente.
+*`std::visit` evita el uso de comprobaciones de tipo manuales (`if`, `dynamic_cast`, etc.) y garantiza seguridad de tipo en tiempo de compilación.
 
-## Ejemplo completo
 
-Perfecto. A continuación te muestro un **ejemplo completo y más complejo** con `std::variant` y `std::visit`, en el que:
+## Ejemplo completo: procesar distintos tipos de eventos
 
-* Usamos un `std::variant` que puede contener varios tipos distintos.
-* Aplicamos acciones específicas según el tipo que contenga.
-* Usamos `std::visit` con un **visitor con sobrecarga de funciones**, no solo una lambda genérica.
-
----
-
-## 🧩 Ejemplo: Procesar diferentes tipos de eventos
-
-Supongamos que tenemos una aplicación que puede recibir distintos **eventos**:
-
-* Un número (`int`) que representa una señal de control.
-* Una cadena (`std::string`) que representa un mensaje.
-* Un valor decimal (`double`) que representa una lectura de sensor.
-
-Queremos procesarlos **de manera diferente**.
-
+Supongamos una aplicación que puede recibir varios **eventos**: un número de control (`int`), un mensaje (`std::string`) o una lectura de sensor (`double`). Queremos procesar cada tipo de manera diferente.
 
 ```cpp
 #include <iostream>
@@ -66,10 +75,10 @@ Queremos procesarlos **de manera diferente**.
 #include <string>
 #include <vector>
 
-// Tipo variante que puede ser uno de varios tipos
+// Tipo variante que puede contener uno de varios tipos
 using Evento = std::variant<int, std::string, double>;
 
-// Visitor que define cómo actuar según el tipo
+// Visitor con sobrecarga de funciones
 class ProcesadorEvento {
 public:
     void operator()(int codigo) const {
@@ -86,7 +95,6 @@ public:
 };
 
 int main() {
-    // Lista de eventos de distintos tipos
     std::vector<Evento> eventos = {
         42,
         std::string("Arranque del sistema"),
@@ -104,11 +112,10 @@ int main() {
     return 0;
 }
 ```
-* `std::variant<int, std::string, double>`: Es un tipo que **puede contener uno solo de esos tres tipos** a la vez. Aquí lo hemos llamado `Evento` (con `using`).
-* `std::vector<Evento> eventos = { ... };`: Simulamos una secuencia de eventos heterogéneos: números, cadenas y decimales.
-* `ProcesadorEvento`: Es una **clase que sobrecarga `operator()`** para distintos tipos.
-* Esto permite que `std::visit` elija automáticamente la función correcta según el tipo almacenado.
-* `std::visit(ProcesadorEvento{}, evento);`: Llama a la función adecuada de `ProcesadorEvento` con el contenido de `evento`.
-* Si `evento` contiene un `std::string`, se llama a `operator()(const std::string&)`, y así sucesivamente.
-* ¿Por qué no una sola lambda?: Una sola lambda genérica funciona si el comportamiento es **igual para todos los tipos** o **muy simple**.
-* Pero cuando quieres **diferenciar claramente según el tipo**, es mejor usar una clase con sobrecargas como `ProcesadorEvento`.
+
+* `std::variant<int, std::string, double>` define un tipo que puede contener **uno solo de esos tres tipos** a la vez.
+* `ProcesadorEvento` es una clase *visitor* que **sobrecarga `operator()`** para cada tipo posible.
+* `std::visit(ProcesadorEvento{}, evento)` llama automáticamente a la versión correcta del método según el tipo almacenado.
+* Así, se evita el uso de *casts* o comprobaciones manuales de tipo.
+* Si todos los tipos pudieran procesarse de la misma forma, se podría usar directamente una **lambda genérica**, pero cuando el comportamiento depende del tipo concreto, un *visitor* con sobrecargas es más claro y seguro.
+
