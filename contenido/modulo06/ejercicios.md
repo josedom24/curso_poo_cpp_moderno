@@ -1,44 +1,58 @@
 # Ejercicios sobre 
 
-## Ejercicio 1: Control de creación y prohibición de copia en una clase de configuración
+## Ejercicio 1: Jerarquía de clases con métodos virtuales puros
 
-Implemente una clase `Configuracion` que represente los parámetros de configuración de un sistema. Esta clase debe cumplir los siguientes requisitos:
+Crea una jerarquía de clases que represente distintos tipos de **dispositivos multimedia**.
 
-1. No debe poder ser instanciada directamente desde `main`, solo a través de una función estática `Configuracion::cargarDesdeArchivo()`, que simula la carga desde un archivo de configuración.
-2. Debe prohibirse la copia y la asignación de objetos `Configuracion`.
-3. Debe contener un método `mostrar()` que imprima los parámetros cargados (por simplicidad, solo una cadena descriptiva).
+1. Define una clase abstracta `Reproductor` con un método virtual puro `reproducir()` y un destructor virtual.
+2. Implementa dos clases concretas:
 
-## Ejercicio 2: Jerarquía de clases
+   * `ReproductorAudio`, que muestra por pantalla `"Reproduciendo audio..."`.
+   * `ReproductorVideo`, que muestra por pantalla `"Reproduciendo video..."`.
+3. En `main()`, declara un `std::vector<std::unique_ptr<Reproductor>>` y almacena instancias de ambos tipos.
+4. Recorre el vector y llama al método `reproducir()` para demostrar el **polimorfismo dinámico**.
 
-Define una jerarquía de clases para representar diferentes tipos de **instrumentos musicales**. Todos los instrumentos deben poder "tocar", pero cada uno lo hará de manera diferente. Además, se desea impedir que ciertos tipos de instrumentos sean heredados o modificados en su comportamiento una vez definidos.
 
-1. Define una **clase abstracta** `Instrumento` que contenga un método virtual puro llamado `tocar() const`.
-2. Deriva dos clases concretas: `Piano` y `Guitarra`, que implementen el método `tocar()` con un mensaje específico para cada instrumento.
+## Ejercicio 2: Interfaces puras y desacoplamiento del cliente
 
-   * Marca estos métodos con la cláusula `override` para indicar que sobrescriben el método virtual.
-   * Además, en la clase `Piano`, marca el método `tocar()` como `final` para **evitar que se pueda sobrescribir en clases derivadas de `Piano`**.
-3. Crea una colección de instrumentos usando `std::vector<std::unique_ptr<Instrumento>>` e incluye instancias de `Piano` y `Guitarra`.
-4. Recorre la colección y llama al método `tocar()` de cada instrumento.
-5. Asegúrate de que la clase base `Instrumento` tenga un **destructor virtual**, para garantizar una destrucción adecuada.
+1. Define una interfaz pura `Notificador` con un método virtual puro `enviarMensaje(const std::string&)`.
+2. Implementa dos clases concretas:
 
-## Ejercicios 3: Interfaces puras
+   * `NotificadorEmail`, que muestra `"Enviando correo: [mensaje]"`.
+   * `NotificadorSMS`, que muestra `"Enviando SMS: [mensaje]"`.
+3. Escribe una función `procesarEvento(const Notificador& n)` que recibe una referencia a la interfaz y envía el mensaje `"Evento registrado"`.
+4. En `main()`, crea objetos de ambos tipos y pásalos a `procesarEvento()` para demostrar que la función puede operar con cualquier implementación sin conocer su tipo.
 
-Crea una interfaz pura llamada `Reproducible` que defina la capacidad de reproducir sonidos mediante un método `reproducir() const`.
 
-1. Define la interfaz pura `Reproducible` con un método virtual puro `reproducir() const`.
-2. Implementa dos clases concretas que implementen esta interfaz:
+## Ejercicio 3: Devolución de interfaces mediante punteros inteligentes
 
-   * `Radio` que imprima `"Reproduciendo música en la radio"`.
-   * `Televisor` que imprima `"Reproduciendo sonido del televisor"`.
-3. Crea un vector de punteros inteligentes a `Reproducible` y almacena instancias de `Radio` y `Televisor`.
-4. Implementa una función `iniciarReproduccion` que reciba una referencia a este vector y llame a `reproducir()` en cada objeto.
-5. Asegúrate de usar `override` y un destructor virtual adecuado.
+Diseña un pequeño sistema para crear **dispositivos de salida de audio** que implementen una misma interfaz común.
 
-## Ejercicio 4: Separación entre interfaz y detalle de implementación
+1. Define una **interfaz pura** llamada `DispositivoAudio` con un método virtual puro `emitirSonido() const`.
+   Declara también un destructor virtual por seguridad.
 
-Organiza el diseño de una interfaz pura `Calculadora` y una clase concreta `CalculadoraMultiplicacion` que implemente esta interfaz, separando la declaración y la implementación en archivos `.h` y `.cpp` según las buenas prácticas.
+2. Implementa dos clases concretas:
 
-1. En el archivo `Calculadora.h` declara la interfaz pura `Calculadora` con un método virtual puro `calcular(int a, int b) const`.
-2. En el archivo `CalculadoraMultiplicacion.cpp` implementa la clase `CalculadoraMultiplicacion` que herede de `Calculadora` y devuelva el producto de los dos enteros.
-3. En un archivo `main.cpp`, crea un objeto `CalculadoraMultiplicacion` a través de un puntero a `Calculadora` y muestra el resultado de multiplicar dos números.
+   * `Altavoz`, que imprima `"Emitiendo sonido por altavoz"`.
+   * `Auriculares`, que imprima `"Emitiendo sonido por auriculares"`.
+
+3. Implementa una función:
+
+   ```cpp
+   std::unique_ptr<DispositivoAudio> crearDispositivo(const std::string& tipo);
+   ```
+
+   que devuelva un objeto dinámico del tipo solicitado:
+
+   * Si `tipo == "altavoz"`, devuelve un `std::make_unique<Altavoz>()`.
+   * Si `tipo == "auriculares"`, devuelve un `std::make_unique<Auriculares>()`.
+
+4. En `main()`, solicita al usuario el tipo de dispositivo y recibe el objeto devuelto por la función.
+   Llama al método `emitirSonido()` para verificar el **polimorfismo dinámico**.
+
+5. Asegúrate de:
+
+   * Usar `std::unique_ptr` en todas las funciones.
+   * No utilizar punteros crudos.
+   * Emplear `override` en las clases derivadas.
 
