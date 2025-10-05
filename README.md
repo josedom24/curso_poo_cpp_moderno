@@ -75,3 +75,7 @@
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
     * [Plantillas de clase:`std::variant` y `std::visit`](contenido/modulo08/variant.md)
     * [Ejercicios sobre programación genérica](contenido/modulo08/ejercicios.md)
+
+9. Proyecto final: Sistema de dispositivos inteligentes
+
+    * [Planteamiento general del proyecto]
