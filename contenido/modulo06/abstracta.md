@@ -1,54 +1,39 @@
 # Clases abstractas y métodos virtuales puros
 
-Las clases abstractas y los métodos virtuales permiten definir **acciones comunes** que pueden realizar distintos tipos de objetos, aunque cada uno las implemente de forma distinta. Esto hace posible escribir código que trabaje con objetos diferentes de manera uniforme, y al mismo tiempo mantener la flexibilidad para cambiar o extender el comportamiento sin modificar el código original.
+## Introducción al diseño orientado a interfaces
 
-## Clase abstracta
+En apartados anteriores se estudió el **polimorfismo dinámico**, que permite que un mismo método se comporte de manera diferente según el tipo real del objeto.
+En esta sección profundizaremos en el **diseño polimórfico orientado a interfaces**, un enfoque que aprovecha el polimorfismo para desacoplar la definición de un comportamiento (*qué se hace*) de su implementación concreta (*cómo se hace*).
 
-Una clase se considera **abstracta** si contiene al menos una función miembro declarada como `virtual` y con el sufijo `= 0`, conocida como **función virtual pura**. No se puede instanciar directamente una clase abstracta.
+El objetivo es aprender a **definir contratos abstractos** que las clases concretas deben cumplir, garantizando coherencia y extensibilidad del sistema sin comprometer la seguridad o la claridad del código.
 
-El `= 0` en la definición de un método virtual indica que esa función **no tiene implementación** en la clase donde se declara, y que **debe ser implementada** por cualquier clase derivada concreta. Ese método se llama **función virtual pura**, y su presencia convierte a la clase en una **clase abstracta**.
 
-* La clase que contiene al menos una función `= 0` **no se puede instanciar** directamente.
-* Obliga a las clases derivadas a proporcionar una implementación de ese método.
-* Define una **interfaz obligatoria** que deben cumplir todas las subclases concretas.
+## Clases abstractas
 
-Eejmplo:
+En la programación orientada a objetos, una **clase abstracta** define una interfaz común que describe un conjunto de operaciones que las clases derivadas deben implementar.
+Se utiliza para **representar conceptos generales** que no tienen sentido por sí solos, sino únicamente a través de sus especializaciones.
 
-```cpp
-class Forma {
-public:
-    virtual void dibujar() const = 0; // Método virtual puro
-};
-```
+Las clases abstractas se basan en el uso de **métodos virtuales puros**, que actúan como **contratos** que las subclases concretas deben cumplir.
+Este mecanismo es la base del **diseño polimórfico**, permitiendo escribir código que trabaje con distintos tipos de objetos de manera uniforme, sin conocer su tipo concreto.
 
-## Método virtual
+Una **clase abstracta** en C++ se caracteriza por contener al menos una **función miembro virtual pura**, declarada con el sufijo `= 0`.
+La presencia de este tipo de función convierte automáticamente a la clase en **no instanciable**.
 
-Un **método virtual** es una función miembro que puede ser redefinida por clases derivadas y cuya invocación se resuelve en **tiempo de ejecución** en función del **tipo dinámico** del objeto. Esta característica habilita el **polimorfismo dinámico**, es decir, la capacidad de utilizar una referencia o puntero a una clase base para invocar métodos que se comportan de forma diferente según la clase derivada concreta a la que pertenece el objeto. Esto permite diseñar sistemas flexibles donde el comportamiento puede variar sin cambiar el código que realiza la llamada.
-
-Ejemplo:
-
-```cpp
-class Animal {
-public:
-    virtual void hablar() const {
-        std::cout << "Sonido genérico\n";
-    }
-};
-```
-
-## Ejemplo: clase abstracta y derivación
+Veamos un  ejemplo, donde se define una jerarquía de clases que representan figuras geométricas. Cada figura puede dibujarse, pero la forma concreta de hacerlo depende del tipo de figura.
 
 ```cpp
 #include <iostream>
 #include <memory>
 #include <vector>
 
+// Clase base abstracta
 class Figura {
 public:
-    virtual void dibujar() const = 0; // Método virtual puro
-    virtual ~Figura() = default;      // Destructor virtual
+    virtual void dibujar() const = 0;  // Método virtual puro
+    virtual ~Figura() = default;       // Destructor virtual
 };
 
+// Clases derivadas concretas
 class Circulo : public Figura {
 public:
     void dibujar() const override {
@@ -74,10 +59,16 @@ int main() {
 }
 ```
 
-* **Clase abstracta `Figura`**: Declara un método virtual puro `dibujar() = 0`, lo que la convierte en **clase abstracta**, no se puede instanciar directamente. Solo sirve como **interfaz base**.
-* **Uso de métodos virtuales**: La función `dibujar` es `virtual`, lo que permite que las clases derivadas implementen su propia versión. Se declara como `const` y `override` en las subclases para mayor claridad y seguridad.
-* **Polimorfismo en tiempo de ejecución**:  En el bucle `for`, se llama a `figura->dibujar()` sin saber si el objeto es un `Circulo` o un `Rectangulo`. C++ resuelve dinámicamente cuál versión del método llamar según el **tipo real del objeto**.
-* **Uso de punteros inteligentes (`std::unique_ptr`)**: Se usa `std::unique_ptr<Figura>` para manejar memoria automáticamente (RAII). Evita fugas de memoria y elimina la necesidad de llamar manualmente a `delete`.
-* **Vector de punteros a la clase base (`Figura`)**: Permite almacenar distintos tipos derivados (`Circulo`, `Rectangulo`) en una misma colección. Esto es posible gracias al polimorfismo y al uso de punteros (o referencias) a la clase base.
-* **Destructor virtual**: `Figura` tiene un destructor `virtual`, lo cual es **obligatorio** si se va a eliminar un objeto derivado a través de un puntero a la clase base. Asegura que se llame al destructor correcto al liberar recursos.
+* La clase `Figura` no proporciona una implementación concreta de `dibujar()`. Declara el método `dibujar()` como virtual puro (`= 0`), convirtiéndose en una clase abstracta. No puede instanciarse directamente y sirve como **interfaz común** para todas las figuras.
+* Cualquier clase derivada que herede de `Figura` estará **obligada** a implementar dicho método para ser instanciable. Las clases `Circulo` y `Rectangulo` redefinen el método `dibujar()` utilizando la palabra clave `override`, que garantiza que coincida exactamente con la función virtual de la base.
+* Si una clase derivada no implementa todos los métodos virtuales puros heredados, también será abstracta.
+* El destructor de una clase base polimórfica debe ser **virtual**, para garantizar la destrucción correcta de objetos derivados.
+* Se emplea `std::unique_ptr<Figura>` para gestionar los objetos polimórficos. Esto asegura la liberación automática de memoria mediante RAII, evitando fugas.
+* Un `std::vector` de punteros a `Figura` puede contener objetos de distintos tipos (`Circulo`, `Rectangulo`). En el bucle, la llamada `figura->dibujar()` se resuelve dinámicamente según el tipo real del objeto.
+* Es esencial para que, al destruir un `unique_ptr<Figura>`, se llame correctamente al destructor de `Circulo` o `Rectangulo`.
+
+## UML
+
+![uml](img/diagrama1.png
+)
 

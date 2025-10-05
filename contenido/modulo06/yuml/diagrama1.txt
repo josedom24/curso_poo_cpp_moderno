@@ -1,0 +1,3 @@
+[<<abstracta>>Figura|+dibujar(): void]
+[Figura]^-.-[Circulo|+dibujar(): void]
+[Figura]^-.-[Rectangulo|+dibujar(): void]
