@@ -36,6 +36,7 @@
     * [Ejercicios sobre relaciones de clases](contenido/modulo04/ejercicio1.md)
     * [Herencia: clases base y derivadas](contenido/modulo04/herencia.md)
     * [Herencia y polimorfismo dinámico](contenido/modulo04/polimorfismo.md)
+    * [Conversión segura de tipos polimórficos con `dynamic_cast`](contenido/modulo04/cast.md)
     * [Conversiones implícitas y punteros base](contenido/modulo04/conversiones.md)
     * [Ejercicios sobre herencia y polimorfismo](contenido/modulo04/ejercicio2.md)
 
