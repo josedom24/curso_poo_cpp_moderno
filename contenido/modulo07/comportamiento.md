@@ -1,32 +1,38 @@
 # Comportamiento intercambiable y bajo acoplamiento
 
-Uno de los principios fundamentales del diseño de software orientado a objetos y de la programación modular en general es la **separación de responsabilidades**. Este principio sugiere que cada componente del sistema debe encargarse de una tarea específica, facilitando así su reutilización, mantenimiento y extensión. En este contexto, surge la necesidad de diseñar **componentes cuyo comportamiento pueda intercambiarse sin modificar su estructura interna**. Este enfoque no solo favorece la flexibilidad, sino que también conduce a un sistema más **robusto, extensible y fácilmente comprobable**.
+Uno de los principios fundamentales del diseño orientado a objetos es la **separación de responsabilidades**: cada clase debe encargarse de una tarea bien definida, y su implementación no debería depender directamente de los detalles de otras partes del sistema.
+
+En este contexto surge una idea clave: diseñar **componentes con comportamiento intercambiable**, es decir, clases que puedan **modificar o delegar su comportamiento sin cambiar su estructura interna**.
+
+Este enfoque reduce el acoplamiento, mejora la extensibilidad y facilita la reutilización del código.
+
 
 ## ¿Qué significa comportamiento intercambiable?
 
-Decimos que un componente tiene **comportamiento intercambiable** cuando su lógica interna no está acoplada a una única implementación, sino que **puede delegar ciertas decisiones o acciones a otros componentes**. Así, diferentes comportamientos pueden ser seleccionados dinámicamente o inyectados en tiempo de ejecución, sin necesidad de modificar el componente principal.
+Un componente tiene **comportamiento intercambiable** cuando su lógica no depende de una única implementación, sino que **puede delegar ciertas decisiones o acciones a otro objeto o función**.
 
-Este enfoque es especialmente útil en los siguientes escenarios:
+Así, el componente principal define *qué se debe hacer*, mientras que otros elementos deciden *cómo hacerlo*. Por ejemplo:
 
-* Cuando se desea reutilizar una clase con distintos comportamientos en contextos variados.
-* Cuando el algoritmo o comportamiento puede variar según la configuración del programa o el entorno de ejecución.
-* Cuando se requiere probar unidades de código con comportamientos simulados (mocks) para facilitar pruebas unitarias.
+* Cuando una clase debe comportarse de manera diferente en distintos contextos.
+* Cuando el algoritmo o acción puede variar según la configuración o preferencia del usuario.
+* Cuando se desea probar una clase sustituyendo su comportamiento real por uno simulado (*mock*) durante las pruebas unitarias.
 
 ## El problema del acoplamiento rígido
 
-Una clase que implementa directamente todos sus comportamientos está **fuertemente acoplada** a ellos. Esto implica varias desventajas:
-
-* **Dificultad para extender o modificar** el comportamiento sin alterar el código existente.
-* **Falta de reutilización**, ya que la lógica está incrustada en la clase.
-* **Mayor complejidad al probar**, porque no se puede aislar el comportamiento ni simularlo fácilmente.
+Un diseño con **acoplamiento fuerte** ocurre cuando una clase **implementa directamente todos los detalles de su comportamiento**.
+Esto la hace inflexible y difícil de extender o mantener.
 
 Veamos un ejemplo:
 
 ```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 class Ordenador {
 public:
     void ordenar(std::vector<int>& datos) {
-        // Algoritmo de ordenación fijo (por ejemplo, burbuja)
+        // Algoritmo de ordenación fijo (burbuja)
         for (size_t i = 0; i < datos.size(); ++i) {
             for (size_t j = 0; j < datos.size() - 1; ++j) {
                 if (datos[j] > datos[j + 1]) {
@@ -36,27 +42,41 @@ public:
         }
     }
 };
-```
 
-En este ejemplo, la clase `Ordenador` **no puede cambiar su estrategia de ordenación sin modificar su implementación interna**.
+int main() {
+    std::vector<int> datos = {5, 2, 9, 1, 7};
+    Ordenador ordenador;
+    ordenador.ordenar(datos);
+
+    for (int n : datos)
+        std::cout << n << " ";
+}
+```
+* El método `ordenar()` **está rígidamente acoplado** a un único algoritmo (burbuja).
+* Si se desea usar otro algoritmo (por ejemplo, *quick sort* o *merge sort*), sería necesario **modificar la clase**.
+* Esto **viola el principio abierto/cerrado (OCP)**: una clase debería poder extenderse sin necesidad de cambiar su código fuente.
 
 ## Ventajas del bajo acoplamiento y la composición flexible
 
-El diseño orientado al **bajo acoplamiento** y a la **composición flexible de comportamientos** permite separar la lógica de control del comportamiento específico, de modo que:
+Diseñar con **bajo acoplamiento** significa que los componentes dependen solo de **qué se necesita hacer**, no de **cómo se hace**.
+Esto se logra separando la lógica principal de los comportamientos concretos.
 
-* **Los comportamientos se encapsulan** en entidades independientes.
-* **La lógica principal permanece inalterada** al modificar o intercambiar comportamientos.
-* **Se fomenta la reutilización y la extensibilidad**, facilitando la evolución del sistema.
-* **Las pruebas unitarias son más sencillas**, gracias a la posibilidad de inyectar comportamientos simulados.
+Ventajas principales:
 
-## Visión general de las soluciones
+* **Comportamientos intercambiables:** se puede cambiar la lógica de ejecución sin alterar la estructura del programa.
+* **Reutilización:** las estrategias o comportamientos pueden aplicarse en diferentes contextos.
+* **Claridad:** el código expresa la intención sin mezclarse con los detalles de la implementación.
+* **Pruebas más sencillas:** los comportamientos pueden sustituirse por versiones simuladas o controladas.
 
-En C++ moderno, existen múltiples formas de lograr comportamiento intercambiable con bajo acoplamiento:
 
-* Delegar el comportamiento a través de **interfaces abstractas**.
-* Utilizar **lambdas** como funciones anónimas que encapsulan lógica específica.
-* Aplicar **`std::function`** como contenedor de funciones genéricas y configurables.
-* Definir **functores** como objetos con `operator()` para representar acciones o estrategias.
-* Implementar **inyección de comportamiento** mediante composición.
+## Hacia el diseño de comportamiento flexible
 
-Cada una de estas técnicas permite sustituir el comportamiento sin afectar la estructura de los componentes que lo utilizan.
+En C++ moderno existen varias formas de lograr comportamiento intercambiable:
+
+1. **Delegación mediante interfaces abstractas:** Definir un contrato común para múltiples comportamientos (por ejemplo, diferentes estrategias de ordenación).
+2. **Funciones lambda:** Permiten definir comportamientos ligeros y configurables directamente en el punto de uso.
+3. **`std::function`:** Facilita almacenar y pasar comportamientos como parámetros configurables.
+4. **Functores (`operator()`):** Objetos que encapsulan una acción o estrategia y pueden comportarse como funciones.
+5. **Composición e inyección de comportamiento:** Permiten construir objetos que **delegan tareas específicas** a otros componentes, favoreciendo la flexibilidad.
+
+
