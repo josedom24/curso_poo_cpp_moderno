@@ -62,7 +62,7 @@
     * [Uso de `std::function` para encapsular comportamiento configurable](contenido/modulo07/function.md)
     * [Functores y clases con `operator()`](contenido/modulo07/functor.md)
     * [Inyección de comportamiento mediante composición](contenido/modulo07/composicion.md)
-    * Ejercicios sobre abstracción de comportamiento
+    * [Ejercicios sobre abstracción de comportamiento](contenido/modulo07/ejercicios.md)
     
 8. Plantillas de clases y programación genérica
 
