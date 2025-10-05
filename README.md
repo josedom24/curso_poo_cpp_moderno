@@ -80,3 +80,5 @@
 9. Proyecto final: Sistema de dispositivos inteligentes
 
     * [Planteamiento general del proyecto](contenido/modulo09/planteamiento.md)
+    * [Clases base y derivadas: diseño de la jerarquía de dispositivos](contenido/modulo09/jerarquia.md)
+    * [Implementación del controlador del sistema](contenido/modulo09/controlador.md)
