@@ -1,12 +1,13 @@
 # Representación de acciones con funciones lambda
 
-En C++ moderno (desde C++11), las **expresiones lambda** ofrecen una forma compacta y muy expresiva de definir funciones anónimas directamente en el lugar donde se necesitan. Esto permite representar comportamientos intercambiables de manera sencilla, sin necesidad de crear clases o interfaces explícitas.
 
-Una lambda es una función sin nombre que puede capturar variables del entorno, y que se puede pasar, almacenar y ejecutar igual que cualquier función. Gracias a esto, las lambdas son ideales para definir pequeñas acciones o estrategias que pueden variar en distintos contextos, facilitando un diseño flexible y desacoplado.
+En C++ moderno, las **expresiones lambda** permiten definir **funciones anónimas** directamente en el punto donde se necesitan.
+Una lambda puede comportarse como una función normal: puede recibir argumentos, devolver valores y, además, **capturar variables del entorno** para formar pequeñas acciones dependientes del contexto.
 
-## ¿Qué es una lambda?
+Gracias a ello, las lambdas permiten **representar comportamientos concretos de manera compacta**, sin necesidad de definir clases o funciones adicionales.
+Son especialmente útiles al trabajar con los algoritmos de la **biblioteca estándar (STL)**, ya que muchos de ellos aceptan funciones como argumentos para expresar criterios o condiciones personalizadas.
 
-La sintaxis básica de una lambda es:
+## Sintaxis general de una lambda
 
 ```cpp
 [captura](parámetros) -> tipo_retorno {
@@ -14,97 +15,86 @@ La sintaxis básica de una lambda es:
 };
 ```
 
-* **captura**: indica qué variables externas puede usar la lambda y cómo (por valor `[=]` o referencia `[&]`).
-* **parámetros**: los argumentos que recibe, como una función normal.
-* **tipo\_retorno**: opcional, el compilador puede deducirlo.
-* **cuerpo**: el código que se ejecuta cuando se llama la lambda.
+**Donde:**
 
-Ejemplo:
+* `captura` especifica qué variables del entorno pueden usarse dentro de la lambda.
+  Puede hacerse por valor `[=]`, por referencia `[&]` o listando variables concretas.
+* `parámetros` define los argumentos de la lambda (igual que en una función).
+* `tipo_retorno` es opcional; suele deducirse automáticamente.
+* `cuerpo` contiene el código que se ejecuta cuando se llama a la lambda.
 
-```cpp
-auto saludar = [](const std::string& nombre) {
-    std::cout << "Hola, " << nombre << "!\n";
-};
 
-saludar("Ana"); // Imprime: Hola, Ana!
-```
+## Ejemplo 1: usar una lambda como criterio de ordenación
 
-## Lambdas para comportamiento intercambiable
-
-Las lambdas pueden usarse para intercambiar acciones fácilmente. Por ejemplo, para ordenar una lista con distintos criterios:
+Una de las aplicaciones más comunes de las lambdas es definir **criterios personalizados** para los algoritmos de la STL, como `std::sort`.
 
 ```cpp
-#include <vector>
-#include <algorithm>
 #include <iostream>
+#include <vector>
+#include <algorithm> // std::sort
 
 int main() {
-    std::vector<int> numeros = {3, 1, 4, 2};
+    std::vector<int> numeros = {5, 2, 8, 1, 4};
 
-    // Orden ascendente
+    // Orden ascendente (criterio por defecto)
+    std::sort(numeros.begin(), numeros.end());
+
+    std::cout << "Ascendente: ";
+    for (int n : numeros) std::cout << n << " ";
+    std::cout << "\n";
+
+    // Orden descendente (criterio definido por una lambda)
     std::sort(numeros.begin(), numeros.end(), [](int a, int b) {
-        return a < b;
+        return a > b;  // Devuelve true si 'a' debe ir antes que 'b'
     });
 
-    for (int n : numeros) std::cout << n << " "; // 1 2 3 4
+    std::cout << "Descendente: ";
+    for (int n : numeros) std::cout << n << " ";
+    std::cout << "\n";
 }
 ```
+* `std::sort` ordena el vector usando el criterio de comparación que recibe como tercer argumento.
+* La **lambda** sustituye la necesidad de escribir una función o clase comparadora aparte.
+* Cambiar el comportamiento solo requiere modificar la expresión lambda.
 
-Aquí, la función de comparación se define “al vuelo” con una lambda, sin necesidad de una clase o función aparte.
+## Ejemplo 2: lambdas que capturan variables del entorno y modifican el comportamiento
 
-Veamos otro ejemplo, que nos permite modificar el comportamiento según un valor que captura la función lambda:
+Las lambdas pueden **capturar valores externos** y usarlos para crear comportamientos diferentes.
+En este ejemplo, definiremos dos lambdas (`mayorQue` y `menorQue`) y las usaremos con el mismo algoritmo para producir resultados distintos.
 
 ```cpp
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 int main() {
-    int factor = 3;
+    std::vector<int> numeros = {1, 4, 7, 2, 9, 5};
+    int umbral = 5;
 
-    // Lambda que captura 'factor' por valor
-    auto multiplicar = [factor](int x) {
-        return x * factor;
+    // Lambda que determina si un número es mayor que el umbral
+    auto mayorQue = [umbral](int x) {
+        return x > umbral;
     };
 
-    std::cout << multiplicar(10) << "\n";  // Imprime 30
+    // Lambda que determina si un número es menor que el umbral
+    auto menorQue = [umbral](int x) {
+        return x < umbral;
+    };
+
+    // Buscar el primer número mayor que el umbral
+    auto it1 = std::find_if(numeros.begin(), numeros.end(), mayorQue);
+    if (it1 != numeros.end())
+        std::cout << "Primer número mayor que " << umbral << ": " << *it1 << "\n";
+
+    // Buscar el primer número menor que el umbral
+    auto it2 = std::find_if(numeros.begin(), numeros.end(), menorQue);
+    if (it2 != numeros.end())
+        std::cout << "Primer número menor que " << umbral << ": " << *it2 << "\n";
 }
 ```
+* Ambas lambdas capturan la variable `umbral` por valor (`[umbral]`), pero aplican **condiciones opuestas**.
+* El algoritmo `std::find_if` es el mismo: lo que cambia es el **criterio** que se le inyecta.
+* Así, con el mismo conjunto de datos y la misma lógica de búsqueda, obtenemos **comportamientos distintos** simplemente cambiando la lambda.
 
-En este caso, la lambda captura la variable `factor` y la usa dentro de su cuerpo para multiplicar el argumento `x`. Así, el comportamiento de la lambda depende del valor capturado en el momento de su creación.
-
-## Uso en funciones y algoritmos
-
-Las lambdas se utilizan ampliamente con algoritmos estándar:
-
-```cpp
-#include <algorithm>
-#include <vector>
-#include <iostream>
-
-int main() {
-    std::vector<int> valores = {1, 3, 5, 7, 9};
-    
-    // Buscar el primer valor mayor que 4
-    auto it = std::find_if(valores.begin(), valores.end(), [](int x) {
-        return x > 4;
-    });
-
-    if (it != valores.end())
-        std::cout << "Encontrado: " << *it << '\n';
-}
-```
-
-* Recuerda que `std::find_if` nos permite buscar un elemento que cumpla una condición.
-* La condición se establece por una función lambda.
-* El uso de lambdas nos aporta varias ventajas:
-    * Eliminan la necesidad de funciones auxiliares triviales.
-    * Permiten escribir código más expresivo y localizado.
-    * Facilitan la programación funcional y el paso de comportamiento como argumento.
-    * Pueden capturar el contexto (estado externo) cuando se necesita.
-
-## Ventajas de usar lambdas para el comportamiento intercambiable
-
-* **Simplicidad y concisión**: evitan la sobrecarga de definir clases o funciones adicionales.
-* **Flexibilidad**: pueden capturar y usar variables del entorno sin necesidad de pasarlas explícitamente.
-* **Claridad**: la lógica está localizada en el lugar de uso, mejorando la legibilidad.
-* **Intercambiabilidad**: se pueden pasar como argumentos, almacenar o modificar fácilmente.
-
+Hasta ahora hemos visto cómo las lambdas pueden **representar acciones** y **personalizar algoritmos**.
+En el siguiente apartado aprenderemos a **crear funciones o métodos que acepten funciones como parámetros**, lo que nos permitirá **inyectar comportamientos personalizados** y diseñar sistemas verdaderamente **configurables y flexibles**.
