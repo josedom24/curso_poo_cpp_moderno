@@ -1,252 +1,131 @@
 # Devolución de interfaces mediante punteros inteligentes
 
-En la programación orientada a objetos (POO), uno de los principios fundamentales es el uso de **interfaces abstractas** para lograr la **desacoplamiento** entre componentes. Esto permite que los clientes de una clase no dependan de implementaciones concretas, sino de contratos bien definidos. En C++ moderno, una práctica recomendada es devolver estas interfaces a través de **punteros inteligentes**, en lugar de punteros sin gestión (`raw pointers`) o referencias, para asegurar una correcta gestión de recursos y facilitar el uso del polimorfismo.
+En el apartado anterior se analizó por qué devolver **tipos concretos** conduce a un código **fuertemente acoplado**, difícil de extender y de mantener.
+También se mostró que, aunque devolver objetos polimórficos parece una alternativa más flexible, en C++ presenta **problemas técnicos** como el *object slicing*, las referencias colgantes y la gestión manual de memoria.
 
-Cuando una función produce una instancia de un objeto cuya clase concreta está oculta al cliente y solo se expone su interfaz abstracta, es necesario devolver ese objeto de una forma que:
+La solución moderna y segura es **devolver interfaces abstractas a través de punteros inteligentes**.
+De este modo, una función puede crear un objeto de una clase concreta y devolverlo **como interfaz base**, ocultando completamente los detalles de su implementación y garantizando una gestión automática de los recursos.
 
-* **Preserve el polimorfismo**.
-* **Evite fugas de memoria**.
-* Permita **transferir la propiedad** del objeto creado.
-* Respete los principios de diseño como *programar contra interfaces* y *responsabilidad única*.
+Recordemos que uno de los principios fundamentales del diseño orientado a objetos es **“programar contra interfaces, no contra implementaciones”**.
+Cuando una función devuelve una interfaz —y no una clase concreta— el código cliente no recibe *lo que el objeto es*, sino **lo que el objeto puede hacer**: las operaciones definidas en la interfaz.
+Esto permite trabajar con diferentes tipos de objetos de manera uniforme, sin conocer su clase real, manteniendo así **bajo acoplamiento** y **alta extensibilidad**.
 
-Esto no puede lograrse eficazmente devolviendo objetos por valor ni por referencia. Por ello, se emplean punteros inteligentes como `std::unique_ptr` o `std::shared_ptr`. Ya que'como sabemos, el uso de punteros (`raw pointer`) delega la responsabilidad de liberar memoria al cliente, lo que es propenso a errores.
+Este enfoque combina tres ideas esenciales del diseño en C++ moderno:
 
+1. **Polimorfismo dinámico:** el comportamiento se resuelve en tiempo de ejecución según el tipo real del objeto.
+2. **RAII y punteros inteligentes:** los recursos se gestionan automáticamente sin intervención del programador.
+3. **Desacoplamiento:** el cliente trabaja con la interfaz abstracta, sin depender de las clases concretas.
 
-## Ejemplo de interface
+De esta manera, las funciones pueden crear y devolver objetos de distintos tipos **de forma segura, flexible y coherente con los principios del diseño orientado a objetos**.
 
-Una interfaz en C++ se implementa como una clase abstracta que contiene al menos un método virtual puro:
+## Devolver una interfaz mediante `std::unique_ptr`
 
-```cpp
-class Shape {
-public:
-    virtual void draw() const = 0;
-    virtual ~Shape() = default;
-};
-```
-
-Las clases que implementan esta interfaz deben sobrescribir todos los métodos puros:
-
-```cpp
-class Circle : public Shape {
-public:
-    void draw() const override {
-        // Implementación específica
-    }
-};
-```
-
-## Uso de punteros inteligentes para devolver la interface
-
-El uso de `std::unique_ptr` o `std::shared_ptr` resuelve los problemas de delegar al cliente la liberación de memoria.
-
-### `std::unique_ptr<T>`: transferencia de propiedad única
-
-Es la opción preferida cuando el objeto creado no necesita ser compartido:
-
-```cpp
-std::unique_ptr<Shape> createShape() {
-    return std::make_unique<Circle>();
-}
-```
-
-Ventajas:
-
-* Garantiza destrucción automática del objeto.
-* No se puede copiar, solo mover.
-* Reduce ambigüedades de ownership.
-
-### `std::shared_ptr<T>`: propiedad compartida
-
-Se utiliza si múltiples componentes necesitan compartir la propiedad del objeto:
-
-```cpp
-std::shared_ptr<Shape> createShape() {
-    return std::make_shared<Circle>();
-}
-```
-
-Ventajas:
-
-* Gestión automática con conteo de referencias.
-* Adecuado para estructuras de datos compartidas.
-
-## Ejemplo completo: Devolución de interfaces mediante `std::unique_ptr`
+Cuando el objeto devuelto tiene **una única propiedad** (nadie más necesita compartirlo), se utiliza `std::unique_ptr`. Este tipo de puntero inteligente transfiere la propiedad de manera exclusiva y destruye automáticamente el objeto al salir del ámbito.
 
 ```cpp
 #include <iostream>
 #include <memory>
-#include <string>
 
-// Interfaz abstracta
-class Shape {
+// Interfaz base
+class Forma {
 public:
-    virtual void draw() const = 0;
-    virtual ~Shape() = default;
+    virtual void dibujar() const = 0;
+    virtual ~Forma() = default;
 };
 
-// Implementación concreta: Circle
-class Circle : public Shape {
+// Implementaciones concretas
+class Circulo : public Forma {
 public:
-    void draw() const override {
-        std::cout << "Dibujando un círculo.\n";
+    void dibujar() const override {
+        std::cout << "Dibujando un círculo\n";
     }
 };
 
-// Implementación concreta: Square
-class Square : public Shape {
+class Rectangulo : public Forma {
 public:
-    void draw() const override {
-        std::cout << "Dibujando un cuadrado.\n";
+    void dibujar() const override {
+        std::cout << "Dibujando un rectángulo\n";
     }
 };
 
-// Fábrica abstracta
-class ShapeFactory {
-public:
-    virtual std::unique_ptr<Shape> createShape() const = 0;
-    virtual ~ShapeFactory() = default;
-};
-
-// Fábrica concreta para Circle
-class CircleFactory : public ShapeFactory {
-public:
-    std::unique_ptr<Shape> createShape() const override {
-        return std::make_unique<Circle>();
-    }
-};
-
-// Fábrica concreta para Square
-class SquareFactory : public ShapeFactory {
-public:
-    std::unique_ptr<Shape> createShape() const override {
-        return std::make_unique<Square>();
-    }
-};
-
-// Cliente
-void clientCode(const ShapeFactory& factory) {
-    std::unique_ptr<Shape> shape = factory.createShape();
-    shape->draw();  // Llama a la implementación concreta a través de la interfaz
+// Función que devuelve la interfaz
+std::unique_ptr<Forma> crearForma(bool esCirculo) {
+    if (esCirculo)
+        return std::make_unique<Circulo>();
+    else
+        return std::make_unique<Rectangulo>();
 }
 
-// Programa principal
 int main() {
-    CircleFactory circleFactory;
-    SquareFactory squareFactory;
+    auto forma1 = crearForma(true);   // Crea un círculo
+    auto forma2 = crearForma(false);  // Crea un rectángulo
 
-    std::cout << "Usando CircleFactory:\n";
-    clientCode(circleFactory);
-
-    std::cout << "\nUsando SquareFactory:\n";
-    clientCode(squareFactory);
-
-    return 0;
+    forma1->dibujar();  // Llamada polimórfica → Circulo::dibujar()
+    forma2->dibujar();  // Llamada polimórfica → Rectangulo::dibujar()
 }
 ```
 
-* **`Shape`** es la interfaz abstracta que define el método `draw()`.
-* **`Circle` y `Square`** son implementaciones concretas que derivan de `Shape`.
-* **`ShapeFactory`** es la interfaz de fábrica abstracta que expone `createShape()`.
-* **`CircleFactory` y `SquareFactory`** implementan la creación concreta de `Circle` y `Square`, respectivamente.
-* La función **`clientCode`** recibe una referencia a `ShapeFactory`, solicita un objeto a través de la interfaz, y lo usa sin conocer su tipo concreto.
-* Se utiliza **`std::unique_ptr`** para garantizar que el recurso dinámico sea destruido automáticamente sin necesidad de intervención manual del cliente.*
+* La función `crearForma()` devuelve un `std::unique_ptr<Forma>`, ocultando el tipo concreto del objeto creado.
+* El cliente recibe un puntero a la interfaz `Forma` y puede usarlo sin conocer si se trata de un `Circulo` o un `Rectangulo`.
+* El polimorfismo dinámico garantiza que la llamada a `dibujar()` invoque la implementación adecuada.
+* Gracias a **RAII**, el objeto se destruye automáticamente cuando el puntero sale del ámbito, sin necesidad de `delete`.
 
-Conseguimos las siguientes ventajas:
+## Devolver una interfaz mediante `std::shared_ptr`
 
-* **Encapsulamiento**: el cliente nunca conoce las clases concretas.
-* **Polimorfismo seguro**: se trabaja siempre con punteros a la interfaz.
-* **RAII**: la gestión de memoria está garantizada sin llamadas a `delete`.
-* **Flexibilidad**: se pueden añadir nuevas formas fácilmente creando nuevas fábricas concretas sin cambiar el código del cliente.
-
-## Ejemplo completo: Devolución de interfaces mediante `std::shared_ptr`
+En algunos escenarios, varios componentes pueden necesitar **compartir la misma instancia polimórfica** (por ejemplo, un recurso gráfico o un servicio común).
+En estos casos, se utiliza `std::shared_ptr`, que mantiene un **conteo de referencias** y destruye el objeto cuando la última referencia desaparece.
 
 ```cpp
 #include <iostream>
 #include <memory>
-#include <string>
 
-// Interfaz abstracta
-class Shape {
+// Interfaz base
+class Forma {
 public:
-    virtual void draw() const = 0;
-    virtual ~Shape() = default;
+    virtual void dibujar() const = 0;
+    virtual ~Forma() = default;
 };
 
-// Implementación concreta: Circle
-class Circle : public Shape {
+// Implementaciones concretas
+class Circulo : public Forma {
 public:
-    void draw() const override {
-        std::cout << "Dibujando un círculo.\n";
+    void dibujar() const override {
+        std::cout << "Dibujando un círculo\n";
     }
 };
 
-// Implementación concreta: Square
-class Square : public Shape {
+class Rectangulo : public Forma {
 public:
-    void draw() const override {
-        std::cout << "Dibujando un cuadrado.\n";
+    void dibujar() const override {
+        std::cout << "Dibujando un rectángulo\n";
     }
 };
 
-// Fábrica abstracta
-class ShapeFactory {
-public:
-    virtual std::shared_ptr<Shape> createShape() const = 0;
-    virtual ~ShapeFactory() = default;
-};
-
-// Fábrica concreta para Circle
-class CircleFactory : public ShapeFactory {
-public:
-    std::shared_ptr<Shape> createShape() const override {
-        return std::make_shared<Circle>();
-    }
-};
-
-// Fábrica concreta para Square
-class SquareFactory : public ShapeFactory {
-public:
-    std::shared_ptr<Shape> createShape() const override {
-        return std::make_shared<Square>();
-    }
-};
-
-// Cliente
-void clientCode(const ShapeFactory& factory) {
-    std::shared_ptr<Shape> shape = factory.createShape();
-    shape->draw();
-
-    // Otra referencia compartida al mismo objeto
-    std::shared_ptr<Shape> shapeCopy = shape;
-    std::cout << "Referencias compartidas: "
-              << shape.use_count() << "\n";
-
-    shapeCopy->draw();
+// Función que devuelve una interfaz compartida
+std::shared_ptr<Forma> crearForma(bool esCirculo) {
+    if (esCirculo)
+        return std::make_shared<Circulo>();
+    else
+        return std::make_shared<Rectangulo>();
 }
 
-// Programa principal
 int main() {
-    CircleFactory circleFactory;
-    SquareFactory squareFactory;
+    auto forma1 = crearForma(true);   // Círculo
+    auto forma2 = crearForma(false);  // Rectángulo
 
-    std::cout << "Usando CircleFactory:\n";
-    clientCode(circleFactory);
+    // Dos punteros compartiendo el mismo objeto
+    auto formaCompartida = forma1;
 
-    std::cout << "\nUsando SquareFactory:\n";
-    clientCode(squareFactory);
+    forma1->dibujar();  // Circulo
+    forma2->dibujar();  // Rectangulo
 
-    return 0;
+    std::cout << "Referencias compartidas al círculo: "
+              << forma1.use_count() << "\n";
 }
 ```
 
-* Se reemplaza `std::unique_ptr` por `std::shared_ptr` en toda la jerarquía.
-* Los objetos creados pueden tener **múltiples propietarios**, como se observa en `shapeCopy`.
-* Se utiliza `use_count()` para mostrar cuántas referencias comparten el objeto.
-
-
-Usa `std::shared_ptr` cuando:
-
-* El objeto debe **persistir mientras haya referencias vivas**.
-* Hay **múltiples componentes** que usan el mismo objeto sin que uno tenga la responsabilidad exclusiva de destruirlo.
-* Se almacena en **contenedores compartidos** como `std::vector<std::shared_ptr<Shape>>`.
+* `crearForma()` devuelve un `std::shared_ptr<Forma>`, lo que permite compartir la misma instancia entre varios punteros.
+* Cada vez que se copia el puntero, el contador interno aumenta; cuando todas las referencias desaparecen, el objeto se destruye automáticamente.
+* Esto es útil para recursos compartidos entre múltiples componentes.
+* El método `use_count()` permite consultar cuántas referencias apuntan al mismo objeto.
 
