@@ -1,12 +1,13 @@
 # Uso de `std::function` para encapsular comportamiento configurable
 
-En C++ moderno, `std::function` es un componente de la biblioteca estándar que permite **almacenar, copiar y ejecutar cualquier objeto invocable**, como funciones, lambdas, punteros a funciones o functores. Actúa como un contenedor polimórfico para comportamientos, lo que permite pasar funciones como argumentos o configurarlas dinámicamente, **sin necesidad de conocer su tipo exacto en tiempo de compilación**.
+En C++ moderno, `std::function` (definido en `<functional>`) permite **almacenar y ejecutar cualquier objeto invocable**, como funciones, lambdas, punteros a funciones o funtores.
+Actúa como un **contenedor polimórfico de comportamientos**, permitiendo pasar acciones como parámetros o configurarlas dinámicamente **sin conocer su tipo exacto en tiempo de compilación**.
 
-Este mecanismo proporciona una forma de **abstracción de comportamiento más flexible** que las interfaces tradicionales o las plantillas, permitiendo desacoplar componentes de sus dependencias funcionales de forma dinámica y uniforme.
+De esta forma, `std::function` facilita el diseño de **componentes configurables y desacoplados**, sin recurrir necesariamente a herencia o plantillas.
 
-`std::function` es una plantilla de clase definida en `<functional>` que representa cualquier objeto que se pueda invocar con una determinada firma.
+## ¿Qué es `std::function`?
 
-La sintaxis general es:
+Su sintaxis general es:
 
 ```cpp
 std::function<tipo_retorno(parámetros)>
@@ -18,16 +19,11 @@ Por ejemplo:
 std::function<bool(int, int)> comparador;
 ```
 
-Este objeto puede almacenar cualquier lambda, función o clase con `operator()` que reciba dos `int` y devuelva `bool`.
+Este objeto puede almacenar **cualquier invocable**, por ejemplo **funciones, lambdas o clases con `operator()`** que reciba dos `int` y devuelva un `bool`. 
 
-## Ventajas de `std::function`
+## Ejemplo 1: selección dinámica de comportamiento
 
-* **Homogeneidad**: permite tratar por igual a funciones, lambdas y objetos con `operator()`.
-* **Flexibilidad en tiempo de ejecución**: se puede cambiar el comportamiento dinámicamente.
-* **Desacoplamiento**: evita depender de clases concretas o plantillas, permitiendo interfaces limpias.
-* **Interoperabilidad**: facilita la interacción entre componentes que aceptan comportamientos como parámetros.
-
-## Ejemplo básico: selección dinámica de comportamiento
+En este ejemplo, `std::function` permite que una función reciba **distintas operaciones** sin importar su origen.
 
 ```cpp
 #include <iostream>
@@ -46,24 +42,19 @@ int main() {
 }
 ```
 
-* Se incluye la librería `<functional>`, que permite usar `std::function` para encapsular funciones, lambdas o funtores con una firma específica.
-* Se define la función `ejecutarOperacion` que recibe tres parámetros:
-  * Dos enteros `a` y `b`.
-  * Un objeto `operacion` de tipo `std::function<int(int, int)>`, es decir, cualquier función que reciba dos `int` y devuelva un `int`.
-* Dentro de `ejecutarOperacion`, se llama a `operacion(a, b)` y se imprime el resultado.
-* En `main()` se definen dos lambdas:
-  * `suma`, que recibe dos enteros y devuelve su suma.
-  * `resta`, que recibe dos enteros y devuelve su resta.
-* Se llama a `ejecutarOperacion` con los valores `5` y `3` usando la lambda `suma`, por lo que se imprime `Resultado: 8`.
-* Se llama a `ejecutarOperacion` con los mismos valores pero usando la lambda `resta`, por lo que se imprime `Resultado: 2`.
+* `std::function<int(int,int)>` representa *cualquier* función que reciba dos `int` y devuelva un `int`.
+* `ejecutarOperacion` no conoce las funciones concretas, solo las ejecuta.
+* El comportamiento se **inyecta** dinámicamente a través del parámetro.
 
-Este ejemplo muestra cómo usar `std::function` para pasar comportamiento intercambiable (en este caso, operaciones matemáticas) a una función, facilitando la flexibilidad y el desacoplamiento del código.
 
-## Almacenamiento de comportamientos
+## Ejemplo 2: almacenamiento de comportamiento configurable
 
-`std::function` puede ser miembro de una clase para **almacenar una estrategia configurable**:
+`std::function` puede usarse como miembro de una clase para definir **estrategias personalizables**.
 
 ```cpp
+#include <iostream>
+#include <functional>
+
 class Procesador {
 public:
     void setOperacion(std::function<int(int, int)> op) {
@@ -78,54 +69,45 @@ private:
     std::function<int(int, int)> operacion_;
 };
 
-int main () {
+int main() {
     Procesador p;
+
+    // Configurar la operación de multiplicar
     p.setOperacion([](int x, int y) { return x * y; });
-    std::cout << p.procesar(4, 5); // 20
+    std::cout << "Multiplicación: " << p.procesar(4, 5) << "\n";
+
+    // Cambiar el comportamiento dinámicamente
+    p.setOperacion([](int x, int y) { return x + y; });
+    std::cout << "Suma: " << p.procesar(4, 5) << "\n";
 }
 ```
 
-* Se define la clase `Procesador`, que permite almacenar y usar una operación matemática configurable.
-* La clase tiene un método público `setOperacion` que recibe un objeto de tipo `std::function<int(int, int)>`. Esto significa que puede recibir cualquier función, lambda o functor que tome dos `int` y devuelva un `int`.
-* Dentro de la clase, el objeto recibido se guarda en el miembro privado `operacion_`.
-* El método `procesar` recibe dos enteros `a` y `b` y devuelve el resultado de aplicar la operación almacenada (`operacion_(a, b)`).
-* En la función `main`:
-  * Se crea una instancia `p` de la clase `Procesador`.
-  * Se llama a `setOperacion` pasando una lambda que multiplica dos enteros.
-  * Se llama a `p.procesar(4, 5)`, que ejecuta la lambda almacenada con los argumentos 4 y 5, devolviendo 20.
-  * Finalmente, se imprime el resultado `20`.
-
-Este ejemplo ilustra cómo encapsular comportamiento intercambiable en un objeto mediante `std::function`, facilitando la composición flexible y la inyección de lógica sin necesidad de herencia o interfaces explícitas.
-
-## Uso común: registrar callbacks
-
-Un **callback** es una función que se pasa como argumento a otra función u objeto, para que se llame más adelante —normalmente como respuesta a un evento o condición.
-
-Registrar callbacks significa **asociar una función (o comportamiento)** que será llamada automáticamente **cuando ocurra un evento o condición específica**.
-
-En otras palabras, cuando “registras un callback”, estás diciendo: *"Cuando ocurra X, ejecuta esta función que te paso ahora."*
+* `setOperacion()` permite cambiar el comportamiento sin modificar la clase.
+* `std::function` actúa como un “espacio para guardar una acción”.
+* Este enfoque combina **encapsulamiento** y **flexibilidad en tiempo de ejecución**.
 
 
-Veamos a un ejemplo: imagina un botón gráfico. No sabes qué debe hacer ese botón exactamente, pero quieres que quien lo use decida. Entonces tú le permites que “registre un callback” así:
+## Ejemplo 3: registrar callbacks
+
+Un **callback** es una función que se pasa como argumento para que se ejecute más adelante, normalmente **como respuesta a un evento**.
+Esta técnica es la base de muchos sistemas de **programación reactiva o por eventos**.
 
 ```cpp
 #include <iostream>
 #include <functional>
 
 class Boton {
+private:
+    std::function<void()> callback_;
 public:
     void registrarAlPulsar(std::function<void()> f) {
-        callback = f;  // Aquí se registra el callback
+        callback_ = f;
     }
 
     void pulsar() {
-        if (callback) callback();  // Aquí se invoca
+        if (callback_) callback_();
     }
-
-private:
-    std::function<void()> callback;
 };
-
 
 int main() {
     Boton b;
@@ -134,14 +116,13 @@ int main() {
         std::cout << "¡Botón pulsado!\n";
     });
 
-    b.pulsar();  // Resultado: ¡Botón pulsado!
+    b.pulsar(); // Imprime: ¡Botón pulsado!
 }
 ```
 
-Se encapsula el comportamiento de la acción del botón usando una lambda pasada a través de `std::function`. Esto permite que el código que define el botón no dependa del comportamiento específico al pulsarlo.
+* `Boton` no conoce qué hará el código cuando se pulse; solo **almacena e invoca** la acción.
+* El comportamiento puede cambiarse fácilmente: solo hay que registrar una lambda distinta.
+* Esto implementa el principio de **desacoplar el evento de su respuesta**.
 
-Esto es muy útil:
+En el siguiente apartado estudiaremos cómo las **clases con `operator()`** (functores) pueden cumplir un papel similar al de las lambdas, pero ofreciendo **mayor capacidad de encapsulación y reutilización** del comportamiento.
 
-* Permite **desacoplar** la lógica: el objeto que registra el callback no necesita saber qué hará el callback.
-* Permite **comportamiento configurable**: diferentes partes del código pueden registrar funciones distintas según la necesidad.
-* Es una técnica base en **programación orientada a eventos**, **interfaces gráficas**, **librerías reutilizables**, etc.
