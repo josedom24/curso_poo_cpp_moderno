@@ -24,6 +24,7 @@
     * [Gestión manual de memoria dinámica](contenido/modulo03/memoria.md)
     * [Propiedad de recursos y patrón RAII](contenido/modulo03/raii.md)
     * [Uso de punteros inteligentes en la gestión de memoria dinámica](contenido/modulo03/inteligentes.md)
+    * [Clases y punteros inteligentes](contenido/modulo03/clases.md)
     * [Ejercicios sobre gestión de memoria dinámica](contenido/modulo03/ejercicios.md)
 
 4. Relaciones entre clases

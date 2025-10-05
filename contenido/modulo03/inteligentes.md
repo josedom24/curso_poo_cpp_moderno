@@ -120,11 +120,3 @@ int main() {
     return 0;
 }
 ```
-
-En resumen:
-
-* `unique_ptr` → propiedad exclusiva.
-* `shared_ptr` → propiedad compartida.
-* `weak_ptr` → observador, evita ciclos de referencias.
-* `make_unique` y `make_shared` → formas seguras y modernas de crear punteros inteligentes.
-
