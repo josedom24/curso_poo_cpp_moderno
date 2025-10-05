@@ -67,7 +67,7 @@
 8. Plantillas de clases y programación genérica
 
     * [Introducción a las plantillas de clases](contenido/modulo08/plantillas.md)
-    * [Clases genéricas con uno o varios parámetros de tipo](contenido/modulo08/parametros.md)
+    * [Plantillas de clase con múltiples parámetros](contenido/modulo08/parametros.md)
     * [Especialización de plantillas de clase](contenido/modulo08/especializacion.md)
     * [Las plantillas de clase y la STL](contenido/modulo08/stl.md)
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)
