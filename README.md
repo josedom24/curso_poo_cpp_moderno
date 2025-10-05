@@ -23,7 +23,7 @@
     * [Introducción a la gestión de recursos en C++ moderno](contenido/modulo03/introduccion.md)
     * [Gestión manual de memoria dinámica](contenido/modulo03/memoria.md)
     * [Propiedad de recursos y patrón RAII](contenido/modulo03/raii.md)
-    * [Uso de punteros inteligentes en la gestión de memoria dinámica](contenido/modulo03/inteligentes.md)
+    * [Gestión de memoria con punteros inteligentes](contenido/modulo03/inteligentes.md)
     * [Clases y punteros inteligentes](contenido/modulo03/clases.md)
     * [Ejercicios sobre gestión de memoria dinámica](contenido/modulo03/ejercicios.md)
 
@@ -69,7 +69,7 @@
 8. Plantillas de clases y programación genérica
 
     * [Introducción a las plantillas de clases](contenido/modulo08/plantillas.md)
-    * [Plantillas de clase con múltiples parámetros](contenido/modulo08/parametros.md)
+    * [Clases genéricas con uno o varios parámetros de tipo](contenido/modulo08/parametros.md)
     * [Especialización de plantillas de clase](contenido/modulo08/especializacion.md)
     * [Las plantillas de clase y la STL](contenido/modulo08/stl.md)
     * [Plantilla de clase: `std::optional`](contenido/modulo07/optional.md)

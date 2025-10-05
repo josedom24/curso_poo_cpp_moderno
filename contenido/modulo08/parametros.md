@@ -1,4 +1,4 @@
-# Plantillas de clase con múltiples parámetros
+# Clases genéricas con uno o varios parámetros de tipo
 
 En el apartado anterior se vio cómo definir plantillas con un único parámetro de tipo.
 Sin embargo, en muchos casos una clase necesita trabajar con **varios tipos simultáneamente**.
