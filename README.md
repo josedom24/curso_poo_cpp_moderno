@@ -61,7 +61,7 @@
     * [Representación de acciones con funciones lambdas](contenido/modulo07/lambda.md)
     * [Uso de `std::function` para encapsular comportamiento configurable](contenido/modulo07/function.md)
     * [Functores y clases con `operator()`](contenido/modulo07/functor.md)
-    * [Inyección de comportamiento: composición y estrategia](contenido/modulo07/inyeccion.md)
+    * [Inyección de comportamiento mediante composición](contenido/modulo07/composicion.md)
     * Ejercicios sobre abstracción de comportamiento
     
 8. Plantillas de clases y programación genérica
