@@ -53,7 +53,7 @@ El sistema se estructura en torno a cuatro clases principales:
 
 El siguiente diagrama UML muestra las relaciones entre las clases principales:
 
-![uml]
+![uml](img/uml.png)
 
 * La clase `Dispositivo` define la interfaz común para todos los dispositivos.
 * `Sensor` y `Actuador` derivan de `Dispositivo` y proporcionan implementaciones específicas.
