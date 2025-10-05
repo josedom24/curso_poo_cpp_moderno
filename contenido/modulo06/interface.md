@@ -1,45 +1,41 @@
-# Interfaces puras y su implementación
+# Interfaces puras y diseño orientado a contratos
 
-En programación orientada a objetos, una **interfaz** es un conjunto de funciones públicas que una clase expone y que define **qué puede hacer** un objeto, sin especificar **cómo lo hace**. En C++, no existe un tipo especial llamado `interface` como en otros lenguajes (Java, C#), pero se puede representar mediante **clases abstractas puras**, es decir, clases que contienen exclusivamente **métodos virtuales puros**.
+En el apartado anterior se ha visto cómo una **clase abstracta** puede definir una interfaz común que obliga a sus derivadas a implementar ciertos comportamientos.
+En este punto damos un paso más: analizaremos el caso en el que una clase abstracta **no proporciona ninguna implementación**, sino únicamente **la definición del conjunto de operaciones que deben ofrecer sus derivadas**.
 
-Estas clases proporcionan una forma robusta de diseñar software flexible, extensible y desacoplado, favoreciendo principios como **programar contra interfaces y no contra implementaciones**.
+Este tipo de clase se denomina **interfaz pura** (*pure interface*) y se utiliza para establecer **contratos de comportamiento**: especifica *qué* debe hacer una familia de clases, pero no *cómo* hacerlo.
 
-Una **interfaz pura** en C++ es una clase abstracta que cumple las siguientes condiciones:
+## Interfaz pura
 
-* Contiene **solo funciones miembro virtuales puras**, es decir, declaradas con `= 0`.
-* No proporciona implementación funcional (salvo, opcionalmente, un destructor virtual).
-* Su propósito es **definir un contrato** que deben cumplir todas las clases derivadas.
+En C++ no existe un tipo especial denominado `interface` como en otros lenguajes (Java, C#). Sin embargo, puede representarse de forma natural mediante una **clase abstracta que solo contiene métodos virtuales puros** y, opcionalmente, un destructor virtual.
 
-Ejemplo:
+Una interfaz pura se caracteriza por cumplir estas condiciones:
 
-```cpp
-class Dibujable {
-public:
-    virtual void dibujar() const = 0;   // Método virtual puro
-    virtual ~Dibujable() = default;     // Destructor virtual necesario
-};
-```
+1. **Contiene exclusivamente funciones miembro virtuales puras**, declaradas con `= 0`.
+2. **No mantiene estado propio** (no tiene atributos de datos).
+3. **No proporciona implementación funcional** (solo define la forma de la interfaz).
+4. **Su propósito es definir un contrato**, que las clases concretas deben cumplir al implementarla.
 
-Una **interfaz pura**:
+Diseñar a partir de interfaces favorece varios principios fundamentales del diseño orientado a objetos:
 
-* **No se puede instanciar**: al contener al menos un método virtual puro, la clase es abstracta y no puede usarse para crear objetos directamente.
-* **Define una interfaz, no una implementación**: las clases derivadas deben proporcionar su propia implementación de todos los métodos virtuales puros.
-* **Soporte para polimorfismo**: permite escribir código que trabaje con objetos a través de referencias o punteros a la interfaz, sin conocer su tipo concreto en tiempo de compilación.
-* **Favorece la extensibilidad**: nuevas clases pueden adherirse a la interfaz sin modificar el código existente, cumpliendo con el **principio abierto/cerrado (OCP)**.
-* **Consigue el desacoplamiento** entre definición y uso.
+* **Desacoplamiento:** el código cliente depende de una interfaz estable, no de una clase concreta.
+* **Extensibilidad:** nuevas implementaciones pueden añadirse sin modificar el código existente (*Principio abierto/cerrado – OCP*).
+* **Sustitución segura:** cualquier clase que implemente la interfaz puede sustituir a otra sin alterar el comportamiento (*Principio de sustitución de Liskov – LSP*).
+* **Testabilidad:** las dependencias pueden simularse fácilmente mediante objetos ficticios (*mocks*).
 
-## Ejemplo 
+
+Veamos un ejemplo: El siguiente programa define una interfaz pura `Dibujable` y dos clases que la implementan. Una función genérica `renderizar()` opera sobre la interfaz sin conocer los tipos concretos de los objetos.
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <memory>
+#include <vector>
 
-// Definimos la interfaz pura
+// Interfaz pura
 class Dibujable {
 public:
-    virtual void dibujar() const = 0;
-    virtual ~Dibujable() = default;
+    virtual void dibujar() const = 0;   // Método virtual puro
+    virtual ~Dibujable() = default;     // Destructor virtual
 };
 
 // Clases concretas que implementan la interfaz
@@ -72,8 +68,14 @@ int main() {
 }
 ```
 
-* `Dibujable` es una interfaz pura.
-* `Circulo` y `Rectangulo` la implementan.
-* `renderizar` puede operar sobre cualquier objeto que implemente `Dibujable`, sin conocer su tipo real.
 
----
+* **Definición de la interfaz:**: `Dibujable` declara el método virtual puro `dibujar()` y un destructor virtual. No mantiene estado ni implementación, por lo que representa únicamente la **forma del contrato**.
+* **Implementaciones concretas:**: `Circulo` y `Rectangulo` implementan el método `dibujar()` definido en la interfaz. Si una de ellas omitiera esta función, seguiría siendo abstracta y no podría instanciarse.
+* **Uso de punteros inteligentes:**: Los objetos se almacenan mediante `std::unique_ptr<Dibujable>`, lo que permite gestionar automáticamente su ciclo de vida. Esto habilita el uso polimórfico sin preocuparse por la liberación manual de memoria.
+* **Polimorfismo en acción:**: La función `renderizar()` opera sobre la interfaz `Dibujable`.
+   Cada llamada a `obj->dibujar()` se resuelve dinámicamente según el tipo real del objeto (`Circulo` o `Rectangulo`), sin que la función tenga que conocerlo.
+
+
+## UML
+
+![uml](img/diagrama1.png)

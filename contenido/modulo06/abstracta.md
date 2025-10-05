@@ -19,7 +19,7 @@ Este mecanismo es la base del **diseño polimórfico**, permitiendo escribir có
 Una **clase abstracta** en C++ se caracteriza por contener al menos una **función miembro virtual pura**, declarada con el sufijo `= 0`.
 La presencia de este tipo de función convierte automáticamente a la clase en **no instanciable**.
 
-Veamos un  ejemplo, donde se define una jerarquía de clases que representan figuras geométricas. Cada figura puede dibujarse, pero la forma concreta de hacerlo depende del tipo de figura.
+Veamos un  ejemplo, donde se define una jerarquía de clases que representan figuras geométricas. Cada figura puede dibujarse, pero la manera concreta en que se realiza esa acción depende del tipo de figura.
 
 ```cpp
 #include <iostream>
@@ -59,16 +59,21 @@ int main() {
 }
 ```
 
-* La clase `Figura` no proporciona una implementación concreta de `dibujar()`. Declara el método `dibujar()` como virtual puro (`= 0`), convirtiéndose en una clase abstracta. No puede instanciarse directamente y sirve como **interfaz común** para todas las figuras.
+* La clase Figura no proporciona una implementación concreta de `dibujar()`. Declara el método `dibujar()` como virtual puro (`= 0`), convirtiéndose en una clase abstracta. No puede instanciarse directamente y sirve como **interfaz común** para todas las figuras.
 * Cualquier clase derivada que herede de `Figura` estará **obligada** a implementar dicho método para ser instanciable. Las clases `Circulo` y `Rectangulo` redefinen el método `dibujar()` utilizando la palabra clave `override`, que garantiza que coincida exactamente con la función virtual de la base.
 * Si una clase derivada no implementa todos los métodos virtuales puros heredados, también será abstracta.
 * El destructor de una clase base polimórfica debe ser **virtual**, para garantizar la destrucción correcta de objetos derivados.
-* Se emplea `std::unique_ptr<Figura>` para gestionar los objetos polimórficos. Esto asegura la liberación automática de memoria mediante RAII, evitando fugas.
-* Un `std::vector` de punteros a `Figura` puede contener objetos de distintos tipos (`Circulo`, `Rectangulo`). En el bucle, la llamada `figura->dibujar()` se resuelve dinámicamente según el tipo real del objeto.
-* Es esencial para que, al destruir un `unique_ptr<Figura>`, se llame correctamente al destructor de `Circulo` o `Rectangulo`.
+* Se emplea `std::unique_ptr<Figura>` para gestionar los objetos polimórficos de forma automática.
+  Gracias al principio **RAII** (*Resource Acquisition Is Initialization*), los recursos dinámicos se liberan cuando los punteros inteligentes salen de ámbito, evitando fugas de memoria.
+* Un `std::vector` de punteros a `Figura` puede contener objetos de distintos tipos (`Circulo`, `Rectangulo`).
+  En el bucle, la llamada `figura->dibujar()` se resuelve dinámicamente según el **tipo real** del objeto, demostrando el uso del **polimorfismo dinámico**.
+* La clase base `Figura` declara un **destructor virtual**, lo que garantiza que, al destruir un `std::unique_ptr<Figura>`, se invoque correctamente el destructor del objeto derivado correspondiente (`Circulo` o `Rectangulo`).
+  Esto es indispensable cuando se trabaja con jerarquías polimórficas, ya que de lo contrario podría producirse una **destrucción incompleta** del objeto.
 
 ## UML
 
-![uml](img/diagrama1.png
-)
+![uml](img/diagrama1.png)
+
+
+En el siguiente apartado analizaremos cómo **una clase abstracta que solo contiene métodos virtuales puros** se convierte en una **interfaz pura**, utilizada para definir contratos de comportamiento totalmente desacoplados de su implementación.
 

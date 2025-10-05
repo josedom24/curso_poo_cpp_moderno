@@ -49,7 +49,7 @@
 6. Interfaces y diseño polimórfico
 
     * [Clases abstractas y métodos virtuales puros](contenido/modulo06/abstracta.md)
-    * [Interfaces puras y su implementación](contenido/modulo06/interface.md)
+    * [Interfaces puras y diseño orientado a contratos](contenido/modulo06/interface.md)
     * [Devolución de interfaces mediante punteros inteligentes](contenido/modulo06/devolucion.md)
     * [Separación entre interfaz y detalle de implementación (Pimpl idiom)](contenido/modulo06/separacion.md)
     * Ejercicios sobre interfaces
