@@ -62,22 +62,45 @@ Este programa demuestra que:
 
 Si un constructor recibe un único parámetro, puede usarse como conversión implícita, lo que a veces causa errores. Para evitarlo se emplea la palabra clave **`explicit`**:
 
+Aquí tienes un ejemplo completo y comentado que muestra el uso de `explicit` en un constructor:
+
 ```cpp
+#include <iostream>
+
 class Entero {
 private:
     int valor;
 
 public:
+    // Constructor con un único parámetro
+    // 'explicit' evita conversiones implícitas no deseadas
     explicit Entero(int v) : valor{v} {}
+
+    int getValor() const { return valor; }
 };
+
+// Función que recibe un objeto Entero
+void mostrar(const Entero& e) {
+    std::cout << "Valor: " << e.getValor() << '\n';
+}
+
+int main() {
+    Entero e1(10);  // Correcto: construcción explícita
+    mostrar(e1);
+
+    // Entero e2 = 20;     // Error: conversión implícita prohibida por 'explicit'
+    // mostrar(30);        // Error: no se convierte int → Entero automáticamente
+
+    mostrar(Entero(30));   // Correcto: conversión explícita
+
+    return 0;
+}
 ```
 
-Esto impide hacer:
+* `explicit` impide que el compilador convierta automáticamente un `int` en un `Entero`.
+* Esto evita errores sutiles cuando una función espera un `Entero` y se pasa un `int` por descuido.
+* Para crear el objeto, debe hacerse de forma **explícita**: `Entero(30)` o `Entero e(30);`.
 
-```cpp
-Entero e = 5;   // Error
-Entero e(5);    // Correcto
-```
 
 ## Destructor
 
@@ -87,68 +110,102 @@ Un **destructor** es una función especial que se ejecuta automáticamente cuand
 * se elimina con `delete`,
 * o es destruido dentro de un contenedor.
 
-Su sintaxis es:
-
-```cpp
-~NombreDeClase();
-```
+Su sintaxis es: `~NombreDeClase();`
 
 Ejemplo:
 
 ```cpp
+#include <iostream>
+
 class Ejemplo {
-public:
-    ~Ejemplo() {
-        std::cout << "Destructor invocado\n";
-    }
-};
-```
-
-Si no se define, el compilador genera uno por defecto. 
-
-
-## Métodos constantes y objetos constantes
-
-* Un **método constante** se declara con `const` y garantiza que no modifica el objeto.
-* Un **objeto constante** solo puede invocar métodos constantes y no puede modificar sus atributos.
-
-```cpp
-class Persona {
 private:
     std::string nombre;
 
 public:
-    Persona(const std::string& n) : nombre{n} {}
+    // Constructor: se ejecuta al crear el objeto
+    Ejemplo(const std::string& n) : nombre{n} {
+        std::cout << "Constructor: " << nombre << " creado.\n";
+    }
 
-    std::string getNombre() const { return nombre; }
+    // Destructor: se ejecuta automáticamente al destruir el objeto
+    ~Ejemplo() {
+        std::cout << "Destructor: " << nombre << " destruido.\n";
+    }
 };
+
+int main() {
+    std::cout << "Inicio del programa.\n";
+
+    Ejemplo a("Objeto A"); // Se construye automáticamente
+    {
+        Ejemplo b("Objeto B"); // Se construye dentro de un bloque
+        std::cout << "Dentro del bloque.\n";
+    } // b sale de ámbito → se invoca su destructor aquí
+
+    std::cout << "Fin del programa.\n";
+    return 0; // Al finalizar main, se destruye 'a'
+}
 ```
 
-Si declaramos:
-
-```cpp
-const Persona p{"Luis"};
-p.getNombre();     // Correcto
-// p.setNombre("Ana");  // Error
-```
-
-Recomendación: **marcar como `const` todos los métodos que no alteren el estado**.
+* El **constructor** se llama cuando se crea el objeto (`Ejemplo a("Objeto A");`).
+* El **destructor (`~Ejemplo`)** se ejecuta automáticamente cuando el objeto sale de su ámbito.
+* El orden de destrucción es **inverso al de creación**: el último objeto creado es el primero en destruirse.
+* No es necesario invocar el destructor manualmente; el compilador lo hace por ti.
+* Si no se define, el compilador genera uno por defecto. 
 
 
 ## Uso de `=default` y `=delete`
 
-C++ permite controlar si ciertas funciones especiales (constructores, destructores, operadores, etc.) se deben **generadas automáticamente** (`=default`) o se deben **prohibir explícitamente** (`=delete`).
+C++ permite controlar si ciertas funciones especiales (constructores, destructores, operadores, etc.) se deben **generar automáticamente** (`=default`) o se deben **prohibir explícitamente** (`=delete`).
+
+Veamos un ejemplo:
+
+Aquí tienes un **ejemplo completo** y comentado que muestra el uso de `=default` y `=delete`:
 
 ```cpp
-class Ejemplo {
+#include <iostream>
+#include <string>
+
+class Archivo {
+private:
+    std::string nombre;
+
 public:
-    Ejemplo() = default;               // Constructor por defecto generado automáticamente
-    ~Ejemplo() = default;              // Destructor automático
-    Ejemplo(const Ejemplo&) = delete;  // Prohíbe la copia
+    // Constructor por defecto: generado automáticamente
+    Archivo() = default;
+
+    // Constructor con parámetro
+    Archivo(const std::string& n) : nombre{n} {}
+
+    // Destructor generado automáticamente
+    ~Archivo() = default;
+
+    // Prohibimos la copia: un archivo no puede copiarse
+    Archivo(const Archivo&) = delete;
+    Archivo& operator=(const Archivo&) = delete;
+
+    // Método para mostrar información
+    void mostrar() const {
+        std::cout << "Archivo: " << nombre << '\n';
+    }
 };
+
+int main() {
+    Archivo a1("datos.txt");
+    a1.mostrar();
+
+    Archivo a2;            // Se usa el constructor por defecto (=default)
+    // Archivo a3 = a1;    // Error: copia eliminada (=delete)
+    // a2 = a1;            // Error: asignación eliminada (=delete)
+
+    return 0;
+}
 ```
 
-Esto ofrece un control fino sobre la generación de constructores y destructores.
+* `=default` indica al compilador que genere automáticamente el **constructor por defecto** y el **destructor**.
+* `=delete` desactiva la **copia** y la **asignación**, impidiendo duplicar objetos de esta clase.
+* Este patrón es útil cuando los objetos **poseen recursos únicos** (como archivos o sockets) que **no deben copiarse**.
+* El compilador marcará un **error en tiempo de compilación** si se intenta realizar una operación eliminada.
 
 ## Ejemplo final
 
