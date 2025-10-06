@@ -37,7 +37,7 @@ int main() {
 }
 ```
 
-Si se omite `delete`, la memoria queda reservada sin liberarse → **fuga de memoria**.
+Si se omite `delete`, la memoria queda reservada sin liberarse: **fuga de memoria**.
 
 ### Ejemplo: gestión manual de archivos
 
@@ -63,8 +63,8 @@ C++ moderno incorpora mecanismos que automatizan la gestión de recursos, reduci
 
 Los más importantes son:
 
-* **Punteros inteligentes (`std::unique_ptr`, `std::shared_ptr`)** → gestionan memoria automáticamente.
-* **Patrón RAII (Resource Acquisition Is Initialization)** → los recursos se adquieren en el constructor y se liberan en el destructor de un objeto, garantizando seguridad incluso si hay excepciones.
+* **Punteros inteligentes (`std::unique_ptr`, `std::shared_ptr`)**: gestionan memoria automáticamente.
+* **Patrón RAII (Resource Acquisition Is Initialization)**: los recursos se adquieren en el constructor y se liberan en el destructor de un objeto, garantizando seguridad incluso si hay excepciones.
 
 Estos conceptos los desarrollaremos en los apartados siguientes.
 

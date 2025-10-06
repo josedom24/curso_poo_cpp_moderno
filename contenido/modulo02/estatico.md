@@ -19,10 +19,10 @@ Los atributos estáticos se declaran dentro de la clase con la palabra clave sta
 
 class Contador {
 private:
-    static int totalObjetos;             // no const → debe definirse fuera
-    static const int version = 1;        // const + integral → puede definirse aquí
-    static const double PI;              // const + no integral → definir fuera
-    static const std::string nombreClase; // const + no integral → definir fuera
+    static int totalObjetos;             // no const: debe definirse fuera
+    static const int version = 1;        // const + integral: puede definirse aquí
+    static const double PI;              // const + no integral: definir fuera
+    static const std::string nombreClase; // const + no integral: definir fuera
 
 public:
     Contador() {

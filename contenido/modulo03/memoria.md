@@ -47,8 +47,8 @@ Características:
 
 En C++ tradicional, se utilizan los operadores:
 
-* `new` → reserva memoria en el heap y devuelve un puntero.
-* `delete` → libera memoria previamente asignada con `new`.
+* `new`: reserva memoria en el heap y devuelve un puntero.
+* `delete`: libera memoria previamente asignada con `new`.
 * Para arrays: `new[]` y `delete[]`.
 
 ### Ejemplo: entero dinámico
@@ -93,7 +93,7 @@ Si se pierde la referencia a un bloque reservado, no se puede liberar:
 
 ```cpp
 int* ptr = new int(10);
-// Se pierde la referencia → fuga de memoria
+// Se pierde la referencia: fuga de memoria
 ptr = nullptr;
 ```
 

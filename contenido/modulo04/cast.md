@@ -103,7 +103,7 @@ int main() {
     Camara cam;
     Dispositivo base;
     procesar(cam);   // Conversión válida
-    procesar(base);  // Conversión inválida → lanza std::bad_cast
+    procesar(base);  // Conversión inválida: lanza std::bad_cast
 }
 ```
 * `Dispositivo` es una clase base **polimórfica** (tiene un método `virtual`).

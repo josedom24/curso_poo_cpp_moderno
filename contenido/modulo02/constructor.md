@@ -89,7 +89,7 @@ int main() {
     mostrar(e1);
 
     // Entero e2 = 20;     // Error: conversión implícita prohibida por 'explicit'
-    // mostrar(30);        // Error: no se convierte int → Entero automáticamente
+    // mostrar(30);        // Error: no se convierte int: Entero automáticamente
 
     mostrar(Entero(30));   // Correcto: conversión explícita
 
@@ -140,7 +140,7 @@ int main() {
     {
         Ejemplo b("Objeto B"); // Se construye dentro de un bloque
         std::cout << "Dentro del bloque.\n";
-    } // b sale de ámbito → se invoca su destructor aquí
+    } // b sale de ámbito: se invoca su destructor aquí
 
     std::cout << "Fin del programa.\n";
     return 0; // Al finalizar main, se destruye 'a'

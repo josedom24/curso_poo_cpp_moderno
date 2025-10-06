@@ -60,8 +60,8 @@ int main() {
     auto forma1 = crearForma(true);   // Crea un círculo
     auto forma2 = crearForma(false);  // Crea un rectángulo
 
-    forma1->dibujar();  // Llamada polimórfica → Circulo::dibujar()
-    forma2->dibujar();  // Llamada polimórfica → Rectangulo::dibujar()
+    forma1->dibujar();  // Llamada polimórfica: Circulo::dibujar()
+    forma2->dibujar();  // Llamada polimórfica: Rectangulo::dibujar()
 }
 ```
 

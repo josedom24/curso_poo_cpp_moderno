@@ -140,7 +140,7 @@ public:
 
 int main() {
     Incrementador inc(5);
-    std::cout << inc(10) << "\n";  // Llama a inc.operator()(10) → imprime 15
+    std::cout << inc(10) << "\n";  // Llama a inc.operator()(10): imprime 15
 }
 ```
 

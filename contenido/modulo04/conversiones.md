@@ -78,7 +78,7 @@ Aquí se observa que, aunque trabajamos con `std::unique_ptr<Animal>`, cada llam
 
 ## Conversiones implícitas y punteros inteligentes
 
-Las conversiones de derivada → base también funcionan con punteros inteligentes (`std::unique_ptr`, `std::shared_ptr`), siempre que la herencia sea pública:
+Las conversiones de derivada a base también funcionan con punteros inteligentes (`std::unique_ptr`, `std::shared_ptr`), siempre que la herencia sea pública:
 
 ```cpp
 #include <iostream>
@@ -108,8 +108,8 @@ int main() {
 
 ## Limitaciones y precauciones
 
-* La conversión **solo funciona de derivada → base**.
-* La conversión inversa (de base → derivada) **no es implícita**: se debe usar casting explícito (`dynamic_cast` con herencia polimórfica).
+* La conversión **solo funciona de derivada a base**.
+* La conversión inversa (de base a derivada) **no es implícita**: se debe usar casting explícito (`dynamic_cast` con herencia polimórfica).
 * Si la clase base **no declara destructores virtuales**, destruir objetos derivados a través de punteros base puede causar fugas de memoria o comportamiento indefinido.
 * Si no hay métodos virtuales, el puntero base no se comportará polimórficamente, sino que llamará siempre a la versión de la clase base.
 

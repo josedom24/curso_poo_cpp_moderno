@@ -69,7 +69,7 @@ int main() {
         auto sp2 = sp1; // Copia: ambos comparten propiedad
         std::cout << "Valor: " << *sp2 << "\n";
         std::cout << "Conteo: " << sp1.use_count() << "\n";
-    } // sp2 se destruye → el conteo baja
+    } // sp2 se destruye: el conteo baja
 
     std::cout << "Conteo tras salir del bloque: " << sp1.use_count() << "\n";
 
@@ -82,7 +82,7 @@ int main() {
 Un problema común con `shared_ptr` son los **ciclos de referencias**:
 
 * Ocurren cuando dos (o más) objetos se apuntan entre sí mediante `shared_ptr`.
-* Ninguno de los contadores llega a cero, por lo que el recurso **nunca se libera** → fuga de memoria.
+* Ninguno de los contadores llega a cero, por lo que el recurso **nunca se libera**: fuga de memoria.
 
 Ejemplo de ciclo:
 

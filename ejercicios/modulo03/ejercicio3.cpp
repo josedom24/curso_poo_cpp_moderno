@@ -37,10 +37,10 @@ int main() {
         sp2->usar();
 
         std::cout << "Saliendo del bloque interno...\n";
-    } // sp2 se destruye → el contador de referencias disminuye
+    } // sp2 se destruye: el contador de referencias disminuye
 
     std::cout << "Número de propietarios tras el bloque: " << sp1.use_count() << '\n';
 
     std::cout << "Fin del programa\n";
     return 0;
-} // sp1 se destruye → el contador llega a 0 → se libera el recurso
+} // sp1 se destruye, el contador llega a 0, se libera el recurso

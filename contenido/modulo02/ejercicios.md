@@ -4,8 +4,6 @@
 
 Crea una clase `Rectangulo` que modele un rectángulo en el plano.
 
-Requisitos:
-
 * La clase debe tener dos atributos privados: `base` y `altura` (ambos de tipo `double`).
 * Debe incluir:
 
@@ -19,8 +17,6 @@ Requisitos:
 
 Diseña una clase `CuentaBancaria` que represente una cuenta sencilla.
 
-Requisitos:
-
 * Atributos privados: `titular` (string) y `saldo` (double).
 * Un **constructor delegante**:
 
@@ -28,25 +24,21 @@ Requisitos:
   * Constructor con parámetros `(nombre, saldoInicial)` que use lista de inicialización.
 * Métodos públicos:
 
-  * `depositar(double cantidad)` → incrementa el saldo (solo si la cantidad es positiva).
-  * `retirar(double cantidad)` → decrementa el saldo (solo si la cantidad es positiva y no supera el saldo disponible).
-  * `mostrar()` → imprime la información de la cuenta.
+  * `depositar(double cantidad)`: incrementa el saldo (solo si la cantidad es positiva).
+  * `retirar(double cantidad)`: decrementa el saldo (solo si la cantidad es positiva y no supera el saldo disponible).
+  * `mostrar()`: imprime la información de la cuenta.
 * Implementa un `main()` que cree varias cuentas y realice operaciones de depósito y retiro.
 
 ## Ejercicio 3: Clase `Empleado` con atributos estáticos
 
 Implementa una clase `Empleado` que gestione información básica de empleados de una empresa.
 
-Requisitos:
-
 * Atributos privados: `nombre` (string), `salario` (double).
 * Atributo estático privado: `totalEmpleados`, que lleve la cuenta de cuántos empleados se han creado.
 * Constructores:
-
   * Constructor parametrizado para inicializar nombre y salario (usando lista de inicialización).
   * Incrementar `totalEmpleados` en cada construcción.
 * Métodos públicos:
-
   * `getNombre()` y `getSalario()` como **getters const**.
   * `setSalario(double nuevoSalario)` con validación (el salario no puede ser negativo).
   * `static int getTotalEmpleados()` para consultar cuántos empleados existen.
