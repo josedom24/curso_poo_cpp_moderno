@@ -2,17 +2,9 @@
 
 En C++, los constructores permiten inicializar los atributos de una clase al momento de la creación del objeto. La forma más eficiente y preferida de hacerlo es mediante **listas de inicialización**, que se colocan después de los dos puntos (`:`) y antes del cuerpo del constructor.
 
-La lista de inicialización evita una construcción por defecto seguida de una asignación, realizando en cambio una **construcción directa**. Esto es más eficiente y, en algunos casos, obligatorio.
+La lista de inicialización evita una construcción por defecto seguida de una asignación, realizando en cambio una **construcción directa**. Esto es más eficiente y, en algunos casos, obligatorio. Reflejan mejor la intención de inicializar, no de asignar.
 
-## Ventajas de las listas de inicialización
-
-* Permiten inicializar miembros `const`.
-* Permiten inicializar **referencias**, que deben estar listas al construirse el objeto.
-* Evitan construcciones temporales seguidas de asignaciones.
-* Son necesarias cuando se usan **tipos sin constructor por defecto**.
-* Reflejan mejor la intención de inicializar, no de asignar.
-
-## Ejemplo básico
+Veamos un ejemplo:
 
 ```cpp
 #include <iostream>
@@ -39,11 +31,11 @@ int main() {
 }
 ```
 
-## Casos donde la lista de inicialización es necesaria
-
-### Miembros `const`
+## Inicialización de miembros `const`
 
 Los miembros constantes deben **obligatoriamente** inicializarse en la lista de inicialización, ya que no se pueden asignar dentro del cuerpo del constructor.
+
+Veamos un ejemplo:
 
 ```cpp
 #include <iostream>
@@ -74,7 +66,13 @@ int main() {
 }
 ```
 
-### Referencias
+Los atributos se inicializan en el **orden en que se declaran en la clase**, no en el orden de la lista de inicialización. Desordenarlos puede causar advertencias o errores. Por ejejmplo:
+
+```cpp
+Punto(double x, double y) : y_{y}, x_{x} {}
+```
+
+## Inicialización de referencias
 
  Las referencias deben inicializarse en el momento de la construcción. Veamos un ejemplo:
 
@@ -135,11 +133,9 @@ int main() {
 
 
 
-### Tipos sin constructor por defecto
+### Inicialización de atributos sin constructor por defecto
 
-Una razón fundamental para usar listas de inicialización en C++ es cuando se tiene que inicializar un miembro de tipo **sin constructor por defecto**. En estos casos, **no puedes asignarle un valor en el cuerpo del constructor, porque ya debe estar inicializado al entrar al cuerpo**.
-
-Esto ocurre normalmente cuando usamos **composición** (un atributo de una clase es un objeto de otra clase). En este caso, cuando el objeto de la otra clase **no tiene constructor por defecto tenemos que usar la lista de inicialización , ya que El miembro debe estar completamente inicializado antes de ejecutar el cuerpo del constructor**. Ejemplo:
+Una razón fundamental para usar listas de inicialización en C++ es cuando una clase tiene un miembro cuyo tipo **no dispone de constructor por defecto**. En ese caso, dicho miembro **debe inicializarse en la lista de inicialización**, ya que el compilador intenta construirlo antes de ejecutar el cuerpo del constructor.
 
 Imaginemos que tenemos una clase `ConexionBD` que representa una conexión a una base de datos y que **necesita obligatoriamente un string de conexión** al construirse. No tiene constructor por defecto, porque no tendría sentido crear una conexión “vacía”.
 
@@ -186,21 +182,6 @@ int main() {
 * En la clase `Aplicacion`, el atributo `conexion` **debe inicializarse en la lista de inicialización** del constructor, porque no podría asignarse después.
 * Esto ilustra el caso típico de **composición en C++ moderno**.
 
-
-## Orden de inicialización
-
-Los atributos se inicializan en el **orden en que se declaran en la clase**, no en el orden de la lista de inicialización. Desordenarlos puede causar advertencias o errores.
-
-```cpp
-class Ejemplo {
-private:
-    int a;
-    int b;
-
-public:
-    Ejemplo(int x, int y) : b{y}, a{x} {}  // primero se inicializa 'a', luego 'b'
-};
-```
 
 ## Uso combinado con constructores delegantes
 
