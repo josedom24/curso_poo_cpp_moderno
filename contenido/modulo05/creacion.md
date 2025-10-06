@@ -1,4 +1,4 @@
-# Ampliación de constructores: control de creación y copia de objetos en C++
+# Control de creación y copia de objetos en C++
 
 En C++ moderno, los constructores no solo sirven para inicializar objetos, sino también para **controlar cómo y cuándo se pueden crear, copiar o asignar instancias** de una clase.
 Este control es fundamental al diseñar clases que deben cumplir restricciones estrictas, como:
