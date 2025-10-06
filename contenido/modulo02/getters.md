@@ -9,7 +9,7 @@ Para acceder a ellos de forma controlada se utilizan:
 
 ## ¿Por qué no hacer los atributos públicos?
 
-Exponer directamente los atributos rompe el encapsulamiento y permite estados inválidos:
+Exponer directamente los atributos rompe el **encapsulamiento** y permite estados inválidos:
 
 ```cpp
 class Persona {
@@ -65,8 +65,6 @@ int main() {
     return 0;
 }
 ```
-
-En este ejemplo:
 
 * Los atributos son **privados**.
 * El getter `getNombre()` devuelve por **referencia constante**, evitando copias innecesarias.
