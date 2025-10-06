@@ -1,141 +1,107 @@
 # Miembros de instancia: atributos y métodos
 
-En C++, una clase está compuesta por **miembros**, que se dividen en dos grandes categorías:
+En C++, una clase está compuesta por **miembros**, que se dividen en dos categorías principales:
 
-* **Miembros de datos (atributos):** variables que representan el estado de cada objeto.
-* **Funciones miembro (métodos):** funciones que representan el comportamiento de los objetos.
+* **Atributos (miembros de datos):** representan el **estado** de cada objeto.
+* **Métodos (funciones miembro):** representan el **comportamiento** que puede realizar ese objeto.
 
-Se llaman *miembros de instancia* porque cada objeto creado a partir de una clase tiene su **propio conjunto de atributos**, pero puede invocar los mismos métodos sobre sus propios datos.
+Se llaman *miembros de instancia* porque cada objeto creado a partir de una clase tiene su **propio conjunto de atributos**, pero comparte los **mismos métodos**, que operan sobre su propio estado interno.
 
 Esto permite que:
 
 * Cada objeto tenga un estado independiente.
-* Un mismo método actúe de forma diferente según los atributos del objeto.
-* Se logre encapsulación, uno de los principios básicos de la POO.
+* Un mismo método actúe de forma diferente según los datos del objeto.
+* Se logre la **encapsulación**, uno de los principios básicos de la POO.
 
-## Atributos
 
-Los atributos son variables definidas dentro de una clase. Cada objeto tendrá copias propias de esos atributos.
+## Atributos y métodos
 
-Ejemplo conceptual:
+Los **atributos** son variables definidas dentro de una clase; cada objeto tiene su propia copia.
+Los **métodos** son funciones miembro que pueden leer o modificar los atributos.
+
+Un método puede recibir **parámetros** y **devolver valores**, igual que cualquier función en C++.
+Dependiendo de cómo se pasen y devuelvan los valores, cambian las implicaciones en **rendimiento**, **seguridad** y **mutabilidad**.
+
+Veamos un ejemplo:
 
 ```cpp
+#include <iostream>
+#include <string>
+
 class Persona {
+private:
     std::string nombre;
     int edad;
+
+public:
+    // Constructor: inicializa los atributos de la clase
+    Persona(const std::string& n, int e)
+        : nombre(n), edad(e) {}
+
+    // Método que muestra la información del objeto (sin modificarlo)
+    void presentarse() const {
+        std::cout << "Hola, me llamo " << nombre
+                  << " y tengo " << edad << " años.\n";
+    }
+
+    // Método que incrementa la edad (paso de parámetro por valor)
+    void cumplirAnios(int anios) {
+        edad += anios;
+    }
+
+    // Método que modifica el nombre (paso por referencia constante)
+    void cambiarNombre(const std::string& nuevoNombre) {
+        nombre = nuevoNombre;
+    }
+
+    // Método que devuelve una copia del nombre (retorno por valor)
+    std::string obtenerNombre() const {
+        return nombre;
+    }
+
+    // Método que devuelve una referencia constante (sin copiar ni modificar)
+    const std::string& nombreConstante() const {
+        return nombre;
+    }
 };
+
+int main() {
+    Persona p("Ana", 30);
+
+    p.presentarse();                   // Hola, me llamo Ana y tengo 30 años.
+    p.cumplirAnios(1);                 // Paso por valor
+    p.cambiarNombre("Ana López");      // Paso por referencia constante
+
+    std::string copia = p.obtenerNombre();      // Retorno por valor
+    const std::string& ref = p.nombreConstante(); // Retorno por referencia const
+
+    std::cout << "Nombre copiado: " << copia << '\n';
+    std::cout << "Referencia const: " << ref << '\n';
+
+    p.presentarse(); // Hola, me llamo Ana López y tengo 31 años.
+}
 ```
 
-* Cada objeto de tipo `Persona` tendrá su propio `nombre` y `edad`.
-* Aunque todos los objetos comparten la misma estructura, sus datos son independientes.
+* Los **atributos** (`nombre` y `edad`) son privados: solo accesibles desde los métodos de la clase.
+* Los **métodos** permiten **leer** y **modificar** esos atributos.
+* Se muestran diferentes **formas de paso de parámetros**:
+  * Por **valor**: copia del argumento.
+  * Por **referencia constante**: sin copia, sin modificar.
+  * Aunque no aparece en el ejemplo, también se pueden pasar parámetros por referencias o por punteros.
+* También se incluyen diferentes **formas de retorno**:
+  * Por **valor**: devuelve una copia del dato.
+  * Por **referencia constante**: evita copias innecesarias.
+  * Aunque no aparece en el ejemplo, también se pueden devolver valores por referencia.
+* Cada objeto (`p`) mantiene su **estado propio**, independiente del de otros objetos.
 
-## Métodos
+Hat que tener en cuenta:
 
-Los métodos son funciones que pueden acceder y modificar los atributos del objeto. Se pueden declarar de dos formas:
+* Mantener los **atributos como privados** y proporcionar métodos públicos para acceder o modificarlos si es necesario.
+* Usar **referencias constantes (`const &`)** para pasar objetos grandes sin copiarlos cuando no se necesite modificarlos.
+* Devolver valores **por referencia constante** cuando quieras evitar copias innecesarias y no sea necesario modificar el dato.
+* Definir los métodos como **`const`** cuando no modifiquen el estado del objeto, para mejorar la seguridad y legibilidad del código.
 
-1. **Declaración en la clase e implementación fuera de ella:**
-
-   ```cpp
-   class Persona {
-       void saludar(); // Declaración
-   };
-
-   void Persona::saludar() { /* implementación */ }
-   ```
-
-2. **Definición directa en la clase:**
-
-   ```cpp
-   class Persona {
-       void saludar() { /* implementación */ }
-   };
-   ```
-
-En este caso, se convierten en funciones *inline* por defecto, lo que puede mejorar el rendimiento al evitar el coste de la llamada.
-
-
-## Paso de parámetro y retorno en métodos
-
-Los métodos, al ser funciones miembro, pueden recibir argumentos y retornar valores como cualquier función en C++. Existen varias formas de pasar parámetros, y cada una tiene implicaciones en rendimiento, seguridad y mutabilidad.
-
-Paso de parámetros en métodos:
-
-* **Por valor**
-
-   ```cpp
-   void setEdad(int nuevaEdad);
-   ```
-
-   * Se pasa una copia del argumento.
-   * No afecta al valor original.
-   * Puede ser costoso si el tipo de dato es complejo (como objetos grandes).
-
-* **Por referencia**
-
-   ```cpp
-   void actualizarNombre(std::string& nuevoNombre);
-   ```
-
-   * El parámetro es un alias del argumento original.
-   * Permite modificar el valor fuera del método.
-   * Eficiente, pero debe usarse con cuidado si no se desea modificar el original.
-
-* **Por referencia constante**
-
-   ```cpp
-   void mostrarNombre(const std::string& nombre) const;
-   ```
-
-   * Se pasa por referencia (evitando copia), pero **no se permite modificar** el valor dentro del método.
-   * Es la forma recomendada para pasar objetos grandes cuando no se necesita modificarlos.
-
-* **Por puntero**
-
-   ```cpp
-   void asignarPuntero(int* ptr);
-   ```
-
-   * Permite pasar la dirección de una variable.
-   * Puede ser `nullptr`, por lo que requiere comprobaciones.
-   * Útil para interfaces de bajo nivel o interoperabilidad con C.
-
-Retorno de valores en métodos:
-
-* **Por valor**
-
-   ```cpp
-   std::string obtenerNombre() const;
-   ```
-
-   * Se devuelve una copia del resultado.
-   * Ideal para tipos simples o cuando se necesita un valor independiente.
-
-* **Por referencia**
-
-   ```cpp
-   std::string& referenciaAlNombre();
-   ```
-
-   * Devuelve una referencia al miembro interno.
-   * Permite modificar el valor directamente, pero puede exponer datos internos (violando encapsulamiento).
-
-* **Por referencia constante**
-
-   ```cpp
-   const std::string& nombreConstante() const;
-   ```
-
-   * Devuelve una referencia de solo lectura.
-   * Muy útil para objetos grandes que no se desea copiar, pero se quiere consultar.
-
-Es conveniente:
-
-* Usar **referencias constantes** para evitar copias innecesarias cuando no se requiere modificar.
-* Reservar el paso **por puntero** solo para casos especiales o cuando se espera un valor nulo (`nullptr`).
-* Al retornar referencias, asegurar que se refieren a datos **válidos y existentes**.
-
-
-## Acceso implícito y puntero this
+## Acceso implícito y puntero `this`
 
 Dentro de un método, se puede acceder a los atributos de forma implícita (`nombre`) o explícita (`this->nombre`).
 
@@ -144,7 +110,7 @@ El puntero especial **`this`** apunta al objeto actual y se utiliza para:
 * Diferenciar entre atributos y parámetros con el mismo nombre.
 * Implementar *fluidez de métodos* (cuando un método devuelve `*this`).
 
-## Ejemplo completo
+Veamos un ejemplo:
 
 ```cpp
 #include <iostream>
@@ -178,13 +144,10 @@ int main() {
     p.cumplirAnios();
     p.cambiarNombre("Carlos Alberto");
     p.presentarse();       // Hola, me llamo Carlos Alberto y tengo 41 años.
-
-    return 0;
 }
 ```
 
-## Representación UML del ejemplo Persona
+Veamos la representación UML del ejemplo `Persona`:
 
-## Representación UML del ejemplo ampliado
+![diagrama3](img/diagrama3.png)
 
-![diagrama1](img/diagrama3.png)
