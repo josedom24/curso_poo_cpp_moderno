@@ -62,10 +62,9 @@ int main() {
 
 * La clase `Mensaje` define **tres versiones** del método `mostrar()`.
 * El compilador decide cuál ejecutar según los argumentos proporcionados.
-
-  * `m.mostrar();` → sin parámetros.
-  * `m.mostrar(3);` → con entero.
-  * `m.mostrar("Aviso importante");` → con string.
+  * `m.mostrar();`: sin parámetros.
+  * `m.mostrar(3);`: con entero.
+  * `m.mostrar("Aviso importante");`: con string.
 * Todas las funciones se agrupan bajo el mismo nombre porque expresan la misma acción: “mostrar” un mensaje, pero en formas distintas.
 
 ## Consideraciones importantes
