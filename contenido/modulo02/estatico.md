@@ -85,7 +85,7 @@ public:
     // Método estático: no tiene puntero 'this'
     // No puede acceder a 'nombreUsuario' (miembro no estático)
     static int suma(int a, int b) {
-        ++totalOperaciones;  // ✅ puede acceder a miembros estáticos
+        ++totalOperaciones;  // puede acceder a miembros estáticos
         return a + b;
     }
 
@@ -135,14 +135,6 @@ int main() {
 * **Método estático**: No depende de un objeto concreto. Se invoca usando `Clase::metodo()`.
 * **Sin puntero `this`**: Dentro de un método estático **no hay `this`**, por tanto **no se puede acceder a miembros no estáticos** ni llamar a métodos no estáticos.
 * **Acceso desde instancias**: Aunque se puede llamar a un método estático usando un objeto (`obj.metodo()`), no tiene relación con ese objeto en particular.
-
-
-## Instancia estática dentro de un método de una clase
-
-Perfecto 👍
-Aquí tienes el apartado **redefinido** con una redacción más clara, un tono didáctico formal y un **ejemplo más completo y comentado** que muestra distintos usos y matices del concepto.
-
----
 
 ## Instancia estática dentro de un método de una clase
 
