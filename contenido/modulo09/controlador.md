@@ -13,10 +13,9 @@ Para mantener el proyecto bien organizado, trabajaremos con varios archivos, reu
 └── main.cpp          programa principal
 ```
 
-
 ## Archivo `Dispositivos.h`
 
-En este fichero encontramos la jerarquía de clases definida en el apartado anterior. 
+En este fichero encontramos la jerarquía de clases definida en el apartado anterior:
 
 * `Dispositivo`: clase base abstracta.
 * `Sensor`: clase derivada que realiza lecturas con posible error (`std::optional`).
@@ -25,6 +24,7 @@ En este fichero encontramos la jerarquía de clases definida en el apartado ante
 ## Archivo `Controlador.h`
 
 Este archivo define la clase `Controlador`, que **mantiene un conjunto de dispositivos** (sensores y actuadores) y ofrece métodos para gestionarlos.
+Además, se añade el método `getDispositivos()` que permite obtener una referencia constante al vector interno, útil para futuras ampliaciones del sistema (por ejemplo, el manejo de eventos genéricos en el siguiente apartado).
 
 ```cpp
 #ifndef CONTROLADOR_H
@@ -42,6 +42,11 @@ public:
     // Agrega un dispositivo al sistema
     void agregarDispositivo(std::unique_ptr<Dispositivo> d) {
         dispositivos.push_back(std::move(d));
+    }
+
+    // Devuelve una referencia constante a la colección de dispositivos
+    const std::vector<std::unique_ptr<Dispositivo>>& getDispositivos() const {
+        return dispositivos;
     }
 
     // Muestra información general de todos los dispositivos
@@ -77,8 +82,10 @@ public:
 
 #endif // CONTROLADOR_H
 ```
+
 * `std::vector<std::unique_ptr<Dispositivo>>`: almacena punteros inteligentes a los dispositivos, garantizando la liberación automática de memoria.
 * `agregarDispositivo()`: añade un nuevo dispositivo al sistema transfiriendo su propiedad mediante `std::move()`.
+* `getDispositivos()`: devuelve una referencia constante al vector interno, **sin permitir modificación**, pero posibilitando su uso externo para inspección o iteración.
 * `mostrarDispositivos()`: recorre todos los dispositivos y llama al método virtual `mostrarInfo()`.
 * `leerSensores()`: usa `dynamic_cast` para identificar si un dispositivo es un `Sensor` y obtener su lectura de forma segura.
 * `activarActuadores()`: identifica los objetos del tipo `Actuador` y ejecuta la acción configurada con una lambda.
@@ -117,7 +124,7 @@ int main() {
 
 * `srand(static_cast<unsigned>(time(nullptr)))`: inicializa el generador aleatorio usado por los sensores para simular lecturas.
 * `Controlador controlador;`: instancia principal del sistema encargado de gestionar todos los dispositivos.
-* `std::make_unique` y `std::make_shared`: crean punteros inteligentes sin necesidad de usar `new`, garantizando seguridad y claridad.
+* `std::make_unique`: crea punteros inteligentes sin necesidad de usar `new`, garantizando seguridad y claridad.
 * `std::move`: transfiere la propiedad del recurso al vector interno del controlador.
 * `[] { ... }`: lambdas que definen el comportamiento de cada actuador (por ejemplo, “encender ventilador” o “activar alarma”).
 

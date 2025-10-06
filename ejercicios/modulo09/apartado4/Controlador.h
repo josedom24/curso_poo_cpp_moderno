@@ -10,20 +10,24 @@ private:
     std::vector<std::unique_ptr<Dispositivo>> dispositivos;
 
 public:
-    // Agrega un nuevo dispositivo
+    // Agrega un dispositivo al sistema
     void agregarDispositivo(std::unique_ptr<Dispositivo> d) {
         dispositivos.push_back(std::move(d));
     }
 
-    // Muestra información de todos los dispositivos
-    void mostrarDispositivos() const {
-        std::cout << "\n--- Dispositivos registrados ---\n";
-        for (const auto& d : dispositivos) {
-            d->mostrarInfo();
-        }
+    // Devuelve una referencia constante a la colección de dispositivos
+    const std::vector<std::unique_ptr<Dispositivo>>& getDispositivos() const {
+        return dispositivos;
     }
 
-    // Lee todos los sensores
+    // Muestra información general de todos los dispositivos
+    void mostrarDispositivos() const {
+        std::cout << "\n--- Dispositivos registrados ---\n";
+        for (const auto& d : dispositivos)
+            d->mostrarInfo();
+    }
+
+    // Ejecuta las lecturas de todos los sensores registrados
     void leerSensores() const {
         std::cout << "\n--- Lectura de sensores ---\n";
         for (const auto& d : dispositivos) {
@@ -37,13 +41,12 @@ public:
         }
     }
 
-    // Activa todos los actuadores
+    // Activa todos los actuadores del sistema
     void activarActuadores() const {
         std::cout << "\n--- Activación de actuadores ---\n";
         for (const auto& d : dispositivos) {
-            if (auto a = dynamic_cast<Actuador*>(d.get())) {
+            if (auto a = dynamic_cast<Actuador*>(d.get()))
                 a->activar();
-            }
         }
     }
 };
