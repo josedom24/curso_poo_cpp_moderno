@@ -85,35 +85,70 @@ int main() {
 }
 ```
 
-## Errores frecuentes en la gestión manual
+Aquí tienes la sección reescrita sin iconos, con programas completos y comentarios explicativos en un estilo formal y claro:
+
+## Errores frecuentes en la gestión manual de memoria
+
+Cuando se gestiona memoria manualmente con `new` y `delete`, pueden producirse errores graves que afectan la estabilidad del programa. A continuación se muestran los errores más comunes y sus implicaciones.
 
 ### Fuga de memoria (*memory leak*)
 
-Si se pierde la referencia a un bloque reservado, no se puede liberar:
+Una **fuga de memoria** ocurre cuando se reserva memoria dinámica y se pierde la referencia al bloque asignado sin haberlo liberado.
+El espacio de memoria reservado no se puede recuperar, lo que provoca consumo innecesario de recursos.
 
 ```cpp
-int* ptr = new int(10);
-// Se pierde la referencia: fuga de memoria
-ptr = nullptr;
+#include <iostream>
+
+int main() {
+    int* ptr = new int(10);  // reserva dinámica
+
+    // Error: se pierde la referencia al bloque reservado
+    ptr = nullptr;
+
+    // El bloque original sigue existiendo en memoria, pero ya no es accesible
+    std::cout << "Fuga de memoria: el entero reservado nunca se libera.\n";
+
+    return 0;
+}
 ```
 
-### Doble liberación
+### Doble liberación (*double delete*)
 
-Liberar la misma memoria dos veces causa comportamiento indefinido:
+Liberar la misma dirección de memoria más de una vez produce **comportamiento indefinido**.
+El sistema intenta liberar un bloque ya liberado, lo que puede causar un fallo de segmentación o errores impredecibles.
 
 ```cpp
-int* ptr = new int(10);
-delete ptr;
-delete ptr;  // ERROR: ya estaba liberado
+#include <iostream>
+
+int main() {
+    int* ptr = new int(10);  // reserva memoria
+    delete ptr;               // primera liberación
+
+    // Error: segunda liberación del mismo bloque
+    delete ptr;  // comportamiento indefinido
+
+    std::cout << "Este mensaje podría no mostrarse correctamente.\n";
+    return 0;
+}
 ```
 
 ### Uso de memoria liberada (*dangling pointer*)
 
-Acceder a memoria después de liberarla provoca errores difíciles de depurar:
+Un **puntero colgante** (*dangling pointer*) es un puntero que sigue apuntando a una dirección de memoria que ya fue liberada.
+Cualquier intento de acceso o modificación de esa memoria es un error grave y produce comportamiento indefinido.
 
 ```cpp
-int* ptr = new int(10);
-delete ptr;
-*ptr = 5;  // ERROR: acceso a memoria liberada
+#include <iostream>
+
+int main() {
+    int* ptr = new int(10);
+    delete ptr;  // el bloque ya no es válido
+
+    // Error: acceso a memoria liberada
+    *ptr = 5;  // comportamiento indefinido
+    std::cout << "Valor: " << *ptr << "\n";  // lectura inválida
+
+    return 0;
+}
 ```
 
