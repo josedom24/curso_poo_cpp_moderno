@@ -1,86 +1,67 @@
 #include <iostream>
 #include <vector>
-#include <utility>  // Para std::move
+#include <string>
+#include <iomanip>  // Para std::setprecision
+#include <utility>  // Para std::pair
 
-// Clase Buffer: gestiona un recurso (un vector de enteros)
-// e ilustra la diferencia entre copia y movimiento.
-class Buffer {
+// Clase que representa un pedido de compra
+class Pedido {
 private:
-    std::vector<int> datos;  // Recurso interno gestionado automáticamente
+    std::string cliente;
+    std::vector<std::pair<std::string, double>> productos;
+    double descuento = 0.0;  // Porcentaje de descuento (0-100)
 
 public:
-    // Constructor por defecto
-    Buffer() {
-        std::cout << "Constructor por defecto\n";
+    // Método para establecer el cliente
+    Pedido& setCliente(const std::string& nombre) {
+        cliente = nombre;
+        return *this; // Devuelve una referencia al objeto actual
     }
 
-    // Constructor con lista de inicialización
-    Buffer(std::initializer_list<int> valores) : datos(valores) {
-        std::cout << "Constructor con lista de inicialización\n";
-    }
-
-    // Constructor de copia (duplica los datos)
-    Buffer(const Buffer& otro) : datos(otro.datos) {
-        std::cout << "Constructor de copia\n";
-    }
-
-    // Operador de asignación por copia (duplica los datos)
-    Buffer& operator=(const Buffer& otro) {
-        std::cout << "Asignación por copia\n";
-        if (this != &otro) {  // Evitar autoasignación
-            datos = otro.datos;
-        }
+    // Método para añadir un producto al pedido
+    Pedido& addProducto(const std::string& nombre, double precio) {
+        productos.emplace_back(nombre, precio);
         return *this;
     }
 
-    // Constructor de movimiento (transfiere los datos)
-    Buffer(Buffer&& otro) noexcept : datos(std::move(otro.datos)) {
-        std::cout << "Constructor de movimiento\n";
-    }
-
-    // Operador de asignación por movimiento (transfiere los datos)
-    Buffer& operator=(Buffer&& otro) noexcept {
-        std::cout << "Asignación por movimiento\n";
-        if (this != &otro) {  // Evitar autoasignación
-            datos = std::move(otro.datos);
-        }
+    // Método para aplicar un porcentaje de descuento
+    Pedido& aplicarDescuento(double porcentaje) {
+        descuento = porcentaje;
         return *this;
     }
 
-    // Método para mostrar el contenido del vector
-    void mostrar() const {
-        std::cout << "[ ";
-        for (int v : datos) {
-            std::cout << v << " ";
+    // Método final que imprime un resumen del pedido
+    void mostrarResumen() const {
+        std::cout << std::fixed << std::setprecision(2);
+        std::cout << "=== Resumen del pedido ===\n";
+        std::cout << "Cliente: " << cliente << "\n\n";
+        std::cout << "Productos:\n";
+
+        double subtotal = 0.0;
+        for (const auto& [nombre, precio] : productos) {
+            std::cout << "  - " << nombre << ": " << precio << " €\n";
+            subtotal += precio;
         }
-        std::cout << "]\n";
+
+        double total = subtotal * (1 - descuento / 100.0);
+
+        std::cout << "\nSubtotal: " << subtotal << " €\n";
+        std::cout << "Descuento: " << descuento << "%\n";
+        std::cout << "Total final: " << total << " €\n";
+        std::cout << "===========================\n";
     }
 };
 
-// Programa principal
 int main() {
-    std::cout << "== Creación inicial ==\n";
-    Buffer b1{1, 2, 3, 4, 5};  // Constructor con lista de inicialización
-    b1.mostrar();
+    Pedido pedido;
 
-    std::cout << "\n== Copia de objeto ==\n";
-    Buffer b2 = b1;  // Constructor de copia
-    b2.mostrar();
+    // Encadenamiento de métodos (fluidez)
+    pedido.setCliente("Ana Pérez")
+          .addProducto("Portátil", 1200.0)
+          .addProducto("Ratón inalámbrico", 25.0)
+          .addProducto("Teclado mecánico", 80.0)
+          .aplicarDescuento(10.0)
+          .mostrarResumen();
 
-    std::cout << "\n== Asignación por copia ==\n";
-    Buffer b3;
-    b3 = b1;  // Operador de asignación por copia
-    b3.mostrar();
-
-    std::cout << "\n== Movimiento de objeto ==\n";
-    Buffer b4 = std::move(b1);  // Constructor de movimiento
-    b4.mostrar();
-
-    std::cout << "\n== Asignación por movimiento ==\n";
-    Buffer b5;
-    b5 = std::move(b4);  // Operador de asignación por movimiento
-    b5.mostrar();
-
-    std::cout << "\n== Fin del programa ==\n";
     return 0;
 }

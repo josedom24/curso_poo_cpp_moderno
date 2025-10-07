@@ -1,89 +1,57 @@
 #include <iostream>
-#include <memory>  // std::unique_ptr, std::make_unique
-#include <vector>
-#include <cmath>   // std::pow, std::sqrt
 
-// Clase base abstracta: representa una figura geométrica genérica
-class Figura {
-public:
-    // Método virtual puro para clonar el objeto (patrón Prototype)
-    virtual std::unique_ptr<Figura> clone() const = 0;
-
-    // Método virtual para mostrar la información de la figura
-    virtual void mostrar() const = 0;
-
-    // Destructor virtual para asegurar destrucción correcta en jerarquías
-    virtual ~Figura() = default;
-};
-
-// Clase derivada: Círculo
-class Circulo : public Figura {
+class Punto2D {
 private:
-    double radio;
+    double x;
+    double y;
 
 public:
-    // Constructor explícito
-    explicit Circulo(double r) : radio(r) {}
+    // Constructor con valores iniciales
+    Punto2D(double x_, double y_) : x(x_), y(y_) {}
 
-    // Implementación del método clone()
-    std::unique_ptr<Figura> clone() const override {
-        // Crea una copia profunda del objeto actual
-        return std::make_unique<Circulo>(*this);
+    // Sobrecarga del operador + (suma de dos puntos)
+    Punto2D operator+(const Punto2D& otro) const {
+        return Punto2D(x + otro.x, y + otro.y);
     }
 
-    // Método para mostrar la información del círculo
-    void mostrar() const override {
-        std::cout << "Círculo de radio " << radio
-                  << " — Área: " << M_PI * std::pow(radio, 2) << '\n';
-    }
-};
-
-// Clase derivada: Rectángulo
-class Rectangulo : public Figura {
-private:
-    double ancho;
-    double alto;
-
-public:
-    // Constructor explícito
-    Rectangulo(double a, double b) : ancho(a), alto(b) {}
-
-    // Implementación del método clone()
-    std::unique_ptr<Figura> clone() const override {
-        // Crea una copia profunda del objeto actual
-        return std::make_unique<Rectangulo>(*this);
+    // Sobrecarga del operador - (resta de dos puntos)
+    Punto2D operator-(const Punto2D& otro) const {
+        return Punto2D(x - otro.x, y - otro.y);
     }
 
-    // Método para mostrar la información del rectángulo
-    void mostrar() const override {
-        std::cout << "Rectángulo de " << ancho << " x " << alto
-                  << " — Área: " << ancho * alto << '\n';
+    // Sobrecarga del operador == (comparación de igualdad)
+    bool operator==(const Punto2D& otro) const {
+        return (x == otro.x && y == otro.y);
+    }
+
+    // Sobrecarga del operador << (impresión en flujo)
+    // Este operador debe ser externo, ya que el flujo (std::cout) está a la izquierda de la expresión.
+    // Se declara como función amiga para acceder a los miembros privados.
+    friend std::ostream& operator<<(std::ostream& os, const Punto2D& p) {
+        os << "(" << p.x << ", " << p.y << ")";
+        return os;
     }
 };
 
 int main() {
-    // Vector de figuras (polimórfico)
-    std::vector<std::unique_ptr<Figura>> figuras;
+    Punto2D p1(3.0, 4.0);
+    Punto2D p2(1.0, 2.0);
 
-    // Agregamos diferentes tipos de figuras
-    figuras.push_back(std::make_unique<Circulo>(3.5));
-    figuras.push_back(std::make_unique<Rectangulo>(4.0, 6.0));
+    // Uso de los operadores sobrecargados
+    Punto2D suma = p1 + p2;
+    Punto2D resta = p1 - p2;
 
-    std::cout << "=== Figuras originales ===\n";
-    for (const auto& f : figuras) {
-        f->mostrar();
-    }
+    // Comparación
+    if (p1 == p2)
+        std::cout << "Los puntos son iguales.\n";
+    else
+        std::cout << "Los puntos son diferentes.\n";
 
-    // Clonamos las figuras sin conocer su tipo concreto
-    std::vector<std::unique_ptr<Figura>> clones;
-    for (const auto& f : figuras) {
-        clones.push_back(f->clone());
-    }
-
-    std::cout << "\n=== Figuras clonadas ===\n";
-    for (const auto& f : clones) {
-        f->mostrar();
-    }
+    // Impresión usando operador <<
+    std::cout << "p1: " << p1 << "\n";
+    std::cout << "p2: " << p2 << "\n";
+    std::cout << "Suma: " << suma << "\n";
+    std::cout << "Resta: " << resta << "\n";
 
     return 0;
 }

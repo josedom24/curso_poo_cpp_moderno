@@ -1,57 +1,76 @@
 #include <iostream>
+#include <string>
+#include <utility>
 
-class Punto2D {
+class ConexionBD {
 private:
-    double x;
-    double y;
+    std::string nombre;
+    bool activa = false;
+
+    // Constructor privado
+    ConexionBD(std::string n) : nombre(std::move(n)), activa(true) {
+        std::cout << "Conexión establecida con " << nombre << "\n";
+    }
 
 public:
-    // Constructor con valores iniciales
-    Punto2D(double x_, double y_) : x(x_), y(y_) {}
+    // Prohibir copia
+    ConexionBD(const ConexionBD&) = delete;
+    ConexionBD& operator=(const ConexionBD&) = delete;
 
-    // Sobrecarga del operador + (suma de dos puntos)
-    Punto2D operator+(const Punto2D& otro) const {
-        return Punto2D(x + otro.x, y + otro.y);
+    // Permitir movimiento
+    ConexionBD(ConexionBD&& other) noexcept
+        : nombre(std::move(other.nombre)), activa(other.activa) {
+        other.activa = false;
+        std::cout << "Conexión movida a nuevo objeto\n";
     }
 
-    // Sobrecarga del operador - (resta de dos puntos)
-    Punto2D operator-(const Punto2D& otro) const {
-        return Punto2D(x - otro.x, y - otro.y);
+    ConexionBD& operator=(ConexionBD&& other) noexcept {
+        if (this != &other) {
+            cerrar();
+            nombre = std::move(other.nombre);
+            activa = other.activa;
+            other.activa = false;
+            std::cout << "Conexión transferida mediante asignación por movimiento\n";
+        }
+        return *this;
     }
 
-    // Sobrecarga del operador == (comparación de igualdad)
-    bool operator==(const Punto2D& otro) const {
-        return (x == otro.x && y == otro.y);
+    ~ConexionBD() {
+        cerrar();
     }
 
-    // Sobrecarga del operador << (impresión en flujo)
-    // Este operador debe ser externo, ya que el flujo (std::cout) está a la izquierda de la expresión.
-    // Se declara como función amiga para acceder a los miembros privados.
-    friend std::ostream& operator<<(std::ostream& os, const Punto2D& p) {
-        os << "(" << p.x << ", " << p.y << ")";
-        return os;
+    void cerrar() {
+        if (activa) {
+            std::cout << "Cerrando conexión con " << nombre << "\n";
+            activa = false;
+        }
+    }
+
+    void conectar() const {
+        if (activa)
+            std::cout << "Conectado a " << nombre << "\n";
+        else
+            std::cout << "Conexión inactiva\n";
+    }
+
+    bool estaConectada() const { return activa; }
+
+    // Función estática de creación controlada
+    static ConexionBD crearConexion(const std::string& nombreBD) {
+        return ConexionBD(nombreBD);
     }
 };
 
 int main() {
-    Punto2D p1(3.0, 4.0);
-    Punto2D p2(1.0, 2.0);
+    ConexionBD c1 = ConexionBD::crearConexion("BaseDeDatosPrincipal");
 
-    // Uso de los operadores sobrecargados
-    Punto2D suma = p1 + p2;
-    Punto2D resta = p1 - p2;
+    c1.conectar();
 
-    // Comparación
-    if (p1 == p2)
-        std::cout << "Los puntos son iguales.\n";
-    else
-        std::cout << "Los puntos son diferentes.\n";
+    // Transferencia de propiedad mediante movimiento
+    ConexionBD c2 = std::move(c1);
 
-    // Impresión usando operador <<
-    std::cout << "p1: " << p1 << "\n";
-    std::cout << "p2: " << p2 << "\n";
-    std::cout << "Suma: " << suma << "\n";
-    std::cout << "Resta: " << resta << "\n";
+    c1.conectar(); // Conexión inactiva
+    c2.conectar(); // Activa
 
     return 0;
 }
