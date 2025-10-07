@@ -41,16 +41,12 @@
     * [Ejercicios sobre herencia y polimorfismo](contenido/modulo04/ejercicio2.md)
 
 5. Fundamentos avanzados de programación orientada a objetos
-    * [Sobrecarga de operadores](contenido/modulo05/operadores.md)
-    * [Fluidez de métodos](contenido/modulo05/fluidez.md)
-    
-
     * [Copia de objetos: superficiales y profundas](contenido/modulo05/copy.md)
     * [Movimiento de objetos](contenido/modulo05/move.md)
     * [Control de creación, copia y movimiento de objetos](contenido/modulo05/creacion.md)
     * [Clonación de objetos](contenido/modulo05/clonacion.md)
-    * Sobrecarga de operadores
-    * Fluidez de métodos
+    * [Sobrecarga de operadores](contenido/modulo05/operadores.md)
+    * [Fluidez de métodos](contenido/modulo05/fluidez.md)
     * [Ejercicios sobre conceptos avanzados de programación orientada a objetos](contenido/modulo05/ejercicios.md)
 
 6. Interfaces y diseño polimórfico
