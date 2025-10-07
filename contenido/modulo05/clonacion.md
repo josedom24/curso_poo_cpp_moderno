@@ -1,140 +1,126 @@
-# Clonación de objetos: copias superficiales y profundas
+# Clonación de objetos
 
-En programación orientada a objetos es habitual necesitar **duplicar un objeto** para preservar su estado o generar una variante sin alterar el original. Este proceso se denomina **clonación**.
+En programación orientada a objetos, a veces es necesario **duplicar un objeto existente** sin modificar el original.
+A esta operación se la denomina **clonación**.
 
-En C++ la clonación puede hacerse de distintas formas, y su importancia depende de si los objetos contienen o no **recursos dinámicos** (memoria, archivos, sockets, etc.). Aquí distinguimos dos enfoques:
+En C++, clonar un objeto no es una característica del lenguaje, sino un **comportamiento que debe implementarse explícitamente**.
+La clonación se apoya en los mecanismos de copia (constructor y operador de asignación) y, en la práctica, suele realizar **copias profundas**, para garantizar que el nuevo objeto es totalmente independiente del original.
 
-* **Copia superficial (shallow copy)**:
-  Se copian directamente los valores de los atributos, incluidos los punteros. Si el objeto contiene recursos dinámicos, ambos objetos terminan apuntando al mismo recurso compartido. Esto puede provocar errores como *double delete* o accesos a memoria liberada.
+Esto es especialmente importante cuando el objeto posee **recursos dinámicos** (memoria, archivos, conexiones, etc.), que no pueden compartirse entre instancias sin riesgo.
 
-* **Copia profunda (deep copy)**:
-  Se duplican también los recursos a los que apuntan los punteros o referencias. El nuevo objeto tiene **su propia copia independiente** de los datos. Es más costosa en rendimiento, pero más segura.
+## Clonación básica
 
-Esta diferencia era crítica en el C++ clásico, donde el uso de punteros crudos obligaba a implementar manualmente las copias profundas para evitar errores. En C++ moderno, gracias a **std::vector** o **std::unique_ptr**, muchos de estos problemas se reducen automáticamente.
-
-## Ejemplo de copia superficial y profunda
-
-Supongamos que queremos duplicar un objeto que contiene datos almacenados en un `std::vector<int>`:
+La forma más simple de clonación consiste en implementar un método `clone()` que devuelva una nueva instancia copiada del objeto actual.
+Se suele usar `std::unique_ptr` para gestionar automáticamente la memoria del clon.
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <memory>
+#include <vector>
 
-// Copia superficial: solo comparte el puntero
-class ContenedorSuperficial {
-public:
-    std::vector<int>* datos;  // No es dueño de la memoria
-
-    ContenedorSuperficial(std::vector<int>* ptr) : datos(ptr) {}
-
-    std::unique_ptr<ContenedorSuperficial> clone() const {
-        return std::make_unique<ContenedorSuperficial>(datos);
-    }
-
-    void mostrar() const {
-        for (int i : *datos) std::cout << i << " ";
-        std::cout << "\n";
-    }
-};
-
-// Copia profunda: mantiene su propia copia del vector
-class ContenedorProfundo {
-public:
+class Buffer {
+private:
     std::vector<int> datos;
 
-    ContenedorProfundo(const std::vector<int>& v) : datos(v) {}
+public:
+    Buffer(std::initializer_list<int> lista) : datos(lista) {}
 
-    std::unique_ptr<ContenedorProfundo> clone() const {
-        return std::make_unique<ContenedorProfundo>(datos);
+    // Método de clonación
+    std::unique_ptr<Buffer> clone() const {
+        return std::make_unique<Buffer>(*this);  // Copia profunda
     }
 
     void mostrar() const {
-        for (int i : datos) std::cout << i << " ";
+        for (int v : datos) std::cout << v << " ";
         std::cout << "\n";
     }
 };
 
 int main() {
-    std::vector<int> base = {1, 2, 3};
+    Buffer original{1, 2, 3};
+    auto copia = original.clone();  // Clonación profunda
 
-    std::cout << "== Copia superficial ==\n";
-    ContenedorSuperficial s1(&base);
-    auto s2 = s1.clone();  // Ambos comparten el mismo vector
-    base[1] = 99;          // Modificamos el vector original
-
-    s1.mostrar(); // 1 99 3
-    s2->mostrar();// 1 99 3
-
-    std::cout << "\n== Copia profunda ==\n";
-    ContenedorProfundo p1(base);
-    auto p2 = p1.clone();  // Copia independiente
-    base[1] = 42;
-
-    p1.mostrar(); // 1 99 3
-    p2->mostrar();// 1 99 3
+    std::cout << "Original: ";
+    original.mostrar();
+    std::cout << "Copia:    ";
+    copia->mostrar();
 }
 ```
 
-* En la **copia superficial**, los dos objetos comparten el mismo recurso. Cambiar el `base` afecta a todos.
-* En la **copia profunda**, cada objeto tiene su propio vector, y los cambios no se comparten.
-* Se usa `std::unique_ptr` en el método `clone()` para garantizar seguridad en la gestión de memoria.
+* El método `clone()` crea una nueva instancia mediante el **constructor de copia**.
+* La copia es profunda porque `std::vector` gestiona su propia memoria y duplica los datos.
+* El clon es completamente independiente del objeto original.
 
+## Clonación polimórfica
 
-## Clonación en jerarquías de clases
-
-Cuando trabajamos con **herencia**, la clonación requiere otro mecanismo. Si manejamos punteros a una clase base, necesitamos clonar polimórficamente el objeto sin conocer su tipo concreto en tiempo de compilación.
-
-Esto se logra con un método **virtual clone()**, lo que sienta las bases del patrón *Prototype*.
+En sistemas con herencia, puede ser necesario **clonar objetos sin conocer su tipo concreto**.
+Para ello, se define un método virtual `clone()` en la clase base, que cada clase derivada debe sobrescribir.
 
 ```cpp
 #include <iostream>
 #include <memory>
 #include <vector>
 
-// Clase base con clone virtual
+// Clase base con clonación virtual
 class Clonable {
 public:
     virtual std::unique_ptr<Clonable> clone() const = 0;
+    virtual void mostrar() const = 0;
     virtual ~Clonable() = default;
 };
 
 // Clase derivada A
 class DerivadoA : public Clonable {
-public:
+private:
     int dato;
+
+public:
     DerivadoA(int d) : dato(d) {}
 
     std::unique_ptr<Clonable> clone() const override {
-        return std::make_unique<DerivadoA>(*this);
+        return std::make_unique<DerivadoA>(*this);  // Copia profunda
+    }
+
+    void mostrar() const override {
+        std::cout << "DerivadoA: " << dato << "\n";
     }
 };
 
 // Clase derivada B
 class DerivadoB : public Clonable {
-public:
+private:
     std::vector<int> datos;
+
+public:
     DerivadoB(const std::vector<int>& v) : datos(v) {}
 
     std::unique_ptr<Clonable> clone() const override {
-        return std::make_unique<DerivadoB>(*this);
+        return std::make_unique<DerivadoB>(*this);  // Copia profunda
+    }
+
+    void mostrar() const override {
+        std::cout << "DerivadoB: ";
+        for (int n : datos) std::cout << n << " ";
+        std::cout << "\n";
     }
 };
 
-void imprimirClon(const Clonable& obj) {
-    auto copia = obj.clone();  
-    std::cout << "Objeto clonado con éxito.\n";
-}
-
 int main() {
-    DerivadoA a(42);
-    DerivadoB b({1, 2, 3});
+    std::unique_ptr<Clonable> a = std::make_unique<DerivadoA>(42);
+    std::unique_ptr<Clonable> b = std::make_unique<DerivadoB>(std::vector<int>{1, 2, 3});
 
-    imprimirClon(a);
-    imprimirClon(b);
+    auto clonA = a->clone();
+    auto clonB = b->clone();
+
+    a->mostrar();
+    clonA->mostrar();
+
+    b->mostrar();
+    clonB->mostrar();
 }
 ```
-* `clone()` es virtual puro en la base y cada derivada implementa su propia clonación.
-* Se devuelve un `std::unique_ptr` para gestionar la memoria automáticamente.
-* Esto permite al cliente clonar sin conocer el tipo concreto del objeto.
 
+* La clase base `Clonable` define una interfaz común con un método `clone()` virtual puro.
+* Cada clase derivada devuelve un clon de su propio tipo mediante `std::make_unique`.
+* La clonación es profunda: los datos internos de cada objeto se copian, no se comparten.
+* Esto permite clonar objetos **a través de punteros a la clase base**, sin conocer su tipo en tiempo de compilación.

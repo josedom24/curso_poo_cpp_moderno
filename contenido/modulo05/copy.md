@@ -1,54 +1,42 @@
-# Semántica de copia en C++
+# Copia de objetos: superficiales y profundas
 
-En el apartado anterior vimos que clonar un objeto puede hacerse de forma **superficial** o **profunda**.
-En C++ moderno, estos conceptos se concretan a través de dos mecanismos especiales:
+La copia de objetos es un aspecto esencial de la programación orientada a objetos: permite duplicar el estado de un objeto existente en otro nuevo.
+En C++ moderno, esta operación puede realizarse de forma automática o personalizada, y se controla mediante dos mecanismos especiales del lenguaje:
 
-* **Constructor de copia**
-* **Operador de asignación por copia**
+* **Constructor de copia**: Se utiliza para crear un nuevo objeto a partir de otro. Se invoca cuando se **inicializa un objeto con otro del mismo tipo** o cuando **se pasa un objeto por valor a una función**.
+    Sintaxis:
+    ```cpp
+    ClassName(const ClassName& other);
+    ```
+    Ejemplo:
+    ```cpp
+    MiClase a;
+    MiClase b = a;  // Constructor de copia
+    ``
 
-Ambos se encargan de definir cómo debe duplicarse un objeto cuando se inicializa o cuando se asigna a otro ya existente.
+* **Operador de asignación por copia**: Se usa cuando un objeto ya existente recibe el estado de otro.
+    Sintaxis:
+    ```cpp
+    ClassName& operator=(const ClassName& other);
+    ```
+    Ejemplo:
+    ```cpp
+    MiClase a, b;
+    b = a;  // Operador de asignación por copia
+    ```
 
-## Constructor de copia
+Ambos determinan cómo se duplica un objeto cuando se inicializa o se asigna. Además, en función de cómo se gestionen los recursos internos, podemos hablar de dos tipos de copia: **superficial y profunda**.
 
-El **constructor de copia** crea un nuevo objeto a partir de otro ya existente.
-Su firma general es:
+* **Copia superficial (*shallow copy*)**: Se copian directamente los valores de los atributos, incluidos los punteros.
+Si el objeto contiene recursos dinámicos, ambos objetos terminan apuntando al mismo recurso compartido, lo que puede provocar errores como *double delete* o accesos a memoria liberada.
+* **Copia profunda (*deep copy*)**: Se copian también los recursos apuntados o gestionados. Cada objeto resultante tiene su propia copia independiente de los datos, evitando interferencias entre ellos.
+Esta es la forma más segura de duplicar objetos con recursos.
 
-```cpp
-ClassName(const ClassName& other);
-```
-
-Se invoca en situaciones como:
-
-* Inicialización de un objeto a partir de otro:
-
-  ```cpp
-  MiClase a;
-  MiClase b = a;  // constructor de copia
-  ```
-
-* Paso de objetos por valor a funciones.
-
-## Operador de asignación por copia
-
-El **operador de asignación por copia** define cómo se comporta la clase cuando un objeto ya existente recibe el valor de otro del mismo tipo.
-
-Su firma es:
-
-```cpp
-ClassName& operator=(const ClassName& other);
-```
-
-Se invoca en expresiones como:
-
-```cpp
-MiClase a, b;
-b = a;  // operador de asignación por copia
-```
+En C++ moderno, las clases de la STL (`std::vector`, `std::string`, etc.) implementan copias profundas automáticas, lo que reduce los problemas que antes causaban los punteros crudos.
 
 ## Ejemplo práctico: clase `Buffer`
 
-Supongamos una clase que gestiona un contenedor de enteros con `std::vector`.
-Aquí implementamos constructor y asignación por copia para ver cuándo se llaman:
+A continuación se muestra una clase moderna que implementa constructor y asignación por copia. Usa `std::vector`, que gestiona su propia memoria (por tanto, realiza copias profundas automáticamente).
 
 ```cpp
 #include <iostream>
@@ -56,7 +44,7 @@ Aquí implementamos constructor y asignación por copia para ver cuándo se llam
 
 class Buffer {
 private:
-    std::vector<int> datos;
+    std::vector<int> datos;  // Contenedor gestionado automáticamente
 
 public:
     // Constructor por defecto
@@ -72,7 +60,7 @@ public:
 
     // Operador de asignación por copia
     Buffer& operator=(const Buffer& other) {
-        if (this != &other) { // Evitar auto-asignación
+        if (this != &other) { // Evitar autoasignación
             datos = other.datos;
             std::cout << "Asignación por copia\n";
         }
@@ -97,16 +85,69 @@ int main() {
 }
 ```
 
-* **Constructor de copia**: se ejecuta cuando se crea un objeto nuevo a partir de otro.
-* **Operador de asignación por copia**: se ejecuta cuando un objeto ya existente recibe el estado de otro.
-* Ambos hacen una **copia profunda** porque `std::vector` gestiona internamente su memoria y duplica los datos.
-* En C++ clásico, si usáramos punteros crudos, la copia por defecto sería **superficial**, y habría que implementar manualmente la copia profunda.
+* El constructor de copia crea un nuevo objeto (`b2`) a partir de `b1`.
+* El operador de asignación copia el contenido de `b1` sobre `b3`.
+* Ambas operaciones realizan una copia profunda, ya que `std::vector` duplica internamente sus datos.
+* En el C++ clásico, al usar punteros crudos, la copia por defecto sería superficial y requeriría código manual.
 
+## Comparación: copia superficial y profunda
 
-La **semántica de copia** en C++ define cómo los objetos se duplican en memoria.
-En C++ moderno:
+Para visualizar la diferencia, consideremos dos clases con comportamientos distintos:
 
-* Los contenedores de la STL (`std::vector`, `std::string`, etc.) ya implementan copia profunda.
-* Es raro necesitar implementar manualmente la copia, salvo en clases que gestionan recursos de bajo nivel.
-* Este concepto se complementa con la **semántica de movimiento**, que permite transferir recursos en lugar de copiarlos, para ganar eficiencia.
+```cpp
+#include <iostream>
+#include <vector>
+#include <memory>
+
+// Copia superficial: comparte el mismo recurso
+class ContenedorSuperficial {
+public:
+    std::vector<int>* datos;  // No posee la memoria
+
+    ContenedorSuperficial(std::vector<int>* ptr) : datos(ptr) {}
+
+    void mostrar() const {
+        for (int i : *datos) std::cout << i << " ";
+        std::cout << "\n";
+    }
+};
+
+// Copia profunda: mantiene su propia copia de los datos
+class ContenedorProfundo {
+public:
+    std::vector<int> datos;
+
+    ContenedorProfundo(const std::vector<int>& v) : datos(v) {}
+
+    void mostrar() const {
+        for (int i : datos) std::cout << i << " ";
+        std::cout << "\n";
+    }
+};
+
+int main() {
+    std::vector<int> base1 = {1, 2, 3};
+    std::vector<int> base2 = {1, 2, 3};
+
+    std::cout << "== Copia superficial ==\n";
+    ContenedorSuperficial s1(&base1);
+    ContenedorSuperficial s2 = s1; // Copia superficial: comparten el puntero
+    base1[1] = 99;
+
+    s1.mostrar(); // 1 99 3
+    s2.mostrar(); // 1 99 3 (comparten el mismo vector)
+
+    std::cout << "\n== Copia profunda ==\n";
+    ContenedorProfundo p1(base2);
+    ContenedorProfundo p2 = p1; // Copia profunda: copia independiente
+    base2[1] = 42;
+
+    p1.mostrar(); // 1 2 3
+    p2.mostrar(); // 1 2 3 (no se ve afectado)
+}
+```
+
+* En la copia superficial, ambos objetos acceden al mismo recurso.
+* En la copia profunda, cada objeto mantiene su propio estado.
+* Las clases modernas de la STL realizan copias profundas de forma segura, evitando errores comunes del C++ clásico.
 
