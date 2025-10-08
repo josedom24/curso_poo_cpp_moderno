@@ -1,10 +1,6 @@
-# Constructores, destructores y métodos constantes
+# Constructores, destructores
 
-En C++, la creación, uso y destrucción de objetos se gestionan mediante **constructores**, **destructores** y **métodos constantes**. Estos mecanismos garantizan que los objetos:
-
-* se **inicialicen correctamente**,
-* liberen recursos cuando ya no se necesiten,
-* y permitan operaciones seguras en objetos que no deben modificarse.
+En C++, la creación, uso y destrucción de objetos se gestionan mediante **constructores** y **destructores**.
 
 ## Constructores
 
@@ -156,11 +152,14 @@ int main() {
 
 ## Uso de `=default` y `=delete`
 
-C++ permite controlar si ciertas funciones especiales (constructores, destructores, operadores, etc.) se deben **generar automáticamente** (`=default`) o se deben **prohibir explícitamente** (`=delete`).
+En C++ moderno, el programador puede indicar al compilador si ciertas **funciones especiales** (como constructores, destructores u operadores) deben **generarse automáticamente** o **prohibirse explícitamente**.
+
+Estas dos expresiones permiten **controlar el comportamiento por defecto** de las clases:
+
+* `=default` → solicita que el compilador genere automáticamente la función.
+* `=delete` → prohíbe que esa función se use.
 
 Veamos un ejemplo:
-
-Aquí tienes un **ejemplo completo** y comentado que muestra el uso de `=default` y `=delete`:
 
 ```cpp
 #include <iostream>
@@ -177,33 +176,30 @@ public:
     // Constructor con parámetro
     Archivo(const std::string& n) : nombre{n} {}
 
-    // Destructor generado automáticamente
+    // Destructor automático
     ~Archivo() = default;
-
-    // Prohibimos la copia: un archivo no puede copiarse
-    Archivo(const Archivo&) = delete;
-    Archivo& operator=(const Archivo&) = delete;
 
     // Método para mostrar información
     void mostrar() const {
         std::cout << "Archivo: " << nombre << '\n';
     }
+
+    // Ejemplo: prohibimos la creación de objetos con un número
+    Archivo(int) = delete;
 };
 
 int main() {
-    Archivo a1("datos.txt");
+    Archivo a1("datos.txt"); // OK
     a1.mostrar();
 
-    Archivo a2;            // Se usa el constructor por defecto (=default)
-    // Archivo a3 = a1;    // Error: copia eliminada (=delete)
-    // a2 = a1;            // Error: asignación eliminada (=delete)
+    Archivo a2;              // OK: usa el constructor por defecto
+    // Archivo a3(42);       // Error: constructor eliminado (=delete)
 
     return 0;
 }
 ```
 
-* `=default` indica al compilador que genere automáticamente el **constructor por defecto** y el **destructor**.
-* `=delete` desactiva la **copia** y la **asignación**, impidiendo duplicar objetos de esta clase.
-* Este patrón es útil cuando los objetos **poseen recursos únicos** (como archivos o sockets) que **no deben copiarse**.
-* El compilador marcará un **error en tiempo de compilación** si se intenta realizar una operación eliminada.
+* `=default` le indica al compilador que genere **automáticamente** el constructor por defecto y el destructor.
+* `=delete` impide que se utilice una función concreta (en este caso, el constructor que recibe un número).
+* Si el programador intenta usar una función eliminada, el compilador emitirá un **error en tiempo de compilación**.
 
