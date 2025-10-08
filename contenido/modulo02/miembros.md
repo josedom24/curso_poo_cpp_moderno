@@ -105,10 +105,8 @@ Hay que tener en cuenta:
 
 Dentro de un método, se puede acceder a los atributos de forma implícita (`nombre`) o explícita (`this->nombre`).
 
-El puntero especial **`this`** apunta al objeto actual y se utiliza para:
+El puntero especial **`this`** apunta al objeto actual y se utiliza para diferenciar entre atributos y parámetros con el mismo nombre.
 
-* Diferenciar entre atributos y parámetros con el mismo nombre.
-* Implementar *fluidez de métodos* (cuando un método devuelve `*this`).
 
 Veamos un ejemplo:
 
