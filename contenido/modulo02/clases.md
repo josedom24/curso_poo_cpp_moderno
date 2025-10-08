@@ -89,10 +89,14 @@ public:
 };
 
 int main() {
-    Persona p("Claudia", 28);
-    p.saludar();       // Hola, soy Claudia y tengo 28 años.
-    p.cumplirAnios();
-    p.saludar();       // Hola, soy Claudia y tengo 29 años.
+    Persona p1("Claudia", 28);  // Inicialización tradicional
+    Persona p2{"Carlos", 35};   // Inicialización uniforme
+    
+    p1.saludar();       // Hola, soy Claudia y tengo 28 años.
+    p1.cumplirAnios();
+    p1.saludar();       // Hola, soy Claudia y tengo 29 años.
+
+    p1.saludar();       // Hola, soy Carlos y tengo 35 años.
 
     return 0;
 }

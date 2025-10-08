@@ -11,6 +11,7 @@
     * [Miembros de instancia: atributos y métodos](contenido/modulo02/miembros.md)
     * [Encapsulamiento y modificadores de acceso (`public`, `private`, `protected`)](contenido/modulo02/acceso.md)
     * [Constructores y destructores](contenido/modulo02/constructor.md)
+    * [Inicialización de objetos](contenido/modulo02/objetos.md)
     * [Métodos y objetos constantes](contenido/modulo02/constantes.md)
     * [Inicialización de atributos con listas de inicialización](contenido/modulo02/inicializacion.md)
     * [Métodos getter y setter](contenido/modulo02/getters.md)

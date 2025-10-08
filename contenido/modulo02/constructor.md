@@ -54,50 +54,6 @@ Este programa demuestra que:
 * La función `mostrar()` es **const** porque no modifica el estado del objeto.
 
 
-### Uso de `explicit`
-
-Si un constructor recibe un único parámetro, puede usarse como conversión implícita, lo que a veces causa errores. Para evitarlo se emplea la palabra clave **`explicit`**:
-
-Aquí tienes un ejemplo completo y comentado que muestra el uso de `explicit` en un constructor:
-
-```cpp
-#include <iostream>
-
-class Entero {
-private:
-    int valor;
-
-public:
-    // Constructor con un único parámetro
-    // 'explicit' evita conversiones implícitas no deseadas
-    explicit Entero(int v) : valor{v} {}
-
-    int getValor() const { return valor; }
-};
-
-// Función que recibe un objeto Entero
-void mostrar(const Entero& e) {
-    std::cout << "Valor: " << e.getValor() << '\n';
-}
-
-int main() {
-    Entero e1(10);  // Correcto: construcción explícita
-    mostrar(e1);
-
-    // Entero e2 = 20;     // Error: conversión implícita prohibida por 'explicit'
-    // mostrar(30);        // Error: no se convierte int: Entero automáticamente
-
-    mostrar(Entero(30));   // Correcto: conversión explícita
-
-    return 0;
-}
-```
-
-* `explicit` impide que el compilador convierta automáticamente un `int` en un `Entero`.
-* Esto evita errores sutiles cuando una función espera un `Entero` y se pasa un `int` por descuido.
-* Para crear el objeto, debe hacerse de forma **explícita**: `Entero(30)` o `Entero e(30);`.
-
-
 ## Destructor
 
 Un **destructor** es una función especial que se ejecuta automáticamente cuando un objeto:
