@@ -133,7 +133,7 @@ int main() {
 
 
 
-### Inicialización de atributos sin constructor por defecto
+## Inicialización de atributos sin constructor por defecto
 
 Una razón fundamental para usar listas de inicialización en C++ es cuando una clase tiene un miembro cuyo tipo **no dispone de constructor por defecto**. En ese caso, dicho miembro **debe inicializarse en la lista de inicialización**, ya que el compilador intenta construirlo antes de ejecutar el cuerpo del constructor.
 
