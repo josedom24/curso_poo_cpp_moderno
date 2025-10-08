@@ -22,19 +22,15 @@ Evita ambigüedades, mejora la legibilidad y previene conversiones implícitas i
 Persona p{"Ana", 30};
 ```
 
-Además, si una clase define un constructor que recibe un `std::initializer_list`, esta forma seleccionará preferentemente dicho constructor.
-
 ## Inicialización con el operador `=`
 
-También es posible inicializar un objeto utilizando el operador `=`, lo que se denomina **inicialización por copia**.
-Aunque su aspecto recuerda a una asignación, en realidad crea el objeto y llama a su constructor.
+También es posible inicializar un objeto utilizando el operador `=`, lo que se denomina **inicialización por copia**. Aunque su aspecto recuerda a una asignación, en realidad crea el objeto y llama a su constructor.
 
 ```cpp
 Persona p = Persona("Ana", 30);
 ```
 
 En este caso, el compilador crea un objeto temporal `Persona("Ana", 30)` y lo usa para inicializar `p`.
-En C++ moderno, esta operación es eficiente, ya que los compiladores eliminan la copia intermedia mediante optimización (*copy elision*).
 
 ## Ejemplo completo
 
