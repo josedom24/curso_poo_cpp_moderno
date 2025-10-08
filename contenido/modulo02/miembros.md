@@ -94,12 +94,76 @@ int main() {
   * Aunque no aparece en el ejemplo, también se pueden devolver valores por referencia.
 * Cada objeto (`p`) mantiene su **estado propio**, independiente del de otros objetos.
 
-Hat que tener en cuenta:
+Hay que tener en cuenta:
 
 * Mantener los **atributos como privados** y proporcionar métodos públicos para acceder o modificarlos si es necesario.
 * Usar **referencias constantes (`const &`)** para pasar objetos grandes sin copiarlos cuando no se necesite modificarlos.
 * Devolver valores **por referencia constante** cuando quieras evitar copias innecesarias y no sea necesario modificar el dato.
 * Definir los métodos como **`const`** cuando no modifiquen el estado del objeto, para mejorar la seguridad y legibilidad del código.
+
+## Métodos constantes (`const`)
+
+Un **método constante** es aquel que **no modifica el estado interno del objeto** sobre el que se invoca. Se declara añadiendo la palabra clave `const` al final de la cabecera del método:
+
+Esto indica al compilador que el método no alterará ningún atributo del objeto. Si el método intenta modificar algo, se producirá un error de compilación.
+
+Los métodos constantes son útiles cuando queremos **garantizar** que una operación es de solo lectura.
+
+Ejemplo breve:
+
+```cpp
+#include <iostream>
+
+// Clase que representa un punto en el plano
+class Punto {
+private:
+    int x, y;
+
+public:
+    // Constructor: inicializa las coordenadas
+    Punto(int px, int py) : x(px), y(py) {}
+
+    // Método que modifica el estado del objeto
+    void mover(int dx, int dy) {
+        x += dx;
+        y += dy;
+    }
+
+    // Método constante: consulta sin modificar el objeto
+    void mostrar() const {
+        std::cout << "(" << x << ", " << y << ")\n";
+    }
+};
+
+int main() {
+    Punto p1(2, 3);      // Objeto normal
+    const Punto p2(5, 7); // Objeto constante
+
+    std::cout << "Punto 1 inicial: ";
+    p1.mostrar();
+
+    p1.mover(1, -2);  // Modifica el estado
+    std::cout << "Punto 1 tras moverlo: ";
+    p1.mostrar();
+
+    std::cout << "Punto 2 (constante): ";
+    p2.mostrar();     // Correcto: mostrar() es const
+
+    // p2.mover(3, 3); // Error: no se puede llamar a un método no const sobre un objeto const
+
+    return 0;
+}
+```
+
+
+* `mover()` **modifica** los atributos `x` e `y`, por lo tanto **no** puede ser `const`.
+* `mostrar()` **solo lee** los atributos, así que se declara como `const`.
+* En `main()` se crea:
+
+  * `p1`: un objeto normal, que puede modificarse.
+  * `p2`: un objeto constante (`const Punto`), que **solo puede invocar métodos constantes**.
+
+Si se descomenta la línea `p2.mover(3, 3);`, el compilador mostrará un error, reforzando el concepto de que un método constante **protege el estado del objeto**.
 
 ## Acceso implícito y puntero `this`
 
@@ -150,4 +214,5 @@ int main() {
 Veamos la representación UML del ejemplo `Persona`:
 
 ![diagrama3](img/diagrama3.png)
+
 
