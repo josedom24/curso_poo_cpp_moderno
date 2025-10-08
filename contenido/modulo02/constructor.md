@@ -156,8 +156,8 @@ En C++ moderno, el programador puede indicar al compilador si ciertas **funcione
 
 Estas dos expresiones permiten **controlar el comportamiento por defecto** de las clases:
 
-* `=default` → solicita que el compilador genere automáticamente la función.
-* `=delete` → prohíbe que esa función se use.
+* `=default`: solicita que el compilador genere automáticamente la función.
+* `=delete`: prohíbe que esa función se use.
 
 Veamos un ejemplo:
 
