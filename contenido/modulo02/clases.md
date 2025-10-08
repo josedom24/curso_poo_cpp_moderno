@@ -2,12 +2,24 @@
 
 La programación orientada a objetos organiza el código en **objetos** que combinan **estado** (atributos) y **comportamiento** (métodos). En C++, este paradigma se implementa mediante el uso de **clases**.
 
-## ¿Qué es una clase?
+## ¿Qué es una clase y un objeto?
 
-Una clase es una **plantilla** que define:
+Una **clase** es una **plantilla** que define:
 
 * **Atributos** (miembros de datos): variables que representan el estado de los objetos.
 * **Métodos** (funciones miembro): funciones que representan el comportamiento de los objetos.
+
+Un **objeto** es una **instancia concreta** de una clase.
+
+* Todos los objetos de una clase comparten la misma estructura.
+* Cada objeto mantiene sus propios valores para los atributos.
+
+Las clases y objetos permiten:
+
+* Organizar el código en unidades coherentes.
+* Favorecer la reutilización y el mantenimiento.
+* Ser la base de conceptos más avanzados como encapsulación, herencia y polimorfismo.
+
 
 Ejemplo básico:
 
@@ -44,23 +56,9 @@ int main() {
 }
 ```
 
-En este ejemplo:
-
 * `Persona` es una clase con dos atributos (`nombre`, `edad`) y un método (`saludar`).
 * `p1` y `p2` son **objetos**, cada uno con su propio estado.
 
-## ¿Qué es un objeto?
-
-Un objeto es una **instancia concreta** de una clase.
-
-* Todos los objetos de una clase comparten la misma estructura.
-* Cada objeto mantiene sus propios valores para los atributos.
-
-Las clases y objetos permiten:
-
-* Organizar el código en unidades coherentes.
-* Favorecer la reutilización y el mantenimiento.
-* Ser la base de conceptos más avanzados como encapsulación, herencia y polimorfismo.
 
 ## Ejemplo práctico ampliado
 
