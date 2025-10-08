@@ -33,52 +33,12 @@ Ventajas:
   * Accesible dentro de la clase y en sus derivadas.
   * Útil en herencia controlada, no visible para usuarios externos.
 
-## Buenas prácticas
+Tenemos que tener en cuenta:
 
 * Declarar **atributos como `private` por defecto**.
 * Exponer solo lo necesario mediante métodos públicos.
 * Asegurar que los métodos mantienen la **invarianza** de la clase (no permitir estados inválidos).
 
-## Funciones friend
-
-Una función **friend** no pertenece a la clase, pero puede acceder a sus miembros privados y protegidos.
-Se usa principalmente cuando:
-
-* Una función no miembro necesita acceso a detalles internos.
-* Se sobrecargan operadores como `operator<<` para `std::ostream`.
-* Dos clases colaboran estrechamente.
-
-Precauciones:
-
-* Rompe parcialmente el encapsulamiento.
-* Debe usarse con moderación.
-* No se hereda ni puede ser virtual.
-
-Ejemplo de función amiga:
-
-```cpp
-#include <iostream>
-
-class Caja {
-private:
-    double ancho;
-
-public:
-    Caja(double a) : ancho{a} {}
-
-    friend void mostrarAncho(const Caja& c);
-};
-
-void mostrarAncho(const Caja& c) {
-    std::cout << "Ancho de la caja: " << c.ancho << '\n';
-}
-
-int main() {
-    Caja c(3.5);
-    mostrarAncho(c);
-    return 0;
-}
-```
 
 ## Ejemplo con encapsulamiento
 
@@ -137,4 +97,45 @@ En este ejemplo:
 ## Representación UML del ejemplo
 
 ![diagrama2](img/diagrama2.png)
+
+
+## Funciones friend
+
+Una función **friend** no pertenece a la clase, pero puede acceder a sus miembros privados y protegidos. Se usa principalmente cuando:
+
+* Una función no miembro necesita acceso a detalles internos.
+* Se sobrecargan operadores como `operator<<` para `std::ostream`.
+* Dos clases colaboran estrechamente.
+
+Hay que tener en cuenta:
+
+* Rompe parcialmente el encapsulamiento.
+* Debe usarse con moderación.
+* No se hereda ni puede ser virtual.
+
+Veamos un ejejmplo:
+
+```cpp
+#include <iostream>
+
+class Caja {
+private:
+    double ancho;
+
+public:
+    Caja(double a) : ancho{a} {}
+
+    friend void mostrarAncho(const Caja& c);  //Función amiga
+};
+
+void mostrarAncho(const Caja& c) {
+    std::cout << "Ancho de la caja: " << c.ancho << '\n'; // Accede a un atributo privado
+}
+
+int main() {
+    Caja c(3.5);
+    mostrarAncho(c);
+    return 0;
+}
+```
 
