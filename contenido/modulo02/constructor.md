@@ -1,4 +1,4 @@
-# Constructores, destructores
+# Constructores y destructores
 
 En C++, la creación, uso y destrucción de objetos se gestionan mediante **constructores** y **destructores**.
 
