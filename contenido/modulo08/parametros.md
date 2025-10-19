@@ -6,13 +6,6 @@ C++ permite declarar **múltiples parámetros de tipo** en una plantilla, lo que
 
 ## Plantillas con varios tipos
 
-Perfecto 👍
-Aquí tienes la versión **reducida y unificada en un solo programa completo**, con comentarios claros y formato coherente con el resto del curso:
-
----
-
-## Plantillas con varios tipos
-
 Una clase plantilla puede parametrizarse con **más de un tipo genérico**, lo que permite combinar objetos de tipos distintos dentro de una misma estructura. El siguiente ejemplo muestra cómo definir y usar una plantilla con dos parámetros de tipo:
 
 ```cpp
