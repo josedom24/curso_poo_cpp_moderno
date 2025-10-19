@@ -75,24 +75,64 @@ Devolver interfaces es, por tanto, **la solución conceptual** al problema de ac
 Cuando se devuelve un objeto por valor, solo se copia la parte de la clase base, perdiendo la información del tipo derivado. Este fenómeno se conoce como **object slicing**.
 
 ```cpp
+Aquí tienes un **ejemplo completo y funcional** que demuestra claramente el fenómeno del **object slicing** (recorte de objeto) y cómo evitarlo en C++ moderno:
+
+---
+
+### 🔹 Ejemplo: *Devolver por valor y object slicing*
+
+```cpp
+#include <iostream>
+#include <memory>
+
+// Clase base abstracta
 class Figura {
 public:
-    virtual void dibujar() const = 0;
-    virtual ~Figura() = default;
+    virtual void dibujar() const = 0;     // Método virtual puro
+    virtual ~Figura() = default;          // Destructor virtual
 };
 
+// Clase derivada
 class Circulo : public Figura {
 public:
-    void dibujar() const override { std::cout << "Círculo\n"; }
+    void dibujar() const override {
+        std::cout << "Dibujando un Círculo\n";
+    }
 };
 
-Figura crearFigura() {
+// Función que devuelve un objeto por valor (provoca object slicing)
+Figura crearFiguraPorValor() {
     Circulo c;
-    return c; // Se pierde la parte específica de Circulo
+    return c;  // Se produce "object slicing"
+}
+
+// Solución moderna: devolver por puntero inteligente
+std::unique_ptr<Figura> crearFiguraPorPuntero() {
+    return std::make_unique<Circulo>();
+}
+
+int main() {
+    std::cout << "== Ejemplo con devolución por valor ==\n";
+    Figura f = crearFiguraPorValor();
+    f.dibujar();  // Error conceptual: no se llama a Circulo::dibujar()
+                  // Se comporta como una Figura “recortada”
+
+    std::cout << "\n== Ejemplo con devolución mediante puntero ==\n";
+    auto figuraPtr = crearFiguraPorPuntero();
+    figuraPtr->dibujar();  //  Llama correctamente a Circulo::dibujar()
+
+    return 0;
 }
 ```
 
-El objeto devuelto ya no es un `Circulo`, sino solo la porción `Figura`. El polimorfismo dinámico se pierde completamente.
+* En la función `crearFiguraPorValor()`, el objeto `Circulo` se **devuelve por valor** como tipo `Figura`.
+  * Solo se copia la **parte base (`Figura`)** del objeto,
+  * La parte específica de `Circulo` se **pierde** → esto es el *object slicing*.
+  * El polimorfismo dinámico **no funciona**, ya que la copia no conserva el tipo real.
+* En la función `crearFiguraPorPuntero()`, se devuelve un **puntero inteligente a la clase base (`std::unique_ptr<Figura>`)**.
+  * El polimorfismo se mantiene,
+  * No hay pérdida de información del tipo dinámico (`Circulo`),
+  * Se garantiza una **gestión automática y segura de memoria** gracias a RAII.
 
 ### Devolver por referencia: referencia colgante
 
