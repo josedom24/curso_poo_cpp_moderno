@@ -23,7 +23,7 @@ dynamic_cast<tipo_derivado&>(referencia_base);
   * Lanza una excepción `std::bad_cast` (en el caso de referencias).
 
 
-## Ejemplo básico
+## Ejemplo con punteros
 
 ```cpp
 #include <iostream>
