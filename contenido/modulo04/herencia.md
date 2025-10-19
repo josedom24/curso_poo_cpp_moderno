@@ -146,23 +146,80 @@ En C++, si una clase derivada define un método con el mismo nombre que uno de l
 Ejemplo:
 
 ```cpp
+#include <iostream>
+#include <string>
+
 class Base {
 public:
-    void f(int) {}
-    void f(double) {}
+    void f(int x) {
+        std::cout << "Base::f(int): " << x << "\n";
+    }
+
+    void f(double x) {
+        std::cout << "Base::f(double): " << x << "\n";
+    }
+};
+
+// Clase derivada que oculta las funciones f() de Base
+class Derivada : public Base {
+public:
+    void f(const std::string& texto) {
+        std::cout << "Derivada::f(std::string): " << texto << "\n";
+    }
+};
+
+int main() {
+    Derivada d;
+
+    // Solo se puede llamar a la versión de Derivada
+    d.f("Hola");        // Correcto
+    // d.f(10);         // Error: las versiones de Base están ocultas
+    // d.f(3.14);       // Error: también están ocultas
+
+    return 0;
+}
+
+```
+
+Para **evitar el ocultamiento y reexponer las versiones de la clase base**, se puede añadir una directiva `using` dentro de la clase derivada:
+
+```cpp
+#include <iostream>
+#include <string>
+
+class Base {
+public:
+    void f(int x) {
+        std::cout << "Base::f(int): " << x << "\n";
+    }
+
+    void f(double x) {
+        std::cout << "Base::f(double): " << x << "\n";
+    }
 };
 
 class Derivada : public Base {
 public:
-    void f(std::string) {} // Oculta todas las f() de Base
+    using Base::f; // Reexpone las sobrecargas de la base
+
+    void f(const std::string& texto) {
+        std::cout << "Derivada::f(std::string): " << texto << "\n";
+    }
 };
+
+int main() {
+    Derivada d;
+
+    d.f("Hola");   // Llama a Derivada::f(std::string)
+    d.f(10);       // Llama a Base::f(int)
+    d.f(3.14);     // Llama a Base::f(double)
+
+    return 0;
+}
 ```
 
-Para evitar este problema, se puede usar:
-
-```cpp
-using Base::f; // Reexpone las sobrecargas de Base
-```
+* En la primera versión, la clase derivada oculta las sobrecargas de la base.
+* En la segunda versión, la directiva `using Base::f;` reexpone los métodos sobrecargados de `Base`, permitiendo su uso junto con los de `Derivada`.
 
 ## Destructores en la herencia
 
