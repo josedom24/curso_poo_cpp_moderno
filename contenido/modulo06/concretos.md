@@ -75,13 +75,6 @@ Devolver interfaces es, por tanto, **la solución conceptual** al problema de ac
 Cuando se devuelve un objeto por valor, solo se copia la parte de la clase base, perdiendo la información del tipo derivado. Este fenómeno se conoce como **object slicing**.
 
 ```cpp
-Aquí tienes un **ejemplo completo y funcional** que demuestra claramente el fenómeno del **object slicing** (recorte de objeto) y cómo evitarlo en C++ moderno:
-
----
-
-### 🔹 Ejemplo: *Devolver por valor y object slicing*
-
-```cpp
 #include <iostream>
 #include <memory>
 
