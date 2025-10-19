@@ -54,7 +54,6 @@ int main() {
 ```
 * El método `ordenar()` **está rígidamente acoplado** a un único algoritmo (burbuja).
 * Si se desea usar otro algoritmo (por ejemplo, *quick sort* o *merge sort*), sería necesario **modificar la clase**.
-* Esto **viola el principio abierto/cerrado (OCP)**: una clase debería poder extenderse sin necesidad de cambiar su código fuente.
 
 ## Ventajas del bajo acoplamiento y la composición flexible
 
