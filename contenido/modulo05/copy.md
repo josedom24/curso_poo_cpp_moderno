@@ -1,7 +1,9 @@
 # Copia de objetos: superficiales y profundas
 
 La copia de objetos es un aspecto esencial de la programación orientada a objetos: permite duplicar el estado de un objeto existente en otro nuevo.
-En C++ moderno, esta operación puede realizarse de forma automática o personalizada, y se controla mediante dos mecanismos especiales del lenguaje:
+En C++ moderno, esta operación puede realizarse de forma automática o personalizada, y se controla mediante dos mecanismos especiales del lenguaje.
+
+## Mecanismos para realizar la copia
 
 * **Constructor de copia**: Se utiliza para crear un nuevo objeto a partir de otro. Se invoca cuando se **inicializa un objeto con otro del mismo tipo** o cuando **se pasa un objeto por valor a una función**.
     Sintaxis:
@@ -19,11 +21,22 @@ En C++ moderno, esta operación puede realizarse de forma automática o personal
     ```cpp
     ClassName& operator=(const ClassName& other);
     ```
+    Durante la asignación, el operador debe comprobar si el objeto se está asignando a sí mismo para evitar operaciones innecesarias o errores con recursos compartidos.
+    Esto se logra mediante una verificación de autoasignación y la copia controlada del estado:
+
     Ejemplo:
     ```cpp
-    MiClase a, b;
-    b = a;  // Operador de asignación por copia
+    ClassName& operator=(const ClassName& other) {
+    if (this != &other) {
+        // Copiar los datos desde 'other' a este objeto
+       datos = other.datos;
+       ...
+    }
+    return *this;
+    }
     ```
+
+## Tipos de copia
 
 Ambos determinan cómo se duplica un objeto cuando se inicializa o se asigna. Además, en función de cómo se gestionen los recursos internos, podemos hablar de dos tipos de copia: **superficial y profunda**.
 
