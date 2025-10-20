@@ -1,5 +1,7 @@
 # Curso de Programación Orientada a Objetos con C++ moderno
 
+* [Ejercicios y ejemplos](https://github.com/josedom24/ejercicios_curso_poo_cpp_moderno)
+
 1. Fundamentos de la Programación Orientada a Objetos
 
     * [¿Qué es la programación orientada a objetos?](contenido/modulo01/poo.md)
