@@ -221,4 +221,4 @@ int main() {
 
 ## Representación UML del ejemplo Persona
 
-![diagrama5](img/diagrama5.png)
+![diagrama4](img/diagrama4.png)
