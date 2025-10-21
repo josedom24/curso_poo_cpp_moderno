@@ -12,6 +12,7 @@ Para acceder a ellos de forma controlada se utilizan:
 Exponer directamente los atributos rompe el **encapsulamiento** y permite estados inválidos:
 
 ```cpp
+#include <string>
 class Persona {
 public:
     std::string nombre;
