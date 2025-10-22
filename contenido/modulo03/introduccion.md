@@ -59,12 +59,9 @@ Si se olvida `fclose`, el descriptor queda abierto, lo que puede causar **fugas 
 
 ## Gestión moderna en C++
 
-C++ moderno incorpora mecanismos que automatizan la gestión de recursos, reduciendo errores y mejorando la robustez del software.
+La gestión moderna de recursos en C++ se fundamenta en el principio **RAII (Resource Acquisition Is Initialization)**, que garantiza la liberación automática y segura de los recursos cuando los objetos que los poseen salen de su ámbito de validez. Este enfoque elimina la necesidad de liberar recursos manualmente y protege frente a fugas de memoria o bloqueos incluso en presencia de excepciones.
 
-Los más importantes son:
+Dentro de este marco, la **gestión segura de memoria** se realiza mediante **punteros inteligentes**, como `std::unique_ptr` y `std::shared_ptr`, que encapsulan la propiedad de los recursos dinámicos y aseguran su liberación automática cuando dejan de ser necesarios.
 
-* **Punteros inteligentes (`std::unique_ptr`, `std::shared_ptr`)**: gestionan memoria automáticamente.
-* **Patrón RAII (Resource Acquisition Is Initialization)**: los recursos se adquieren en el constructor y se liberan en el destructor de un objeto, garantizando seguridad incluso si hay excepciones.
-
-Estos conceptos los desarrollaremos en los apartados siguientes.
+En los apartados siguientes profundizaremos en estos mecanismos y en su aplicación práctica para lograr un código más seguro, robusto y expresivo.
 
