@@ -6,7 +6,6 @@ Cuando un puntero inteligente gestiona un objeto de una clase:
 
 * Se usa el operador `->` para acceder a sus métodos y atributos.
 * La memoria del objeto se libera automáticamente al finalizar su ámbito.
-* Puede aplicarse el principio RAII, garantizando la liberación del recurso incluso ante excepciones.
 
 ## Uso de `std::unique_ptr` con clases
 
