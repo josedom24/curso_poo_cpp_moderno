@@ -14,30 +14,6 @@ Implementa:
 
 En `main()`, crea y mueve imágenes para observar qué operaciones se ejecutan.
 
-Perfecto 👍
-Tu intuición es correcta: **los ejercicios están muy bien diseñados** y solo necesitan **reordenarse** para seguir la secuencia lógica del nuevo orden de apartados del módulo.
-
-Recordemos el nuevo orden didáctico del módulo 5:
-
-1. Copia de objetos: superficiales y profundas
-2. Movimiento de objetos
-3. Control de creación, copia y movimiento de objetos
-4. Clonación de objetos
-5. Sobrecarga de operadores
-6. Fluidez de métodos
-
-Por tanto, los ejercicios deben reflejar esa progresión conceptual.
-
-Aquí te dejo el **orden actualizado y coherente**, sin cambiar los enunciados ni las temáticas (solo los títulos y numeración):
-
-Perfecto ✅
-Siguiendo tu línea didáctica, aquí tienes un **nuevo Ejercicio 2** con una **temática diferente**, pero que sigue enseñando el mismo concepto: **controlar la creación, copia y movimiento de objetos**.
-
-He elegido un contexto realista y comprensible: **gestión de una conexión de base de datos**.
-La clase `ConexionBD` representa un recurso que **no puede duplicarse**, pero puede **moverse** (transferir la conexión).
-
----
-
 ## Ejercicio 2: Control de creación, copia y movimiento
 
 Diseña una clase `ConexionBD` que represente una conexión a una base de datos.
