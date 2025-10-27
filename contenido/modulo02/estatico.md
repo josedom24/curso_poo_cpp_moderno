@@ -54,7 +54,7 @@ int main() {
 ```
 Este ejemplo muestra la diferencia entre los tipos de atributos estáticos:
 
-* Los **constantes de tipo integral** pueden inicializarse directamente dentro de la clase.
+* Los **constantes de tipo integral** (tipos `int`,`char`, `signed char`, `unsigned char`, `bool` y `enum class`) pueden inicializarse directamente dentro de la clase.
 * Los **no constantes** o los **no integrales** (como `double` o `std::string`) deben definirse **fuera de la clase**, incluso si son `const`.
 
 
