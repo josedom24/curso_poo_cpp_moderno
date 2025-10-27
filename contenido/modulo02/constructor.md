@@ -51,7 +51,7 @@ Este programa demuestra que:
 
 * El **constructor por defecto** inicializa `x` e `y` en `0`.
 * El **constructor parametrizado** usa la lista de inicialización para asignar directamente los valores recibidos.
-* La función `mostrar()` es **const** porque no modifica el estado del objeto.
+* El método `mostrar()` es **const** porque no modifica el estado del objeto.
 
 
 ## Destructor
