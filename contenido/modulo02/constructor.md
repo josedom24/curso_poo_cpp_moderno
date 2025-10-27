@@ -60,7 +60,7 @@ Un **destructor** es una función especial que se ejecuta automáticamente cuand
 
 * sale de su ámbito,
 * se elimina con `delete`,
-* o es destruido dentro de un contenedor.
+* o es destruido dentro de un contenedor de la STL, por ejemplo, en un vector (`std::vector`).
 
 Su sintaxis es: `~NombreDeClase();`
 
