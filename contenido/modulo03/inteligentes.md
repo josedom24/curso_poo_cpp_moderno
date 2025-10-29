@@ -120,4 +120,10 @@ int main() {
 
     return 0;
 }
-```
+Como `std::weak_ptr` **no es dueño** del recurso, no puede acceder directamente a él. Antes debe comprobar si el recurso sigue existiendo.
+
+`lock()` sirve para eso:
+
+* **Comprueba** si el `shared_ptr` asociado aún tiene propiedad del recurso (es decir, su contador de referencias es > 0).
+* **Si existe**, crea y devuelve un **`std::shared_ptr` temporal**, aumentando el contador de referencias mientras se usa.
+* **Si ya no existe**, devuelve un `std::shared_ptr` vacío (equivalente a `nullptr`).
