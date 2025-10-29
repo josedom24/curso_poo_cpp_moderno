@@ -57,6 +57,7 @@ Representa **propiedad compartida** mediante conteo de referencias.
 * Varias copias comparten el mismo recurso.
 * El recurso se libera cuando el contador de referencias llega a cero.
 * Útil en grafos, estructuras compartidas o cachés.
+* Creamos punteros de este tipo con `std::make_shared`.
 
 ```cpp
 #include <memory>
