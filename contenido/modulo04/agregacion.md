@@ -51,6 +51,7 @@ int main() {
 ```
 
 * Con referencia `Motor&` el **vehículo siempre tiene un motor válido**, no puede ser `nullptr`.
+* La referencia no es constante, por lo que `Vehiculo` puede usar y modificar al `Motor`.
 * La relación sigue siendo **agregación**: el `Vehiculo` no es dueño del `Motor`.
 * La **vida del motor** está garantizada fuera de `Vehiculo`.
 * Ventajas: La referencia siempre es válida y no puede ser nula.
