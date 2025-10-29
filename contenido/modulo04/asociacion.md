@@ -131,6 +131,7 @@ int main() {
 En este caso:
 
 * `Pedido` mantiene una **referencia constante** al objeto `Cliente`.
+* El `Pedido` guarda un **referencia constante**, solo conoce al `Cliente`, lo usa para obtener información, pero no lo controla ni lo modifica.
 * La referencia **no puede ser nula ni reasignada**, garantizando una relación válida durante toda la vida del `Pedido`.
 * La asociación es **no propietaria**: el `Cliente` es gestionado desde fuera de la clase `Pedido`.
 * El modelo es **ligero y seguro**, siempre que se respete la garantía de existencia del objeto referenciado.
