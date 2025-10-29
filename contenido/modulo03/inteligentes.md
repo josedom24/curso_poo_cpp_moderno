@@ -120,6 +120,8 @@ int main() {
 
     return 0;
 }
+```
+
 Como `std::weak_ptr` **no es dueño** del recurso, no puede acceder directamente a él. Antes debe comprobar si el recurso sigue existiendo.
 
 `lock()` sirve para eso:
