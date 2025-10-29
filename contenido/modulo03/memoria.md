@@ -1,4 +1,4 @@
-# Gestión manual de memoria
+# Gestión manual de memoria dinámica
 
 En C++, los datos y variables se almacenan en diferentes áreas de memoria con propósitos específicos. Comprender estas áreas es fundamental para escribir código eficiente y seguro.
 
