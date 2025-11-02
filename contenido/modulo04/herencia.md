@@ -224,8 +224,10 @@ int main() {
 ## Destructores en la herencia
 
 * Cuando se destruye un objeto derivado, **primero se ejecuta el destructor de la derivada y después el de la base**.
-* Si la clase base gestiona recursos, su destructor debe declararse como `virtual`.
-* Esto asegura que, al destruir un objeto derivado a través de un puntero a la clase base, se invoquen correctamente todos los destructores.
+* Lo veremos má adelante, pero adelantamos el siguiente concepto: si la clase base gestiona recursos (memoria, archivos, sockets, etc.) y va a ser usada mediante punteros o referencias polimórficas, su destructor debe ser virtual. Así garantizas que:
+    * Se llamen todos los destructores en orden correcto (de derivada a base).
+    * Se liberen correctamente todos los recursos (RAII).
+    * No haya fugas de memoria ni comportamiento indefinido.
 
 ## Herencia múltiple
 
