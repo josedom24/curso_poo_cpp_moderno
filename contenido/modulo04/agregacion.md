@@ -60,7 +60,7 @@ int main() {
 
 ### Agregación con punteros inteligentes no propietarios (std::weak_ptr)
 
-Cuando se trabaja con `std::shared_ptr`, la agregación puede representarse con `std::weak_ptr`, que mantiene una referencia débil sin afectar al conteo de referencias ni a la propiedad.
+La agregación no implica propiedad, por lo que se puede representar con `std::weak_ptr`, que mantiene una referencia débil sin afectar al conteo de referencias ni a la propiedad.
 
 ```cpp
 #include <iostream>
