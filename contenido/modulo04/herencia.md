@@ -224,7 +224,7 @@ int main() {
 ## Destructores en la herencia
 
 * Cuando se destruye un objeto derivado, **primero se ejecuta el destructor de la derivada y después el de la base**.
-* Lo veremos má adelante, pero adelantamos el siguiente concepto: si la clase base gestiona recursos (memoria, archivos, sockets, etc.) y va a ser usada mediante punteros o referencias polimórficas, su destructor debe ser virtual. Así garantizas que:
+* Lo veremos má adelante, pero adelantamos el siguiente concepto: si la clase base gestiona recursos (memoria, archivos, sockets, etc.) y va a ser usada mediante punteros o referencias polimórficas, su destructor debe ser virtual. Es decir, es obligatorio redefinirla en la clase derivada. Así garantizamos que:
     * Se llamen todos los destructores en orden correcto (de derivada a base).
     * Se liberen correctamente todos los recursos (RAII).
     * No haya fugas de memoria ni comportamiento indefinido.
