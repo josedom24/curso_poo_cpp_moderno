@@ -28,14 +28,15 @@ El curso mantiene una referencia a su profesor, pero no es dueño de él: esta e
 
 ## Ejercicio 3: Agregación (Equipo y Jugador)
 
-Un club deportivo necesita organizar sus equipos. Cada jugador puede pertenecer a varios equipos, y un equipo puede estar formado por distintos jugadores. Si un equipo desaparece, los jugadores siguen existiendo y pueden integrarse en otros.
+En un club deportivo, cada **equipo** tiene asignado un **jugador principal** (por ejemplo, su capitán).
+El jugador existe de forma independiente del equipo: puede cambiar de equipo, retirarse o incluso seguir existiendo después de que el equipo deje de operar.
 
-Crea las clases:
+Por tanto, la relación entre *Equipo* y *Jugador* es una **agregación no propietaria**:
 
-* `Jugador`, con un atributo `nombre` y un método `jugar()`.
-* `Equipo`, con un atributo `nombre` y una lista de punteros a `Jugador`.
+* El **equipo conoce y utiliza** al jugador, pero **no es su dueño**.
+* Si el jugador desaparece, el equipo debe poder detectarlo y evitar acceder a memoria inválida.
+* El **ciclo de vida del jugador** se gestiona desde fuera de la clase *Equipo*.
 
-La relación es una **agregación**: el equipo conoce y utiliza a sus jugadores, pero no es dueño de ellos.
 
 ![ejercicio](img/ejercicio13.png)
 
