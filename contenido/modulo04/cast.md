@@ -31,7 +31,11 @@ dynamic_cast<tipo_derivado&>(referencia_base);
 
 class Sensor {
 public:
-    virtual void leer() const = 0; // Necesario para que sea polimórfica
+    // Método virtual 
+    virtual void leer() const {
+        std::cout << "Leyendo sensor genérico...\n";
+    }
+
     virtual ~Sensor() = default;
 };
 
@@ -60,11 +64,8 @@ int main() {
         temp->leer();       // Correcto
         temp->calibrar();   // Acceso a métodos propios del derivado
     } else {
-        std::cout << "El objeto no es un SensorTemperatura.\n";
-    }
+        std::cout << "El objeto
 
-    return 0;
-}
 ```
 
 * `Sensor` es una clase base **polimórfica** (posee al menos un método `virtual`).
