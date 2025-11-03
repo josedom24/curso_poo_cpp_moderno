@@ -1,69 +1,77 @@
-# Movimiento de objetos
+## Movimiento de objetos
 
 En C++ clásico, copiar un objeto complejo —por ejemplo, un `std::vector` con miles de elementos— podía ser una operación costosa, ya que implicaba duplicar toda su memoria interna.
-Para solucionar este problema, a partir de **C++11** el lenguaje incorporó el **movimiento de objetos**, que permite **transferir recursos** de un objeto a otro en lugar de copiarlos.
+Para optimizar este proceso, a partir de C++11 el lenguaje incorporó el **movimiento de objetos**, que permite **transferir recursos** de un objeto a otro en lugar de copiarlos.
 
-El movimiento hace posible escribir programas más eficientes, especialmente cuando se trabaja con objetos temporales o estructuras grandes que no es necesario duplicar.
+El movimiento hace posible escribir programas más eficientes, especialmente cuando se trabaja con **objetos temporales** o con **estructuras grandes** que no es necesario duplicar.
 
-## Valores lvalue y rvalue
+## Valores *lvalue* y *rvalue*
 
-Antes de abordar cómo se realiza el movimiento de objetos, es necesario comprender dos categorías fundamentales de expresiones en C++:
+Para comprender cómo funciona el movimiento, es necesario distinguir dos categorías fundamentales de expresiones en C++:
 
-* **lvalue (left value):** Expresiones que hacen referencia a una ubicación identificable en memoria y que pueden aparecer en el lado izquierdo de una asignación. Pueden ser referenciadas con `&`.
+* **lvalue (left value):**
+  Son expresiones que hacen referencia a una ubicación identificable en memoria, es decir, **tienen nombre** y **pueden aparecer en el lado izquierdo de una asignación**.
+  Se puede obtener su dirección con el operador `&`.
 
   ```cpp
   int x = 42;    // x es un lvalue
   int* p = &x;   // se puede tomar la dirección de x
   ```
 
-* **rvalue (right value):** Expresiones temporales que no tienen nombre ni dirección permanente. No se les puede tomar la dirección (en general), y se usan típicamente en el lado derecho de una asignación.
+* **rvalue (right value):**
+  Son **valores temporales** que no tienen nombre ni dirección persistente.
+  No se les puede tomar la dirección (en general) y se usan normalmente en el lado derecho de una asignación.
 
   ```cpp
   int y = x + 1; // x + 1 es un rvalue
   ```
 
-Con la llegada de C++11, se introdujo una nueva categoría de referencias, las **referencias a rvalue (`T&&`)**, que permiten capturar estos valores temporales y explotarlos para evitar copias innecesarias.
+Con la llegada de C++11, se introdujo una nueva categoría de referencias: las **referencias a rvalue** (`T&&`), que permiten **capturar estos valores temporales** y aprovecharlos para **mover recursos** en lugar de copiarlos.
 
-## Constructor de movimiento y operador de asignación por movimiento
+La función `std::move()` es la herramienta que indica explícitamente al compilador que un objeto con nombre (un *lvalue*) puede tratarse como un *rvalue*.
+Importante: `std::move()` **no mueve nada por sí misma**; simplemente habilita el uso del **constructor** o del **operador de asignación por movimiento**.
 
-El movimiento se implementa mediante dos funciones especiales:
+## Constructor y operador de movimiento
 
-```cpp
-// Constructor de movimiento
-ClassName(ClassName&& other);
+El movimiento se implementa mediante dos mecanismos especiales del lenguaje:
 
-// Operador de asignación por movimiento
-ClassName& operator=(ClassName&& other);
-```
+* **Constructor de movimiento:** crea un nuevo objeto transfiriendo los recursos del objeto origen.
+* **Operador de asignación por movimiento:** transfiere los recursos de un objeto existente a otro que ya estaba construido.
 
-* El parámetro `ClassName&&` es una **referencia a rvalue**, y por tanto puede recibir **valores temporales** (expresiones sin nombre). Esto permite que el constructor u operador de movimiento **tomen posesión de los recursos** de esos objetos temporales en lugar de copiarlos.
-* La función `std::move()` **indica al compilador que un objeto con nombre (un lvalue)** puede tratarse **como un rvalue**.
-No realiza el movimiento por sí misma, sino que **habilita** la llamada al constructor u operador de movimiento, permitiendo **transferir los recursos** del objeto original al nuevo.
+Ambos mecanismos se definen utilizando referencias a *rvalue* (`T&&`) y suelen declararse como `noexcept`, indicando que **no lanzan excepciones**.
+Esto permite a los contenedores de la STL (como `std::vector` o `std::map`) mover sus elementos de forma segura y eficiente.
 
-## Ejemplo: clase `Buffer` con movimiento
+
+## Ejemplo 1: Movimiento con `std::unique_ptr`
+
+En este ejemplo, la clase `BufferMovil` gestiona su recurso mediante un puntero exclusivo (`std::unique_ptr`).
+El **constructor de movimiento** y el **operador de asignación por movimiento** transfieren la propiedad del recurso en lugar de copiarlo.
 
 ```cpp
 #include <iostream>
+#include <memory>
 #include <vector>
 
-class Buffer {
+class BufferMovil {
 private:
-    std::vector<int> datos;
+    std::unique_ptr<std::vector<int>> datos;
 
 public:
     // Constructor por defecto
-    Buffer() = default;
+    BufferMovil() = default;
 
     // Constructor con datos iniciales
-    Buffer(std::initializer_list<int> lista) : datos(lista) {}
+    BufferMovil(std::initializer_list<int> lista)
+        : datos(std::make_unique<std::vector<int>>(lista)) {}
 
     // Constructor de movimiento
-    Buffer(Buffer&& other) noexcept : datos(std::move(other.datos)) {
+    BufferMovil(BufferMovil&& other) noexcept
+        : datos(std::move(other.datos)) {
         std::cout << "Constructor de movimiento\n";
     }
 
     // Operador de asignación por movimiento
-    Buffer& operator=(Buffer&& other) noexcept {
+    BufferMovil& operator=(BufferMovil&& other) noexcept {
         if (this != &other) {
             datos = std::move(other.datos);
             std::cout << "Asignación por movimiento\n";
@@ -72,38 +80,84 @@ public:
     }
 
     void mostrar() const {
-        if (datos.empty())
+        if (!datos || datos->empty()) {
             std::cout << "(vacío)\n";
-        else {
-            for (int v : datos) std::cout << v << " ";
+        } else {
+            for (int v : *datos) std::cout << v << " ";
             std::cout << "\n";
         }
     }
 };
 
 int main() {
-    Buffer b1{1, 2, 3};
-    Buffer b2 = std::move(b1); // Invoca el constructor de movimiento
-    Buffer b3;
-    b3 = std::move(b2);        // Invoca el operador de asignación por movimiento
+    BufferMovil b1{1, 2, 3};
+    BufferMovil b2 = std::move(b1);  // Invoca el constructor de movimiento
+    BufferMovil b3;
+    b3 = std::move(b2);              // Invoca el operador de asignación por movimiento
 
-    std::cout << "b1: "; b1.mostrar(); // Estado válido pero vacío
-    std::cout << "b2: "; b2.mostrar(); // Estado válido pero vacío
-    std::cout << "b3: "; b3.mostrar(); // Contiene los datos originales
+    std::cout << "b1: "; b1.mostrar();  // (vacío)
+    std::cout << "b2: "; b2.mostrar();  // (vacío)
+    std::cout << "b3: "; b3.mostrar();  // 1 2 3
+}
+```
+* `std::move(b1)` convierte `b1` en un *rvalue*, habilitando el constructor de movimiento.
+* El recurso (el `std::vector<int>`) se transfiere desde `b1` a `b2` sin copiar los elementos.
+* Tras el movimiento, `b1` y `b2` quedan en un estado **válido pero vacío**.
+* El uso de `noexcept` indica que la operación es segura y no lanzará excepciones.
+
+## Ejemplo 2: Movimiento con `std::shared_ptr`
+
+En este segundo ejemplo, se usa un puntero compartido (`std::shared_ptr`) para demostrar que el movimiento también puede aplicarse a recursos **compartidos entre objetos**.
+El movimiento simplemente **transfiere el control del puntero compartido**, sin copiar ni incrementar el contador de referencias.
+
+```cpp
+#include <iostream>
+#include <memory>
+#include <vector>
+
+class BufferCompartido {
+private:
+    std::shared_ptr<std::vector<int>> datos;
+
+public:
+    // Constructor con datos iniciales
+    BufferCompartido(std::initializer_list<int> lista)
+        : datos(std::make_shared<std::vector<int>>(lista)) {}
+
+    // Constructor de movimiento
+    BufferCompartido(BufferCompartido&& other) noexcept
+        : datos(std::move(other.datos)) {
+        std::cout << "Constructor de movimiento (shared)\n";
+    }
+
+    // Operador de asignación por movimiento
+    BufferCompartido& operator=(BufferCompartido&& other) noexcept {
+        if (this != &other) {
+            datos = std::move(other.datos);
+            std::cout << "Asignación por movimiento (shared)\n";
+        }
+        return *this;
+    }
+
+    void mostrar() const {
+        if (!datos || datos->empty()) {
+            std::cout << "(vacío)\n";
+        } else {
+            for (int v : *datos) std::cout << v << " ";
+            std::cout << "\n";
+        }
+    }
+};
+
+int main() {
+    BufferCompartido a{1, 2, 3};
+    BufferCompartido b = std::move(a);  // Mueve la propiedad compartida
+
+    std::cout << "a: "; a.mostrar();  // (vacío)
+    std::cout << "b: "; b.mostrar();  // 1 2 3
 }
 ```
 
-* `std::move(b1)` convierte el objeto `b1` en un **rvalue**, habilitando el constructor de movimiento.
-* El vector interno de `b1` se transfiere a `b2` mediante `std::move(other.datos)`.
-* Tras el movimiento, los objetos origen (`b1` y `b2`) quedan en un **estado válido pero vacío**: pueden destruirse sin problema, pero su contenido ya no está definido.
-* La palabra clave `noexcept` indica que el movimiento **no lanza excepciones**, lo cual es importante para la STL: los contenedores como `std::vector` prefieren mover elementos en lugar de copiarlos si la operación se declara segura.
+* El movimiento transfiere el puntero compartido sin copiar los datos ni modificar el contador de referencias.
+* Tras el movimiento, el objeto origen (`a`) pierde la propiedad del recurso, pero el destino (`b`) lo conserva íntegro.
 
-## Resumen
-
-* La copia, duplica los recursos del objeto origen. Si copiamos un vector, obtenemos dos vectores con los mismos datos.
-* El movimiento transfiere los recursos del objeto origen al destino. El origen queda vacío, el destino conserva los datos.
-* El movimiento evita copias innecesarias y mejora notablemente el rendimiento en programas que manejan objetos grandes o temporales.
-* El movimiento se activa cuando el compilador puede usar un **rvalue** (temporal o convertido con `std::move`).
-* Permite **transferir la propiedad** de recursos costosos sin duplicarlos.
-* En C++ moderno, las clases de la STL aprovechan automáticamente el movimiento cuando está disponible.
-* Es una técnica esencial para escribir código eficiente y seguro basado en RAII.
