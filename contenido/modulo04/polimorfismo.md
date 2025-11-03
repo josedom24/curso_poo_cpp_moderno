@@ -106,12 +106,14 @@ int main() {
     hacerHablar(p);  // "El perro ladra."
     hacerHablar(g);  // "El gato maúlla."
 
-    Animal* ptr = new Perro{};
-    ptr->hablar();   // "El perro ladra."
-    delete ptr;
+    // En lugar de usar un puntero:
+    Perro otroPerro{};
+    Animal& ref = otroPerro;  // referencia al objeto base
+    ref.hablar();             // "El perro ladra."
 
     return 0;
 }
+
 ```
 
 En este ejemplo, gracias al polimorfismo dinámico:
