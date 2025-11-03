@@ -2,17 +2,20 @@
 
 ## Ejercicio 1: Copia y movimiento de objetos
 
-Diseña una clase `Imagen` que simule la gestión de un recurso gráfico en memoria.
-Cada objeto `Imagen` contendrá un identificador y un vector de píxeles (simulado con `std::vector<int>`).
+Diseña una clase `RecursoAudio` que simule la gestión de un recurso de audio en memoria (por ejemplo, un sonido cargado).
+Cada objeto contendrá:
+
+* un **identificador de nombre**,
+* un **recurso dinámico simulado** (un entero gestionado con `std::unique_ptr<int>`).
 
 Implementa:
 
-* **Constructor con tamaño e identificador**, que reserve un número dado de píxeles.
-* **Constructor de copia** y **operador de asignación por copia**, que dupliquen la imagen.
-* **Constructor de movimiento** y **operador de asignación por movimiento**, que transfieran los píxeles de una imagen a otra usando `std::move`.
-* Un método `mostrar()` que imprima el identificador y el tamaño actual del vector de píxeles.
+1. **Constructor** que reciba un nombre y un valor inicial del recurso.
+2. **Constructor de copia** y **operador de asignación por copia**, que realicen una **copia profunda** (el nuevo objeto obtiene su propio recurso).
+3. **Constructor de movimiento** y **operador de asignación por movimiento**, que transfieran la propiedad del recurso mediante `std::move`.
+4. Un método `mostrar()` que indique el nombre del objeto y el valor del recurso.
 
-En `main()`, crea y mueve imágenes para observar qué operaciones se ejecutan.
+Finalmente, en `main()`, crea, copia y mueve objetos para observar qué operaciones se ejecutan.
 
 ## Ejercicio 2: Control de creación, copia y movimiento
 
