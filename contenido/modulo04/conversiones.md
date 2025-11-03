@@ -2,7 +2,10 @@
 
 Cuando trabajamos con herencia en C++, es común utilizar **punteros o referencias a la clase base** para manipular objetos derivados. Esto es posible porque C++ permite una **conversión implícita** de un puntero o referencia de una clase derivada hacia un puntero o referencia de su clase base.
 
-Este mecanismo es fundamental para el **polimorfismo dinámico**, ya que permite tratar de forma uniforme a distintos objetos derivados mediante un único tipo común: la clase base.
+Este mecanismo es fundamental para el **polimorfismo dinámico**, ya que permite tratar de forma uniforme a distintos objetos derivados mediante un único tipo común: la clase base. 
+
+* Al hacer **conversiones implícitas**: el puntero o la referencia resultante solo puede acceder a los **miembros declarados en la clase base**, incluso si el objeto real pertenece a una clase derivada. 
+* Si queremos acceder a los **miembros propios de la clase derivada**, tendremos que hacer una **conversión implícita** con `dynamic_cast`.
 
 ## Conversiones implícitas en herencia
 
@@ -10,26 +13,34 @@ Si tenemos un objeto de una clase derivada, podemos convertir su dirección a un
 
 ```cpp
 #include <iostream>
+#include <memory>
 
 class Base {};
 class Derivada : public Base {};
 
 int main() {
-    Derivada d;
+    // --- Conversión implícita con punteros inteligentes ---
+    // std::unique_ptr<Derivada> puede convertirse automáticamente
+    // en std::unique_ptr<Base> porque existe una relación de herencia pública.
+    std::unique_ptr<Derivada> ptrDerivada = std::make_unique<Derivada>();
+    std::unique_ptr<Base> ptrBase = std::move(ptrDerivada); // Conversión implícita
 
-    Base* pBase = &d;  // Conversión implícita de Derivada* a Base*
-    Base& rBase = d;   // Conversión implícita de Derivada& a Base&
+    // --- Conversión implícita con referencias ---
+    // Una referencia a un objeto Derivada puede asignarse a una referencia Base
+    // sin necesidad de casting explícito.
+    Derivada objDerivada;
+    Base& refBase = objDerivada; // Conversión implícita
 
     std::cout << "Conversiones implícitas realizadas correctamente.\n";
     return 0;
 }
 ```
 
-Esta conversión es **segura** porque:
-
-* Una clase derivada **es un** tipo de la clase base.
-* La parte de la clase base está siempre presente en el objeto derivado.
-* Por lo tanto, acceder a través de punteros o referencias base es válido.
+* **Conversión con punteros inteligentes:**
+  `std::unique_ptr<Derivada>` se convierte implícitamente en `std::unique_ptr<Base>` porque `Derivada` hereda públicamente de `Base`. No se necesita `dynamic_cast`.
+* **Conversión con referencias:**
+  Una referencia a `Derivada` puede vincularse directamente a una referencia a `Base` porque C++ aplica la conversión implícita correspondiente.
+* Esta conversión es **segura** porque una clase derivada **es un** tipo de la clase base. La parte de la clase base está siempre presente en el objeto derivado.
 
 ## Uso típico con polimorfismo
 
