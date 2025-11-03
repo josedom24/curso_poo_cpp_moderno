@@ -34,8 +34,8 @@ Veamos un ejemplo: El siguiente programa define una interfaz pura `Dibujable` y 
 // Interfaz pura
 class Dibujable {
 public:
-    virtual void dibujar() const = 0;   // Método virtual puro
-    virtual ~Dibujable() = default;     // Destructor virtual
+    virtual void dibujar() const = 0;  // Solo declara el contrato
+    virtual ~Dibujable() = default;
 };
 
 // Clases concretas que implementan la interfaz
@@ -53,19 +53,21 @@ public:
     }
 };
 
-// Función que trabaja con la interfaz
+// Función que opera sobre la interfaz
 void renderizar(const std::vector<std::unique_ptr<Dibujable>>& objetos) {
     for (const auto& obj : objetos)
         obj->dibujar();  // Llamada polimórfica
 }
 
 int main() {
-    std::vector<std::unique_ptr<Dibujable>> figuras;
-    figuras.push_back(std::make_unique<Circulo>());
-    figuras.push_back(std::make_unique<Rectangulo>());
+    std::vector<std::unique_ptr<Dibujable>> objetos;
 
-    renderizar(figuras);
+    objetos.push_back(std::make_unique<Circulo>());
+    objetos.push_back(std::make_unique<Rectangulo>());
+
+    renderizar(objetos);
 }
+
 ```
 
 

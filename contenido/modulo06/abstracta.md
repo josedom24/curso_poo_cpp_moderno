@@ -28,47 +28,66 @@ Veamos un  ejemplo, donde se define una jerarquía de clases que representan fig
 
 // Clase base abstracta
 class Figura {
+protected:
+    std::string color;
+
 public:
+    Figura(const std::string& c = "negro") : color(c) {}
+
     virtual void dibujar() const = 0;  // Método virtual puro
-    virtual ~Figura() = default;       // Destructor virtual
+    virtual ~Figura() = default;
+
+    void mostrarColor() const {
+        std::cout << "Color: " << color << "\n";
+    }
 };
 
 // Clases derivadas concretas
 class Circulo : public Figura {
 public:
+    using Figura::Figura;  // Hereda constructor
+
     void dibujar() const override {
-        std::cout << "Dibujando un círculo\n";
+        std::cout << "Dibujando un círculo (" << color << ")\n";
     }
 };
 
 class Rectangulo : public Figura {
 public:
+    using Figura::Figura;
+
     void dibujar() const override {
-        std::cout << "Dibujando un rectángulo\n";
+        std::cout << "Dibujando un rectángulo (" << color << ")\n";
     }
 };
 
 int main() {
     std::vector<std::unique_ptr<Figura>> figuras;
 
-    figuras.push_back(std::make_unique<Circulo>());
-    figuras.push_back(std::make_unique<Rectangulo>());
+    figuras.push_back(std::make_unique<Circulo>("rojo"));
+    figuras.push_back(std::make_unique<Rectangulo>("azul"));
 
-    for (const auto& figura : figuras)
-        figura->dibujar();  // Llamada polimórfica
+    for (const auto& figura : figuras) {
+        figura->dibujar();      // Llamada polimórfica
+        figura->mostrarColor(); // Método común a todas las figuras
+    }
 }
-```
 
-* La clase Figura no proporciona una implementación concreta de `dibujar()`. Declara el método `dibujar()` como virtual puro (`= 0`), convirtiéndose en una clase abstracta. No puede instanciarse directamente y sirve como **interfaz común** para todas las figuras.
-* Cualquier clase derivada que herede de `Figura` estará **obligada** a implementar dicho método para ser instanciable. Las clases `Circulo` y `Rectangulo` redefinen el método `dibujar()` utilizando la palabra clave `override`, que garantiza que coincida exactamente con la función virtual de la base.
-* Si una clase derivada no implementa todos los métodos virtuales puros heredados, también será abstracta.
-* El destructor de una clase base polimórfica debe ser **virtual**, para garantizar la destrucción correcta de objetos derivados.
-* Se emplea `std::unique_ptr<Figura>` para gestionar los objetos polimórficos de forma automática.
-  Gracias al principio **RAII** (*Resource Acquisition Is Initialization*), los recursos dinámicos se liberan cuando los punteros inteligentes salen de ámbito, evitando fugas de memoria.
-* Un `std::vector` de punteros a `Figura` puede contener objetos de distintos tipos (`Circulo`, `Rectangulo`).
-  En el bucle, la llamada `figura->dibujar()` se resuelve dinámicamente según el **tipo real** del objeto, demostrando el uso del **polimorfismo dinámico**.
-* La clase base `Figura` declara un **destructor virtual**, lo que garantiza que, al destruir un `std::unique_ptr<Figura>`, se invoque correctamente el destructor del objeto derivado correspondiente (`Circulo` o `Rectangulo`).
-  Esto es indispensable cuando se trabaja con jerarquías polimórficas, ya que de lo contrario podría producirse una **destrucción incompleta** del objeto.
+```
+* La clase `Figura` **no proporciona una implementación concreta** del método `dibujar()`.
+  Declara este método como **virtual puro** (`= 0`), lo que convierte a `Figura` en una **clase abstracta**.
+  Por tanto, **no puede instanciarse directamente** y sirve como **interfaz común** para todas las figuras que deriven de ella.
+* Cualquier clase derivada de `Figura` está **obligada** a implementar el método `dibujar()` para poder ser instanciada.
+  Las clases `Circulo` y `Rectangulo` redefinen el método usando la palabra clave `override`, que indica que se trata de una **redefinición polimórfica** y permite al compilador verificar que la firma coincide exactamente con la de la clase base.
+* Si una clase derivada **no implementa todos los métodos virtuales puros** que hereda, **también se considera abstracta**, y no podrá instanciarse directamente.
+* El **destructor virtual** en `Figura` (`virtual ~Figura() = default;`) es **imprescindible en jerarquías polimórficas**.
+  Garantiza que, al destruir un objeto a través de un puntero a la clase base (`Figura*`), se invoque correctamente el destructor del tipo derivado correspondiente (`Circulo`, `Rectangulo`, etc.).
+  De no ser virtual, la destrucción sería incompleta y podría producir **fugas de memoria o recursos**.
+* En el programa, los objetos se gestionan mediante **punteros inteligentes** (`std::unique_ptr<Figura>`), que automatizan la gestión de memoria.
+  Gracias al principio **RAII** (*Resource Acquisition Is Initialization*), los recursos dinámicos se liberan de forma automática al salir de ámbito, sin necesidad de liberar memoria manualmente.
+* El contenedor `std::vector<std::unique_ptr<Figura>>` puede almacenar **objetos de distintos tipos derivados** (`Circulo`, `Rectangulo`, etc.) porque todos ellos comparten la misma interfaz base `Figura`.
+  En el bucle, la llamada `figura->dibujar()` se **resuelve dinámicamente en tiempo de ejecución**, según el **tipo real** del objeto apuntado, lo que ejemplifica el uso del **polimorfismo dinámico** en C++ moderno.
+
 
 ## UML
 

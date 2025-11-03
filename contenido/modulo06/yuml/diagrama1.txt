@@ -1,3 +1,3 @@
-[<<abstracta>>Figura|+dibujar(): void]
-[Figura]^-.-[Circulo|+dibujar(): void]
-[Figura]^-.-[Rectangulo|+dibujar(): void]
+[<<abstracta>>Figura|#color: std::string; +dibujar(): void; +mostrarColor(): void; +~Figura()]
+[Figura]^-[Circulo|+dibujar(): void]
+[Figura]^-[Rectangulo|+dibujar(): void]
