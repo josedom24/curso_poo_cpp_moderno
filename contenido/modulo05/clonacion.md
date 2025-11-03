@@ -1,44 +1,61 @@
 # Clonación de objetos
 
-En programación orientada a objetos, a veces es necesario **duplicar un objeto existente** sin modificar el original.
+En programación orientada a objetos, a veces es necesario **duplicar un objeto existente sin modificar el original**.
 A esta operación se la denomina **clonación**.
 
-En C++, clonar un objeto no es una característica del lenguaje, sino un **comportamiento que debe implementarse explícitamente**.
-La clonación se apoya en los mecanismos de copia (constructor y operador de asignación) y, en la práctica, suele realizar **copias profundas**, para garantizar que el nuevo objeto es totalmente independiente del original.
+En C++, la clonación **no es una característica incorporada del lenguaje**, sino un comportamiento que debe **implementarse explícitamente**.
+Se apoya en los mecanismos de copia (constructor y operador de asignación) y, en la práctica, suele realizar **copias profundas**, de modo que el nuevo objeto sea **totalmente independiente** del original.
 
-Esto es especialmente importante cuando el objeto posee **recursos dinámicos** (memoria, archivos, conexiones, etc.), que no pueden compartirse entre instancias sin riesgo.
+Esto resulta especialmente importante cuando el objeto gestiona **recursos dinámicos** (memoria, archivos, conexiones, etc.), que no pueden compartirse entre instancias sin riesgo.
 
 ## Clonación básica
 
-La forma más simple de clonación consiste en implementar un método `clone()` que devuelva una nueva instancia copiada del objeto actual.
-Se suele usar `std::unique_ptr` para gestionar automáticamente la memoria del clon.
+La forma más simple de clonación consiste en definir un método `clone()` que devuelva una nueva instancia copiada del objeto actual.
+En C++ moderno, se suele utilizar `std::unique_ptr` para **gestionar automáticamente la memoria** del clon.
+
+En este ejemplo, la clase `Buffer` gestiona su recurso mediante un `std::unique_ptr<int[]>`, lo que simula la gestión manual de memoria dinámica.
 
 ```cpp
 #include <iostream>
 #include <memory>
-#include <vector>
 
 class Buffer {
 private:
-    std::vector<int> datos;
+    std::unique_ptr<int[]> datos;
+    std::size_t tam;
 
 public:
-    Buffer(std::initializer_list<int> lista) : datos(lista) {}
+    // Constructor con tamaño e inicialización
+    Buffer(std::size_t n, int valor = 0)
+        : datos(std::make_unique<int[]>(n)), tam(n) {
+        for (std::size_t i = 0; i < tam; ++i)
+            datos[i] = valor;
+    }
 
     // Método de clonación
     std::unique_ptr<Buffer> clone() const {
-        return std::make_unique<Buffer>(*this);  // Copia profunda
+        auto nuevo = std::make_unique<Buffer>(tam);
+        for (std::size_t i = 0; i < tam; ++i)
+            nuevo->datos[i] = datos[i];  // Copia profunda
+        return nuevo;
+    }
+
+    void modificar(std::size_t i, int valor) {
+        if (i < tam) datos[i] = valor;
     }
 
     void mostrar() const {
-        for (int v : datos) std::cout << v << " ";
+        for (std::size_t i = 0; i < tam; ++i)
+            std::cout << datos[i] << " ";
         std::cout << "\n";
     }
 };
 
 int main() {
-    Buffer original{1, 2, 3};
-    auto copia = original.clone();  // Clonación profunda
+    Buffer original(3, 5);       // [5, 5, 5]
+    auto copia = original.clone(); // Clonación profunda
+
+    original.modificar(1, 99);   // Solo cambia el original
 
     std::cout << "Original: ";
     original.mostrar();
@@ -47,13 +64,13 @@ int main() {
 }
 ```
 
-* El método `clone()` crea una nueva instancia mediante el **constructor de copia**.
-* La copia es profunda porque `std::vector` gestiona su propia memoria y duplica los datos.
-* El clon es completamente independiente del objeto original.
+* El método `clone()` crea un nuevo objeto dinámico mediante `std::make_unique`.
+* Se copian los datos uno a uno, de modo que el clon y el original **no comparten memoria**.
+* El uso de `std::unique_ptr` garantiza una **gestión automática y segura** del recurso.
 
 ## Clonación polimórfica
 
-En sistemas con herencia, puede ser necesario **clonar objetos sin conocer su tipo concreto**.
+En sistemas con **herencia**, puede ser necesario clonar objetos **sin conocer su tipo concreto**.
 Para ello, se define un método virtual `clone()` en la clase base, que cada clase derivada debe sobrescribir.
 
 ```cpp
@@ -78,7 +95,7 @@ public:
     DerivadoA(int d) : dato(d) {}
 
     std::unique_ptr<Clonable> clone() const override {
-        return std::make_unique<DerivadoA>(*this);  // Copia profunda
+        return std::make_unique<DerivadoA>(*this); // Copia profunda
     }
 
     void mostrar() const override {
@@ -95,7 +112,7 @@ public:
     DerivadoB(const std::vector<int>& v) : datos(v) {}
 
     std::unique_ptr<Clonable> clone() const override {
-        return std::make_unique<DerivadoB>(*this);  // Copia profunda
+        return std::make_unique<DerivadoB>(*this); // Copia profunda
     }
 
     void mostrar() const override {
@@ -120,7 +137,8 @@ int main() {
 }
 ```
 
-* La clase base `Clonable` define una interfaz común con un método `clone()` virtual puro.
-* Cada clase derivada devuelve un clon de su propio tipo mediante `std::make_unique`.
-* La clonación es profunda: los datos internos de cada objeto se copian, no se comparten.
-* Esto permite clonar objetos **a través de punteros a la clase base**, sin conocer su tipo en tiempo de compilación.
+* La clase base `Clonable` define una **interfaz común de clonación** con el método virtual puro `clone()`.
+* Cada clase derivada implementa `clone()` devolviendo un objeto de su propio tipo.
+* Gracias al uso de `std::unique_ptr`, la clonación es segura, eficiente y automática.
+* Este enfoque permite **clonar objetos polimórficos** sin conocer su tipo en tiempo de compilación.
+
