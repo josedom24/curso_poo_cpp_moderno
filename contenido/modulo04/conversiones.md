@@ -42,54 +42,82 @@ int main() {
   Una referencia a `Derivada` puede vincularse directamente a una referencia a `Base` porque C++ aplica la conversión implícita correspondiente.
 * Esta conversión es **segura** porque una clase derivada **es un** tipo de la clase base. La parte de la clase base está siempre presente en el objeto derivado.
 
-## Uso típico con polimorfismo
+## Conversiones implícitas con referencias
 
-Gracias a estas conversiones, podemos almacenar punteros a distintos objetos derivados en un mismo contenedor de punteros a la clase base y luego invocar métodos virtuales:
+Cuando una clase deriva públicamente de otra, C++ permite convertir **implícitamente** una referencia a la clase derivada en una referencia a la clase base.
+Esto permite manipular distintos tipos derivados mediante una interfaz común.
+Sin embargo, tras la conversión, la referencia solo puede acceder a los **métodos declarados en la clase base**.
+Si alguno de ellos ha sido **sobrescrito** en la clase derivada y es `virtual`, se ejecutará la versión correspondiente al tipo real del objeto.
 
 ```cpp
 #include <iostream>
-#include <vector>
-#include <memory>
 
 class Animal {
 public:
-    virtual void hacerSonido() const = 0;
-    virtual ~Animal() = default; // Destructor virtual
+    virtual void comer() const {
+        std::cout << "El animal come.\n";
+    }
 };
 
 class Perro : public Animal {
 public:
-    void hacerSonido() const override {
-        std::cout << "Guau\n";
+    // Sobrescribimos el método comer
+    void comer() const override {
+        std::cout << "El perro come su pienso.\n";
+    }
+
+    void ladrar() const {
+        std::cout << "El perro ladra.\n";
     }
 };
 
 class Gato : public Animal {
 public:
-    void hacerSonido() const override {
-        std::cout << "Miau\n";
+    // No sobrescribe comer(), hereda la versión de Animal
+    void maullar() const {
+        std::cout << "El gato maúlla.\n";
     }
 };
 
 int main() {
-    std::vector<std::unique_ptr<Animal>> animales;
+    Perro p;
+    Gato g;
 
-    animales.push_back(std::make_unique<Perro>());
-    animales.push_back(std::make_unique<Gato>());
+    // --- Conversión implícita de Derivada& a Base& ---
+    // Referencias a las derivadas se convierten automáticamente
+    // en referencias a la clase base (sin necesidad de casting).
+    Animal& refAnimal1 = p;
+    Animal& refAnimal2 = g;
 
-    for (const auto& animal : animales) {
-        animal->hacerSonido(); // Se resuelve dinámicamente
-    }
+    // Ambas referencias solo pueden usar métodos definidos en Animal:
+    refAnimal1.comer(); // Llama a Perro::comer() (método sobrescrito)
+    refAnimal2.comer(); // Llama a Animal::comer() (no sobrescrito en Gato)
 
+    // No podemos acceder a métodos exclusivos de las derivadas:
+    // refAnimal1.ladrar(); // Error: 'ladrar' no está en Animal
+    // refAnimal2.maullar(); // Error: 'maullar' no está en Animal
+
+    // Pero si accedemos directamente al objeto derivado, sí:
+    p.ladrar(); // Válido: tenemos un Perro
+    g.maullar(); // Válido: tenemos un Gato
+
+    std::cout << "Conversiones implícitas con referencias realizadas correctamente.\n";
     return 0;
 }
 ```
 
-Aquí se observa que, aunque trabajamos con `std::unique_ptr<Animal>`, cada llamada a `hacerSonido()` invoca la implementación adecuada según el tipo real del objeto (`Perro` o `Gato`).
+* **Conversión implícita:** Las referencias `refAnimal1` y `refAnimal2` se crean automáticamente al asignar objetos `Perro` y `Gato` a variables de tipo `Animal&`.  No se requiere `dynamic_cast`.
+* **Acceso restringido:** Desde una referencia de tipo `Animal&` solo pueden llamarse los métodos definidos en `Animal`.
+  Métodos propios de `Perro` o `Gato` (como `ladrar()` o `maullar()`) no son accesibles.
+* **Comportamiento dinámico:** Dado que `comer()` es `virtual`, la llamada `refAnimal1.comer()` ejecuta `Perro::comer()`, mientras que `refAnimal2.comer()` ejecuta `Animal::comer()`, porque `Gato` no la sobrescribió.
 
-## Conversiones implícitas y punteros inteligentes
 
-Las conversiones de derivada a base también funcionan con punteros inteligentes (`std::unique_ptr`, `std::shared_ptr`), siempre que la herencia sea pública:
+## Conversiones implícitas con punteros inteligentes
+
+Las conversiones de una clase derivada a su clase base también pueden realizarse de forma **implícita** cuando se utilizan **punteros inteligentes** (`std::unique_ptr` o `std::shared_ptr`), siempre que la herencia sea **pública**.
+
+Esto permite gestionar distintos objetos derivados a través de punteros inteligentes a la clase base, manteniendo la seguridad del tipo y el control automático de recursos.
+Al igual que con las referencias, si un método es `virtual`, se ejecutará la versión correspondiente al tipo dinámico del objeto.
 
 ```cpp
 #include <iostream>
@@ -97,25 +125,58 @@ Las conversiones de derivada a base también funcionan con punteros inteligentes
 
 class Animal {
 public:
-    virtual void sonido() const { std::cout << "Sonido genérico\n"; }
+    virtual void comer() const {
+        std::cout << "El animal come.\n";
+    }
+
     virtual ~Animal() = default;
 };
 
 class Perro : public Animal {
 public:
-    void sonido() const override { std::cout << "Guau\n"; }
+    void comer() const override {
+        std::cout << "El perro come su pienso.\n";
+    }
+
+    void ladrar() const {
+        std::cout << "El perro ladra.\n";
+    }
+};
+
+class Gato : public Animal {
+public:
+    // No sobrescribe 'comer', hereda la versión de Animal
+    void maullar() const {
+        std::cout << "El gato maúlla.\n";
+    }
 };
 
 int main() {
-    std::unique_ptr<Perro> pPerro = std::make_unique<Perro>();
+    // --- Conversión implícita con punteros inteligentes ---
+    // std::unique_ptr<Perro> se convierte automáticamente en std::unique_ptr<Animal>
+    std::unique_ptr<Perro> ptrPerro = std::make_unique<Perro>();
+    std::unique_ptr<Gato> ptrGato = std::make_unique<Gato>();
 
-    // Conversión implícita de unique_ptr<Perro> a unique_ptr<Animal>
-    std::unique_ptr<Animal> pAnimal = std::move(pPerro);
+    std::unique_ptr<Animal> ptrAnimal1 = std::move(ptrPerro); // Conversión implícita
+    std::unique_ptr<Animal> ptrAnimal2 = std::move(ptrGato);  // Conversión implícita
 
-    pAnimal->sonido(); // "Guau"
+    // Ambas llamadas acceden solo a métodos declarados en Animal:
+    ptrAnimal1->comer(); // Ejecuta Perro::comer() (sobrescrito)
+    ptrAnimal2->comer(); // Ejecuta Animal::comer() (no sobrescrito por Gato)
+
+    // No podemos acceder a los métodos propios de las derivadas:
+    // ptrAnimal1->ladrar(); // Error: 'ladrar' no está en Animal
+    // ptrAnimal2->maullar(); // Error: 'maullar' no está en Animal
+
+    std::cout << "Conversiones implícitas con punteros inteligentes realizadas correctamente.\n";
     return 0;
 }
 ```
+
+* **Conversión implícita:**: `std::unique_ptr<Perro>` y `std::unique_ptr<Gato>` se convierten automáticamente en `std::unique_ptr<Animal>` gracias a la herencia pública.  No se necesita ningún `dynamic_cast`.
+* **Polimorfismo dinámico:**: Como `comer()` es `virtual`, al invocarlo desde `ptrAnimal1` se ejecuta `Perro::comer()`, mientras que `ptrAnimal2` usa la versión de `Animal`, ya que `Gato` no la sobrescribe.
+* **Acceso restringido:**: Desde un puntero a `Animal` no pueden llamarse métodos específicos de las derivadas (`ladrar()`, `maullar()`), porque no forman parte de la interfaz común.
+
 
 ## Limitaciones y precauciones
 
