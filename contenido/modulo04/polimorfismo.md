@@ -20,15 +20,15 @@ Este concepto permite diseñar código más flexible y extensible, ya que las op
 * Se logra mediante **métodos virtuales** en clases base.
 * Permite que un **puntero o referencia a una clase base** invoque métodos de distintas clases derivadas, ejecutando el comportamiento adecuado según el tipo real del objeto.
 
-## Funciones virtuales
+## Métodos virtuales
 
-Las **funciones virtuales** permiten que una clase derivada redefina el comportamiento de un método heredado.
+Los **métodos virtuales** permiten que una clase derivada redefina el comportamiento de un método heredado.
 Se declaran con la palabra clave `virtual` en la clase base.
 
 Cuando un método es virtual:
 
 * Una llamada a ese método a través de un puntero o referencia a la clase base ejecuta la versión del tipo real del objeto.
-* El compilador construye una tabla de funciones virtuales (*vtable*) para resolver dinámicamente qué función llamar.
+* El compilador construye una tabla de métodos virtuales (*vtable*) para resolver dinámicamente qué función llamar.
 
 Ejemplo básico:
 
