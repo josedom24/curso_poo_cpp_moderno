@@ -39,17 +39,40 @@ Escribe un programa que use un `std::vector<std::unique_ptr<Instrumento>>` para 
 
 ## Ejercicio 3: Conversión implícita y punteros base
 
-
-En un zoológico queremos representar distintos animales, pero tratarlos de forma uniforme para poder listarlos y hacerlos emitir sonidos.
+En un zoológico queremos representar distintos animales, pero tratarlos de forma uniforme mediante **referencias a la clase base**.
+Esto permitirá demostrar el funcionamiento de las **conversiones implícitas** en jerarquías de herencia y el **polimorfismo dinámico** en C++.
 
 Crea las clases:
 
-* `Animal` (clase base con método virtual `hacerSonido()` y destructor virtual).
-* `Leon`, derivada de `Animal`, redefine `hacerSonido()` para imprimir "Ruge el león".
-* `Elefante`, derivada de `Animal`, redefine `hacerSonido()` para imprimir "Barrita el elefante".
-* `Mono`, derivada de `Animal`, redefine `hacerSonido()` para imprimir "Chilla el mono".
+* **Animal** (clase base)
 
-En el `main`, crea un `std::vector<std::unique_ptr<Animal>>` y almacena distintos animales. Recorre el vector y llama a `hacerSonido()` en cada uno para demostrar la conversión implícita de punteros derivados a base.
+  * Contiene un método virtual `hacerSonido()` que imprime `"Sonido genérico de animal"`.
+  * Incluye un destructor virtual.
+
+* **Leon** (derivada de `Animal`)
+
+  * Redefine `hacerSonido()` para imprimir `"Ruge el león"`.
+  * Añade el método `cazar()`, que imprime `"El león está cazando"`.
+
+* **Elefante** (derivada de `Animal`)
+
+  * Redefine `hacerSonido()` para imprimir `"Barrita el elefante"`.
+  * Añade el método `banarse()`, que imprime `"El elefante se baña"`.
+
+* **Mono** (derivada de `Animal`)
+
+  * No redefine `hacerSonido()`, por lo que hereda el comportamiento genérico de `Animal`.
+  * Añade el método `columpiarse()`, que imprime `"El mono se columpia"`.
+
+En el programa principal (`main`):
+
+1. Crea instancias de las clases derivadas.
+2. Declara referencias de tipo `Animal&` y asígnales los objetos derivados, demostrando la **conversión implícita de referencias derivadas a base**.
+3. Llama al método `hacerSonido()` a través de las referencias base para observar el comportamiento **polimórfico**:
+
+   * Si el método está sobrescrito, se ejecuta la versión de la clase derivada.
+   * Si no lo está, se utiliza la versión de la clase base.
+4. Comprueba que **no es posible acceder a los métodos específicos de cada clase derivada** (`cazar()`, `banarse()`, `columpiarse()`) desde una referencia a la base, salvo mediante una **conversión explícita**.
 
 ### UML
 
