@@ -1,23 +1,24 @@
 # Herencia y polimorfismo dinámico
 
-El término **polimorfismo** significa “muchas formas”.
-En programación orientada a objetos, permite que un puntero o referencia a una clase base pueda referirse a objetos de distintas clases derivadas y ejecutar el método apropiado para cada tipo.
+El término *polimorfismo* significa “muchas formas”. En programación orientada a objetos, se refiere a la capacidad de un mismo nombre (por ejemplo, una función o método) de **adoptar comportamientos diferentes** según el contexto o el tipo de datos con el que se utiliza.
 
-Esto facilita la **programación genérica** y la **extensión del código** sin necesidad de modificar la base.
+Este concepto permite diseñar código más flexible y extensible, ya que las operaciones pueden definirse de forma genérica y adaptarse a distintos tipos sin necesidad de modificar la base.
 
 ## Tipos de polimorfismo en C++
 
-* **Polimorfismo estático (tiempo de compilación):**
+**Polimorfismo estático (tiempo de compilación):**
+
+* Se resuelve durante la compilación.
+* Incluye:
 
   * Sobrecarga de funciones y métodos.
-  * Plantillas (templates).
+  * Plantillas (*templates*).
 
-* **Polimorfismo dinámico (tiempo de ejecución):**
+**Polimorfismo dinámico (tiempo de ejecución):**
 
-  * Uso de **funciones virtuales** en clases base.
-  * La llamada a un método se resuelve en tiempo de ejecución según el tipo real del objeto.
-
-En este apartado nos centraremos en el **polimorfismo dinámico**, ya que es el que aprovecha directamente la herencia.
+* Se resuelve durante la ejecución del programa.
+* Se logra mediante **métodos virtuales** en clases base.
+* Permite que un **puntero o referencia a una clase base** invoque métodos de distintas clases derivadas, ejecutando el comportamiento adecuado según el tipo real del objeto.
 
 ## Funciones virtuales
 
