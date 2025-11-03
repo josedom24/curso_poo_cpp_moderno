@@ -64,7 +64,11 @@ int main() {
         temp->leer();       // Correcto
         temp->calibrar();   // Acceso a métodos propios del derivado
     } else {
-        std::cout << "El objeto
+        std::cout << "El objeto no es un SensorTemperatura.\n";
+    }
+
+    return 0;
+}
 
 ```
 
@@ -72,6 +76,7 @@ int main() {
 * `sensor` es un `unique_ptr<Sensor>` que apunta a un objeto `SensorTemperatura`.
 * `dynamic_cast<SensorTemperatura*>(sensor.get())` comprueba en tiempo de ejecución si el objeto apuntado es realmente un `SensorTemperatura`.
 * Si lo es, devuelve un puntero válido al tipo derivado; si no, devuelve `nullptr`.
+* Si no convertimos `sensor` al tipo de la base derivada `SensorTemperatura` no podríamos usar su método `calibrar()`.
 
 
 ## Ejemplo con referencias
