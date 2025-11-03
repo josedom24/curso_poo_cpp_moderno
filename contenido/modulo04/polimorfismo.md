@@ -123,7 +123,18 @@ En este ejemplo, gracias al polimorfismo dinámico:
 
 ## La palabra clave `final`
 
-Sirve para **impedir que un método virtual sea sobrescrito** en clases derivadas posteriores, o para evitar que una clase sea heredada. Veamos un ejemplo:
+SClaro 👍. Aquí tienes una introducción más completa y estructurada, explicando claramente los **dos usos** de la palabra clave `final` en C++:
+
+---
+
+### 🔹 La palabra clave `final`
+
+La palabra clave `final` se utiliza en C++ para **restringir la herencia o la sobrescritura** de métodos virtuales. Puede aplicarse tanto a **métodos** como a **clases**:
+
+* **`final` en un método virtual:** impide que una clase derivada sobrescriba ese método.
+* **`final` en una clase:** impide que la clase sea heredada.
+
+Veamos un ejemplo:
 
 ```cpp
 #include <iostream>
