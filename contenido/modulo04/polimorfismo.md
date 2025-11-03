@@ -205,4 +205,4 @@ int main() {
 * Usar **`override` siempre** al redefinir métodos virtuales.
 * Declarar **destructores virtuales** en clases base pensadas para herencia.
 * Usar **`final`** cuando se quiera cerrar explícitamente una jerarquía.
-* Aplicar el polimorfismo dinámico solo cuando sea necesario: si el comportamiento es conocido en tiempo de compilación, preferir plantillas o sobrecarga (polimorfismo estático).
+* Aplicar el polimorfismo dinámico solo cuando sea necesario: si el comportamiento es conocido en tiempo de compilación, preferir plantillas o sobrecarga de funciones (polimorfismo estático).
