@@ -54,8 +54,15 @@ int main() {
 
 ## Evitar copia o movimiento con `= delete`
 
-El especificador `= delete` permite **prohibir explícitamente** ciertas operaciones especiales, como el constructor o el operador de copia o movimiento.
-El compilador emitirá un error si se intenta usarlas.
+En C++ moderno, las operaciones especiales de una clase —como los constructores de copia y movimiento, y sus operadores de asignación— pueden **controlarse explícitamente**.
+El especificador `= delete` permite **prohibir** ciertas operaciones, evitando que el compilador las genere de forma implícita.
+Esto es esencial cuando un objeto gestiona recursos que no deben copiarse ni transferirse arbitrariamente.
+
+
+### Ejemplo 1: Prohibir la copia
+
+En este ejemplo, la clase `Archivo` representa un recurso exclusivo (un archivo abierto).
+Prohibir la copia impide que dos objetos intenten gestionar el mismo recurso.
 
 ```cpp
 #include <iostream>
@@ -63,35 +70,36 @@ El compilador emitirá un error si se intenta usarlas.
 
 class Archivo {
 public:
-    Archivo(const std::string& nombre) {
+    explicit Archivo(const std::string& nombre) {
         std::cout << "Abriendo archivo: " << nombre << '\n';
     }
 
-    // Impedimos la copia y asignación
+    ~Archivo() {
+        std::cout << "Cerrando archivo\n";
+    }
+
+    // Prohibimos la copia
     Archivo(const Archivo&) = delete;
     Archivo& operator=(const Archivo&) = delete;
 };
 
 int main() {
     Archivo a("datos.txt");
-    // Archivo b = a;   // Error: copia prohibida
+    // Archivo b = a;        // Error: constructor de copia eliminado
+    // b = a;                // Error: asignación por copia eliminada
 }
 ```
 
-* Cada objeto `Archivo` representa un recurso único.
-* Prohibir la copia evita que dos objetos intenten gestionar el mismo recurso.
+Cada objeto `Archivo` gestiona un **recurso único**.
+Al eliminar las operaciones de copia, se garantiza que solo exista un objeto responsable de cerrarlo, evitando duplicaciones o pérdidas del recurso.
 
-## Controlar también el movimiento
 
-El movimiento de objetos puede **permitirse o prohibirse explícitamente**, igual que la copia.
-Esto resulta útil para **proteger recursos exclusivos** o para **permitir su transferencia eficiente** cuando sea seguro hacerlo.
+### Ejemplo 2: Prohibir el movimiento
 
-### Prohibir el movimiento
+En otras ocasiones, mover un objeto tampoco tiene sentido.
+Por ejemplo, si el objeto representa un **recurso externo** del sistema operativo (como un identificador, un socket o un archivo abierto), moverlo podría dejar el recurso en un estado incoherente.
 
-Hay clases en las que **mover un objeto no tiene sentido**.
-Por ejemplo, si el objeto representa un recurso externo (como un identificador del sistema operativo, un socket o un archivo abierto), moverlo podría dejar el recurso en un estado incoherente.
-
-En estos casos, se eliminan las operaciones de movimiento con `= delete`:
+En este caso, se eliminan también las operaciones de movimiento:
 
 ```cpp
 #include <iostream>
@@ -114,46 +122,43 @@ int main() {
 }
 ```
 
-* Ni la copia ni el movimiento están permitidos.
-* Cada objeto controla de forma **exclusiva** su recurso.
-* El compilador impedirá cualquier intento de transferir la propiedad.
+Ni la copia ni el movimiento están permitidos.
+Cada objeto `Recurso` es el único responsable de su recurso, y el compilador impide cualquier intento de duplicarlo o transferirlo.
 
-Este diseño garantiza que el recurso se gestione **únicamente desde su objeto original**, evitando pérdidas o duplicaciones.
+## Habilitar operaciones con `= default`
 
-### Permitir el movimiento
+El especificador `= default` indica al compilador que **genere automáticamente** la implementación estándar de una operación.
+Esto es útil cuando queremos permitir ciertas operaciones sin definirlas manualmente, garantizando además su corrección semántica.
 
-Cuando el movimiento **es seguro y útil**, puede habilitarse de forma explícita.
-Esto indica al compilador que la clase **puede transferir sus recursos sin riesgo**.
-
+Por ejemplo, una clase que se puede mover pero no copiar:
 
 ```cpp
 #include <iostream>
-#include <utility> // std::move
+#include <utility>
 
 class Registro {
 public:
-    Registro() { std::cout << "Registro creado\n"; }
-    ~Registro() { std::cout << "Registro destruido\n"; }
+    Registro() = default;                    // Constructor por defecto
+    ~Registro() = default;                   // Destructor por defecto
 
-    Registro(const Registro&) = delete;            // No copiable
+    Registro(const Registro&) = delete;      // No copiable
     Registro& operator=(const Registro&) = delete;
 
-    Registro(Registro&&) noexcept = default;       // Movible
+    Registro(Registro&&) noexcept = default; // Movible
     Registro& operator=(Registro&&) noexcept = default;
 };
 
 int main() {
-    Registro r1;                 // Creación normal
-    Registro r2 = std::move(r1); // Movimiento permitido
-
-    // Registro r3 = r2;          // Error: copia prohibida
-    // r3 = r1;                   // Error: asignación por copia prohibida
-
+    Registro r1;
+    Registro r2 = std::move(r1);  // Movimiento permitido
     std::cout << "Fin del programa\n";
 }
 ```
 
-* `r1` se crea normalmente con el constructor por defecto.
-* `r2` se construye **moviendo** desde `r1` mediante `std::move()`.
-* Las líneas comentadas muestran que **no es posible copiar** objetos de esta clase.
-* El compilador genera automáticamente las funciones de movimiento (`= default`), y al marcarlas como `noexcept`, se garantiza que son seguras y eficientes.
+En este diseño:
+
+* `= delete` **bloquea la copia**, evitando duplicar el objeto.
+* `= default` **habilita el movimiento**, dejando que el compilador genere la versión óptima y segura.
+* La palabra clave `noexcept` garantiza que el movimiento no lanzará excepciones, permitiendo su uso eficiente en contenedores de la STL.
+
+
