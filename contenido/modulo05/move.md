@@ -89,20 +89,23 @@ public:
     // Constructor por defecto
     BufferMovil() = default;
 
-    // Constructor con datos iniciales
+    // Constructor con datos iniciales (crea un vector con los valores dados)
     explicit BufferMovil(const std::vector<int>& v)
         : datos(std::make_unique<std::vector<int>>(v)) {}
 
     // Constructor de movimiento
     BufferMovil(BufferMovil&& other) noexcept
-        : datos(std::move(other.datos)) {
+        : datos(std::move(other.datos)) {  // std::move(other.datos) convierte el miembro en rvalue
+                                           // y activa el constructor de movimiento de std::unique_ptr,
+                                           // transfiriendo la propiedad del puntero.
         std::cout << "Constructor de movimiento\n";
     }
 
     // Operador de asignación por movimiento
     BufferMovil& operator=(BufferMovil&& other) noexcept {
         if (this != &other) {
-            datos = std::move(other.datos);
+            datos = std::move(other.datos);  // Transfiere la propiedad del puntero del objeto origen
+                                             // al destino. El origen queda con un puntero nulo.
             std::cout << "Asignación por movimiento\n";
         }
         return *this;
@@ -119,24 +122,34 @@ public:
 };
 
 int main() {
-    BufferMovil b1(std::vector<int>{1, 2, 3});
-    BufferMovil b2 = std::move(b1);  // Invoca el constructor de movimiento
-    BufferMovil b3;
-    b3 = std::move(b2);              // Invoca el operador de asignación por movimiento
+    BufferMovil b1(std::vector<int>{1, 2, 3});  // Crea un objeto con su propio recurso
 
-    std::cout << "b1: "; b1.mostrar();  // (vacío)
-    std::cout << "b2: "; b2.mostrar();  // (vacío)
-    std::cout << "b3: "; b3.mostrar();  // 1 2 3
+    // std::move(b1) convierte b1 (un lvalue) en un rvalue,
+    // habilitando el constructor de movimiento en lugar del de copia.
+    BufferMovil b2 = std::move(b1);  // Se transfiere la propiedad del recurso de b1 a b2
+                                     // (sin copiar el std::vector<int>).
+
+    BufferMovil b3;                  // Objeto inicialmente vacío
+    b3 = std::move(b2);              // Invoca el operador de asignación por movimiento.
+                                     // Transfiere el recurso de b2 a b3; b2 queda vacío.
+
+    std::cout << "b1: "; b1.mostrar();  // (vacío) → b1 perdió su recurso
+    std::cout << "b2: "; b2.mostrar();  // (vacío) → b2 también fue movido
+    std::cout << "b3: "; b3.mostrar();  // 1 2 3 → ahora b3 posee el recurso original
 }
+
 ```
 
-1. `std::move(b1)` convierte `b1` en un *rvalue*, habilitando el **constructor de movimiento**.
-2. El recurso (`std::vector<int>`) se **transfiere** desde `b1` a `b2` sin copiar los elementos.
-3. Tras el movimiento, `b1` y `b2` quedan en un **estado válido pero vacío**.
-4. El uso de `noexcept` indica que la operación es segura y no lanzará excepciones.
-
-Después de mover un objeto:
-
-* Su estado es **válido pero no especificado**: puede destruirse, reasignarse o recibir nuevos datos, pero su contenido anterior ya no debe utilizarse.
-* No es necesario reinicializar el objeto origen; el movimiento garantiza su seguridad para destrucción o reasignación.
+* `std::move(b1)` **convierte `b1` en un *rvalue***, indicando al compilador que puede tratarse como un objeto temporal cuyo contenido puede ser **movido** en lugar de copiado.
+* Esta conversión **activa el constructor de movimiento** `BufferMovil(BufferMovil&& other)`, ya que el argumento es ahora un *rvalue*.
+* Dentro del constructor, `std::move(other.datos)` **convierte el miembro `datos` del objeto origen en un *rvalue***, lo que **invoca el constructor de movimiento de `std::unique_ptr`**.
+* El `std::unique_ptr` transfiere la propiedad del puntero interno desde `other.datos` al nuevo objeto (`this->datos`), dejando al objeto origen (`b1`) con un puntero nulo (`nullptr`).
+* Este movimiento de puntero es una **transferencia de propiedad**, no una copia: no se duplica el `std::vector<int>`, solo se reasigna su posesión.
+* El recurso (`std::vector<int>`) pasa a pertenecer exclusivamente a `b2`, sin que se realicen copias ni asignaciones de memoria.
+* Tras el movimiento, `b1` queda **en un estado válido pero vacío**: su puntero interno es nulo, pero puede ser destruido o reutilizado sin problema.
+* El uso de `noexcept` indica que este constructor **no lanzará excepciones**, lo cual permite que contenedores de la STL (como `std::vector<BufferMovil>`) puedan mover sus elementos de forma segura y eficiente.
+* En el caso del operador de asignación por movimiento, la lógica es equivalente: el recurso del objeto origen se transfiere al destino, y el origen se vacía.
+* Después de mover un objeto:
+  * Su estado es **válido pero no especificado**: puede destruirse, reasignarse o recibir nuevos datos, pero no debe accederse a su contenido anterior.
+  * **No es necesario reinicializarlo manualmente**; el movimiento garantiza que el objeto puede ser destruido de forma segura o volver a usarse más adelante.
 
