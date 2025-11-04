@@ -63,8 +63,13 @@ El movimiento se implementa mediante dos mecanismos especiales del lenguaje:
 * **Constructor de movimiento:** crea un nuevo objeto **transfiriendo los recursos** del objeto origen.
 * **Operador de asignación por movimiento:** transfiere los recursos de un objeto existente a otro que ya estaba construido.
 
-Ambos mecanismos se definen utilizando **referencias a rvalue (`T&&`)** y suelen declararse como `noexcept`, indicando que no lanzan excepciones.
-Esto permite a los contenedores de la STL (como `std::vector` o `std::map`) mover sus elementos de forma segura y eficiente.
+Ambos mecanismos se definen utilizando **referencias a rvalue (`T&&`)** y suelen declararse como `noexcept`.
+
+Se suelen declarar los constructores y operadores de movimiento como `noexcept` porque:
+* Al transferir recursos en lugar de copiarlos, normalmente **no realizan operaciones que puedan lanzar excepciones** (como asignaciones de memoria). 
+* **Garantiza al compilador que el movimiento es seguro**.
+* Permitiendo a los contenedores de la STL, como `std::vector` o `std::map`, **utilizarlos con confianza** al reorganizar o redimensionar sus elementos. 
+* Si el movimiento no estuviera marcado como `noexcept`, estos contenedores recurrirían a la copia para mantener la seguridad ante posibles excepciones, perdiendo así las ventajas de eficiencia que ofrece el movimiento.
 
 ## Ejemplo: Movimiento con `std::unique_ptr`
 
