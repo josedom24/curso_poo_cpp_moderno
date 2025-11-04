@@ -127,18 +127,26 @@ Cada objeto `Recurso` es el único responsable de su recurso, y el compilador im
 
 ## Habilitar operaciones con `= default`
 
-El especificador `= default` indica al compilador que **genere automáticamente** la implementación estándar de una operación.
-Esto es útil cuando queremos permitir ciertas operaciones sin definirlas manualmente, garantizando además su corrección semántica.
+El especificador `= default` indica al compilador que **genere automáticamente** la implementación por defecto de una operación especial (como un constructor, destructor o operador de asignación).
+Esto es útil cuando la clase gestiona sus recursos mediante **tipos RAII** (por ejemplo, `std::unique_ptr`, `std::vector`, `std::string`), que ya definen correctamente sus propias reglas de copia y movimiento.
 
-Por ejemplo, una clase que se puede mover pero no copiar:
+En estos casos, no es necesario escribir manualmente las operaciones de movimiento: el compilador sabe cómo transferir los recursos de forma segura y eficiente.
 
 ```cpp
 #include <iostream>
-#include <utility>
+#include <memory>
 
 class Registro {
+private:
+    std::unique_ptr<int[]> datos;
+    size_t tamaño;
+
 public:
-    Registro() = default;                    // Constructor por defecto
+    Registro(size_t n)
+        : datos(std::make_unique<int[]>(n)), tamaño(n) {
+        std::cout << "Registro creado con " << n << " elementos\n";
+    }
+
     ~Registro() = default;                   // Destructor por defecto
 
     Registro(const Registro&) = delete;      // No copiable
@@ -149,16 +157,19 @@ public:
 };
 
 int main() {
-    Registro r1;
+    Registro r1(5);
     Registro r2 = std::move(r1);  // Movimiento permitido
     std::cout << "Fin del programa\n";
 }
 ```
 
-En este diseño:
-
-* `= delete` **bloquea la copia**, evitando duplicar el objeto.
-* `= default` **habilita el movimiento**, dejando que el compilador genere la versión óptima y segura.
-* La palabra clave `noexcept` garantiza que el movimiento no lanzará excepciones, permitiendo su uso eficiente en contenedores de la STL.
+En este ejemplo, `Registro` gestiona memoria dinámica mediante un `std::unique_ptr`, que ya implementa correctamente la transferencia de propiedad durante el movimiento.
+Por tanto, **no es necesario definir manualmente** el constructor ni el operador de movimiento: `= default` genera automáticamente versiones seguras y eficientes.
 
 
+Pare terminar y como conclusión:
+
+* **Usar `= default`**: Cuando la clase solo contiene miembros que ya son movibles o copiables correctamente (como punteros inteligentes o contenedores STL).
+  El compilador generará operaciones correctas y eficientes sin necesidad de código adicional.
+* **Definirlo manualmente**: Cuando la clase gestiona **recursos del sistema o punteros crudos**, y es necesario especificar cómo deben transferirse o liberarse los recursos.
+  También se define manualmente si se requiere **lógica adicional** (por ejemplo, registrar mensajes o depurar operaciones).
