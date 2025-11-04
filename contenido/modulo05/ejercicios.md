@@ -57,14 +57,13 @@ Permite duplicar objetos desde punteros a `Figura` sin conocer el tipo concreto.
 
 ## Ejercicio 4: Sobrecarga de operadores
 
-Crea una clase `Punto2D` que represente un punto en el plano.
+Crea una clase `Tiempo` que represente una cantidad de tiempo en **horas y minutos**.
 Implementa la sobrecarga de operadores para:
 
-* `+` (suma de dos puntos).
-* `-` (resta de dos puntos).
-* `==` (comparación de igualdad).
-* `<<` (impresión en flujo en formato `(x, y)`).
-
+* **`+`** → suma de dos tiempos
+* **`-`** → resta de dos tiempos
+* **`==`** → comparación de igualdad
+* **`<<`** → impresión en formato `hh:mm`
 
 ## Ejercicio 5: Fluidez de métodos
 
