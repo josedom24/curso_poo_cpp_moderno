@@ -88,33 +88,8 @@ int main() {
 * **`operator+` y `operator-`**: devuelven un nuevo punto con la suma o resta de las coordenadas.
 * **`operator*` y `operator/`**: permiten escalar el punto. La división incluye un control de errores para evitar la división por cero.
 * **`operator==` y `operator!=`**: comparan puntos para ver si son iguales o distintos.
-* **`operator<<`**: imprime un punto en formato `(x, y)`; este operador debe ser externo porque el flujo de salida (`std::cout`) está a la izquierda de la expresión.
+* **`operator<<`**: imprime un punto en formato `(x, y)` y debe definirse como **función externa** (no miembro), porque el flujo de salida `std::cout` aparece en el lado izquierdo de la expresión. Por esta razón, se declara `friend` dentro de la clase, de modo que tenga acceso a los miembros privados `_x` y `_y`.
 
-
-### El operador de inserción en flujo `<<`
-
-En el ejemplo anterior, hemos definido la sobrecarga de `operator<<` como una **función externa** en lugar de un método miembro, utilizando la palabra calve `friend`.
-Esto se debe a que, en una expresión como:
-
-```cpp
-std::cout << p;
-```
-
-el operando izquierdo es `std::cout` (un objeto de tipo `std::ostream`), y no un `Punto`.
-En C++, cuando un operador se define como método miembro, el operando izquierdo debe ser siempre un objeto de esa clase.
-Como no podemos modificar la clase `std::ostream` de la biblioteca estándar, debemos definir `operator<<` como **función externa**, que reciba:
-
-* una referencia a `std::ostream` como primer parámetro (lado izquierdo),
-* un objeto `Punto` como segundo parámetro (lado derecho).
-
-De esta forma, el compilador sabe que al escribir `std::cout << p;` debe llamar a nuestra función sobrecargada:
-
-```cpp
-friend std::ostream& operator<<(std::ostream& os, const Punto& p) {
-    os << "(" << p._x << ", " << p._y << ")";
-    return os;
-}
-```
 
 ## El operador `operator()`: objetos invocables (functores)
 
@@ -152,37 +127,56 @@ En este ejemplo:
 
 ## Operadores virtuales
 
-Hasta ahora hemos visto **polimorfismo estático**: el compilador decide qué función llamar según los tipos.
-Pero los operadores también pueden participar en **polimorfismo dinámico** si se declaran como `virtual` en una clase base.
-
-Esto permite que las clases derivadas redefinan el comportamiento del operador y que la decisión de qué código ejecutar se tome en tiempo de ejecución.
+Los operadores también pueden participar en el **polimorfismo dinámico** si se declaran como `virtual` en una clase base.
+Esto permite que las clases derivadas redefinan su comportamiento y que la decisión de qué versión ejecutar se tome **en tiempo de ejecución**, según el tipo real del objeto.
 
 ```cpp
 #include <iostream>
 
-struct FuncionBase {
+class FuncionBase {
+public:
+    // Operador virtual: actúa como interfaz polimórfica
     virtual int operator()(int x) const {
         return x;  // identidad
     }
-    virtual ~FuncionBase() = default;
+
+    virtual ~FuncionBase() = default; // Destructor virtual para herencia segura
 };
 
-struct FuncionDoble : FuncionBase {
+// Clase derivada: duplica el valor
+class FuncionDoble : public FuncionBase {
+public:
     int operator()(int x) const override {
         return x * 2;
     }
 };
 
+// Clase derivada: eleva al cuadrado
+class FuncionCuadrado : public FuncionBase {
+public:
+    int operator()(int x) const override {
+        return x * x;
+    }
+};
+
+// Función que usa polimorfismo dinámico
 void ejecutarFuncion(const FuncionBase& f, int valor) {
-    std::cout << f(valor) << "\n";
+    std::cout << "f(" << valor << ") = " << f(valor) << "\n";
 }
 
 int main() {
+    FuncionBase identidad;
     FuncionDoble doble;
-    ejecutarFuncion(doble, 5);  // Imprime 10
+    FuncionCuadrado cuadrado;
+
+    ejecutarFuncion(identidad, 5);  // f(5) = 5
+    ejecutarFuncion(doble, 5);      // f(5) = 10
+    ejecutarFuncion(cuadrado, 5);   // f(5) = 25
 }
 ```
 
-* `FuncionBase` define `operator()` como virtual.
-* `FuncionDoble` redefine el operador para multiplicar por dos.
-* Al llamar `ejecutarFuncion(doble, 5)`, el parámetro es una referencia a `FuncionBase`, pero en tiempo de ejecución se invoca la versión redefinida en `FuncionDoble`.
+* `FuncionBase` define el **operador de llamada `operator()` como virtual**, actuando como interfaz común.
+* `FuncionDoble` y `FuncionCuadrado` **redefinen** el operador para implementar comportamientos distintos.
+* La función `ejecutarFuncion` recibe una **referencia a la clase base**, pero en tiempo de ejecución se llama automáticamente a la versión correspondiente al tipo real del objeto.
+* El **operador `()` actúa como una función virtual**, permitiendo aplicar polimorfismo dinámico de manera natural.
+
