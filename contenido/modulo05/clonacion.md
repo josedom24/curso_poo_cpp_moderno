@@ -1,12 +1,13 @@
 # Clonación de objetos
 
-En programación orientada a objetos, a veces es necesario **duplicar un objeto existente sin modificar el original**.
-A esta operación se la denomina **clonación**.
+En programación orientada a objetos, a veces es necesario duplicar un objeto existente sin modificar el original. A esta operación se la denomina **clonación**.
 
-En C++, la clonación **no es una característica incorporada del lenguaje**, sino un comportamiento que debe **implementarse explícitamente**.
-Se apoya en los mecanismos de copia (constructor y operador de asignación) y, en la práctica, suele realizar **copias profundas**, de modo que el nuevo objeto sea **totalmente independiente** del original.
+En C++, la clonación no es una característica incorporada del lenguaje, sino un comportamiento que debe implementarse explícitamente. Se apoya en los mecanismos de copia (constructor y operador de asignación) y, en la práctica, **suele implicar una copia profunda**, de modo que el nuevo objeto sea totalmente independiente del original.
 
-Esto resulta especialmente importante cuando el objeto gestiona **recursos dinámicos** (memoria, archivos, conexiones, etc.), que no pueden compartirse entre instancias sin riesgo.
+Es importante distinguir ambos conceptos: la **copia profunda** describe la **técnica de duplicar los recursos internos** de un objeto, mientras que la **clonación** define un **mecanismo de diseño polimórfico** que permite duplicar objetos sin conocer su tipo concreto. En la práctica, toda clonación realiza una copia profunda, pero no toda copia profunda constituye una clonación.
+
+Este comportamiento resulta especialmente relevante cuando el objeto gestiona **recursos dinámicos** (memoria, archivos, conexiones, etc.), que no pueden compartirse entre instancias sin riesgo de corrupción o duplicación del recurso.
+
 
 ## Clonación básica
 
