@@ -68,11 +68,11 @@ public:
     BufferSuperficial()
         : datos(std::make_shared<std::vector<int>>()) {}
 
-    // Constructor con datos iniciales
-    BufferSuperficial(std::initializer_list<int> lista)
-        : datos(std::make_shared<std::vector<int>>(lista)) {}
+    // Constructor con datos iniciales (por vector)
+    explicit BufferSuperficial(const std::vector<int>& v)
+        : datos(std::make_shared<std::vector<int>>(v)) {}
 
-    // Constructor de copia (copia superficial)
+    // Constructor de copia (superficial)
     BufferSuperficial(const BufferSuperficial& other)
         : datos(other.datos) {
         std::cout << "Constructor de copia (superficial)\n";
@@ -98,22 +98,22 @@ public:
 };
 
 int main() {
-    BufferSuperficial b1{1, 2, 3};
-    BufferSuperficial b2 = b1;  // Constructor de copia (comparten datos)
-    BufferSuperficial b3;       // Constructor por defecto
-    b3 = b1;                    // Asignación por copia (comparten datos)
+    BufferSuperficial b1(std::vector<int>{1, 2, 3});
+    BufferSuperficial b2 = b1;
+    BufferSuperficial b3;
+    b3 = b1;
 
     std::cout << "== Estado inicial ==\n";
     b1.mostrar();
     b2.mostrar();
     b3.mostrar();
 
-    b1.modificar(1, 99);  // Modifica el recurso compartido
+    b1.modificar(1, 99);
 
     std::cout << "\n== Después de modificar b1 ==\n";
     b1.mostrar();
-    b2.mostrar();  // Se ve afectado
-    b3.mostrar();  // También se ve afectado
+    b2.mostrar();
+    b3.mostrar();
 }
 
 ```
@@ -137,9 +137,13 @@ private:
     std::unique_ptr<std::vector<int>> datos;
 
 public:
-    // Constructor con datos iniciales
-    BufferProfundo(std::initializer_list<int> lista)
-        : datos(std::make_unique<std::vector<int>>(lista)) {}
+    // Constructor por defecto
+    BufferProfundo()
+        : datos(std::make_unique<std::vector<int>>()) {}
+
+    // Constructor con datos iniciales (por vector)
+    explicit BufferProfundo(const std::vector<int>& v)
+        : datos(std::make_unique<std::vector<int>>(v)) {}
 
     // Constructor de copia (copia profunda)
     BufferProfundo(const BufferProfundo& other)
@@ -167,9 +171,9 @@ public:
 };
 
 int main() {
-    BufferProfundo b1{1, 2, 3};
+    BufferProfundo b1(std::vector<int>{1, 2, 3});
     BufferProfundo b2 = b1;  // Constructor de copia (duplica datos)
-    BufferProfundo b3{4, 5, 6};
+    BufferProfundo b3(std::vector<int>{4, 5, 6});
     b3 = b1;                 // Asignación por copia (duplica datos)
 
     std::cout << "== Estado inicial ==\n";
@@ -184,6 +188,7 @@ int main() {
     b2.mostrar();  // No se ve afectado
     b3.mostrar();  // No se ve afectado
 }
+
 ```
 
 * Aquí, cada objeto posee su propio recurso dinámico gestionado por `std::unique_ptr`.
