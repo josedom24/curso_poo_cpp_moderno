@@ -104,23 +104,9 @@ int main() {
 }
 ```
 
-* **`EstrategiaOrdenamiento`** define una **interfaz abstracta** con un único método virtual puro `ordenar()`. No implementa el algoritmo, solo especifica el contrato.
+* **`EstrategiaOrdenamiento`** define una **interfaz pura** con un único método virtual puro `ordenar()`. No implementa el algoritmo, solo especifica el contrato.
 * **`Ordenador`** no contiene lógica de ordenación. Recibe la estrategia en su constructor y delega la tarea llamando a `estrategia_->ordenar(datos)`.
 * La palabra clave `explicit` evita que el compilador realice **conversiones implícitas no deseadas** desde un `std::unique_ptr` hacia `Ordenador`, garantizando que el objeto se construya **solo de forma intencionada y explícita**.
 * **`OrdenamientoBurbuja`** y **`OrdenamientoRapido`** implementan la interfaz de forma distinta. Ambas clases pueden usarse indistintamente en `Ordenador`.
 * **`std::unique_ptr`** gestiona la memoria automáticamente, garantizando la destrucción correcta de las estrategias cuando el objeto `Ordenador` deja de existir.
 * En el **`main()`**, se crean dos ordenadores con comportamientos diferentes sin cambiar el código de la clase `Ordenador`.
-
-
-## Ventajas de este enfoque
-
-* **Bajo acoplamiento:** La clase cliente (`Ordenador`) no depende de detalles de implementación.
-* **Extensibilidad:** Se pueden añadir nuevas estrategias sin modificar el código existente (principio OCP).
-* **Reutilización:** Las estrategias pueden aplicarse a otros contextos.
-* **Pruebas más sencillas:** Durante las pruebas se puede inyectar una estrategia simulada (*mock*).
-
-## Limitaciones
-
-* **Mayor complejidad estructural:** Requiere definir varias clases y una jerarquía de herencia, lo cual puede ser excesivo para casos simples.
-* **Diseño inicial cuidadoso:** La interfaz debe diseñarse con atención, ya que cambios posteriores afectan a todas las implementaciones.
-
