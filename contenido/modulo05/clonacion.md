@@ -71,8 +71,10 @@ int main() {
 
 ## Clonación polimórfica
 
-En sistemas con **herencia**, puede ser necesario clonar objetos **sin conocer su tipo concreto**.
-Para ello, se define un método virtual `clone()` en la clase base, que cada clase derivada debe sobrescribir.
+En sistemas con **herencia**, puede ser necesario **clonar objetos sin conocer su tipo concreto**.
+Para ello, la clase base define un método `clone()` como **virtual**, de modo que las clases derivadas pueden sobrescribirlo para devolver una copia de su propio tipo.
+
+De esta forma, es posible clonar objetos de distintas clases a través de un mismo interfaz, sin conocer su tipo en tiempo de compilación.
 
 ```cpp
 #include <iostream>
@@ -82,8 +84,15 @@ Para ello, se define un método virtual `clone()` en la clase base, que cada cla
 // Clase base con clonación virtual
 class Clonable {
 public:
-    virtual std::unique_ptr<Clonable> clone() const = 0;
-    virtual void mostrar() const = 0;
+    // Método virtual: puede redefinirse en las clases derivadas
+    virtual std::unique_ptr<Clonable> clone() const {
+        return std::make_unique<Clonable>(*this);
+    }
+
+    virtual void mostrar() const {
+        std::cout << "Objeto base Clonable\n";
+    }
+
     virtual ~Clonable() = default;
 };
 
@@ -96,7 +105,7 @@ public:
     DerivadoA(int d) : dato(d) {}
 
     std::unique_ptr<Clonable> clone() const override {
-        return std::make_unique<DerivadoA>(*this); // Copia profunda
+        return std::make_unique<DerivadoA>(*this); // Crea una copia del objeto actual
     }
 
     void mostrar() const override {
@@ -113,7 +122,7 @@ public:
     DerivadoB(const std::vector<int>& v) : datos(v) {}
 
     std::unique_ptr<Clonable> clone() const override {
-        return std::make_unique<DerivadoB>(*this); // Copia profunda
+        return std::make_unique<DerivadoB>(*this); // Crea una copia del objeto actual
     }
 
     void mostrar() const override {
@@ -124,11 +133,16 @@ public:
 };
 
 int main() {
+    std::unique_ptr<Clonable> base = std::make_unique<Clonable>();
     std::unique_ptr<Clonable> a = std::make_unique<DerivadoA>(42);
     std::unique_ptr<Clonable> b = std::make_unique<DerivadoB>(std::vector<int>{1, 2, 3});
 
+    auto clonBase = base->clone();
     auto clonA = a->clone();
     auto clonB = b->clone();
+
+    base->mostrar();
+    clonBase->mostrar();
 
     a->mostrar();
     clonA->mostrar();
@@ -138,8 +152,8 @@ int main() {
 }
 ```
 
-* La clase base `Clonable` define una **interfaz común de clonación** con el método virtual puro `clone()`.
-* Cada clase derivada implementa `clone()` devolviendo un objeto de su propio tipo.
-* Gracias al uso de `std::unique_ptr`, la clonación es segura, eficiente y automática.
-* Este enfoque permite **clonar objetos polimórficos** sin conocer su tipo en tiempo de compilación.
+* La clase base `Clonable` define un método `clone()` **virtual**, que devuelve un nuevo objeto con el mismo contenido.
+* Las clases derivadas (`DerivadoA`, `DerivadoB`) **sobrescriben este método** para crear copias de su propio tipo.
+* El uso de `std::unique_ptr` garantiza una **gestión automática y segura de memoria**.
+* En el `main()`, los objetos pueden clonarse y mostrarse a través de punteros a la clase base, sin conocer su tipo concreto.
 
