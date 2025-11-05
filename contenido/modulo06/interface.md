@@ -80,4 +80,4 @@ int main() {
 
 ## UML
 
-![uml](img/diagrama1.png)
+![uml](img/diagrama2.png)
