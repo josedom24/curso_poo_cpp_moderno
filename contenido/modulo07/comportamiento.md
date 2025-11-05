@@ -55,18 +55,6 @@ int main() {
 * El método `ordenar()` **está rígidamente acoplado** a un único algoritmo (burbuja).
 * Si se desea usar otro algoritmo (por ejemplo, *quick sort* o *merge sort*), sería necesario **modificar la clase**.
 
-## Ventajas del bajo acoplamiento y la composición flexible
-
-Diseñar con **bajo acoplamiento** significa que los componentes dependen solo de **qué se necesita hacer**, no de **cómo se hace**.
-Esto se logra separando la lógica principal de los comportamientos concretos.
-
-Ventajas principales:
-
-* **Comportamientos intercambiables:** se puede cambiar la lógica de ejecución sin alterar la estructura del programa.
-* **Reutilización:** las estrategias o comportamientos pueden aplicarse en diferentes contextos.
-* **Claridad:** el código expresa la intención sin mezclarse con los detalles de la implementación.
-* **Pruebas más sencillas:** los comportamientos pueden sustituirse por versiones simuladas o controladas.
-
 
 ## Hacia el diseño de comportamiento flexible
 
