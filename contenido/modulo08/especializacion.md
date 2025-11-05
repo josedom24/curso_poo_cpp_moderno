@@ -49,27 +49,58 @@ La **especialización parcial** modifica el comportamiento **solo para ciertos p
 Por ejemplo, podemos tratar los punteros de manera diferente:
 
 ```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+// Plantilla genérica (para cualquier tipo simple)
 template <typename T>
 class Contenedor {
+private:
+    T valor;
+
 public:
-    void imprimir(const T& valor) const {
-        std::cout << "Valor: " << valor << '\n';
+    Contenedor(T v) : valor(v) {}
+
+    void mostrar() const {
+        std::cout << "Elemento único: " << valor << '\n';
     }
 };
 
-// Especialización parcial para punteros
+// Especialización parcial para std::vector<T>
 template <typename T>
-class Contenedor<T*> {
+class Contenedor<std::vector<T>> {
+private:
+    std::vector<T> valores;
+
 public:
-    void imprimir(const T* valor) const {
-        if (valor)
-            std::cout << "Puntero a: " << *valor << '\n';
-        else
-            std::cout << "Puntero nulo\n";
+    Contenedor(const std::vector<T>& v) : valores(v) {}
+
+    void mostrar() const {
+        std::cout << "Colección de elementos (" << valores.size() << "): ";
+        for (const auto& e : valores)
+            std::cout << e << " ";
+        std::cout << '\n';
     }
 };
+
+int main() {
+    Contenedor<int> c1(42);                          // versión genérica
+    Contenedor<std::string> c2("Hola");              // versión genérica
+    Contenedor<std::vector<int>> c3({1, 2, 3, 4});   // especialización parcial
+    Contenedor<std::vector<std::string>> c4({"uno", "dos", "tres"}); // especialización parcial
+
+    c1.mostrar();
+    c2.mostrar();
+    c3.mostrar();
+    c4.mostrar();
+
+    return 0;
+}
 ```
 
-Así, `Contenedor<int>` imprime valores directamente, mientras que `Contenedor<int*>` muestra el contenido apuntado.
 
+* La plantilla genérica `Contenedor<T>` almacena un único valor y lo muestra con un mensaje simple.
+* La **especialización parcial** `Contenedor<std::vector<T>>` redefine la clase solo cuando el parámetro de tipo es un `std::vector` de cualquier tipo `T`.
+* En ese caso, la clase trata al objeto como una **colección** y muestra todos sus elementos.
 
