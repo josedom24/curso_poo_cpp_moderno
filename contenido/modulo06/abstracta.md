@@ -10,16 +10,12 @@ El objetivo es aprender a **definir contratos abstractos** que las clases concre
 
 ## Clases abstractas
 
-En la programación orientada a objetos, una **clase abstracta** define una interfaz común que describe un conjunto de operaciones que las clases derivadas deben implementar.
-Se utiliza para **representar conceptos generales** que no tienen sentido por sí solos, sino únicamente a través de sus especializaciones.
+En programación orientada a objetos, una **clase abstracta** define una **interfaz común** que describe un conjunto de operaciones que las clases derivadas deben implementar.
+Se utiliza para representar conceptos generales que **no tienen sentido por sí solos**, sino únicamente a través de sus especializaciones.
 
-Las clases abstractas se basan en el uso de **métodos virtuales puros**, que actúan como **contratos** que las subclases concretas deben cumplir.
-Este mecanismo es la base del **diseño polimórfico**, permitiendo escribir código que trabaje con distintos tipos de objetos de manera uniforme, sin conocer su tipo concreto.
-
-Una **clase abstracta** en C++ se caracteriza por contener al menos una **función miembro virtual pura**, declarada con el sufijo `= 0`.
-La presencia de este tipo de función convierte automáticamente a la clase en **no instanciable**.
-
-Veamos un  ejemplo, donde se define una jerarquía de clases que representan figuras geométricas. Cada figura puede dibujarse, pero la manera concreta en que se realiza esa acción depende del tipo de figura.
+En C++, una clase se considera **abstracta** cuando contiene al menos una **función miembro virtual pura**, es decir, una función declarada con el sufijo `= 0`.
+Este tipo de función no tiene implementación en la clase base y actúa como un **contrato** que las clases derivadas están obligadas a cumplir.
+La presencia de una función virtual pura hace que la clase **no pueda instanciarse directamente**.
 
 ```cpp
 #include <iostream>
@@ -68,25 +64,21 @@ int main() {
     figuras.push_back(std::make_unique<Rectangulo>("azul"));
 
     for (const auto& figura : figuras) {
-        figura->dibujar();      // Llamada polimórfica
-        figura->mostrarColor(); // Método común a todas las figuras
+        figura->dibujar();
+        figura->mostrarColor();
     }
 }
-
 ```
-* La clase `Figura` **no proporciona una implementación concreta** del método `dibujar()`.
-  Declara este método como **virtual puro** (`= 0`), lo que convierte a `Figura` en una **clase abstracta**.
-  Por tanto, **no puede instanciarse directamente** y sirve como **interfaz común** para todas las figuras que deriven de ella.
-* Cualquier clase derivada de `Figura` está **obligada** a implementar el método `dibujar()` para poder ser instanciada.
-  Las clases `Circulo` y `Rectangulo` redefinen el método usando la palabra clave `override`, que indica que se trata de una **redefinición polimórfica** y permite al compilador verificar que la firma coincide exactamente con la de la clase base.
-* Si una clase derivada **no implementa todos los métodos virtuales puros** que hereda, **también se considera abstracta**, y no podrá instanciarse directamente.
-* El **destructor virtual** en `Figura` (`virtual ~Figura() = default;`) es **imprescindible en jerarquías polimórficas**.
-  Garantiza que, al destruir un objeto a través de un puntero a la clase base (`Figura*`), se invoque correctamente el destructor del tipo derivado correspondiente (`Circulo`, `Rectangulo`, etc.).
-  De no ser virtual, la destrucción sería incompleta y podría producir **fugas de memoria o recursos**.
-* En el programa, los objetos se gestionan mediante **punteros inteligentes** (`std::unique_ptr<Figura>`), que automatizan la gestión de memoria.
-  Gracias al principio **RAII** (*Resource Acquisition Is Initialization*), los recursos dinámicos se liberan de forma automática al salir de ámbito, sin necesidad de liberar memoria manualmente.
-* El contenedor `std::vector<std::unique_ptr<Figura>>` puede almacenar **objetos de distintos tipos derivados** (`Circulo`, `Rectangulo`, etc.) porque todos ellos comparten la misma interfaz base `Figura`.
-  En el bucle, la llamada `figura->dibujar()` se **resuelve dinámicamente en tiempo de ejecución**, según el **tipo real** del objeto apuntado, lo que ejemplifica el uso del **polimorfismo dinámico** en C++ moderno.
+
+* La clase `Figura` **no proporciona una implementación** del método `dibujar()`.
+  Al declararlo como `virtual void dibujar() const = 0;`, se convierte en un **método virtual puro**, lo que hace que `Figura` sea una **clase abstracta**.
+
+* Las clases derivadas (`Circulo` y `Rectangulo`) **deben implementar el método** `dibujar()` para poder instanciarse.
+  Si no lo hicieran, también serían abstractas.
+
+* El **destructor virtual** (`virtual ~Figura() = default;`) asegura que, al destruir un objeto derivado a través de un puntero a `Figura`, se ejecute correctamente el destructor del tipo derivado, evitando fugas de recursos.
+
+* Aunque `Figura` no puede instanciarse directamente, **sirve como base común** para definir comportamientos compartidos, como el método `mostrarColor()`, y para agrupar objetos que comparten la misma interfaz.
 
 
 ## UML
