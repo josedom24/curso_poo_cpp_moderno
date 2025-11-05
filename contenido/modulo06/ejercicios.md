@@ -15,13 +15,21 @@ Crea una jerarquía de clases que represente distintos tipos de **dispositivos m
 
 ## Ejercicio 2: Interfaces puras y desacoplamiento del cliente
 
-1. Define una interfaz pura `Notificador` con un método virtual puro `enviarMensaje(const std::string&)`.
-2. Implementa dos clases concretas:
+Crea una interfaz `Notificador` que defina un contrato completo para distintos tipos de sistemas de notificación.
 
-   * `NotificadorEmail`, que muestra `"Enviando correo: [mensaje]"`.
-   * `NotificadorSMS`, que muestra `"Enviando SMS: [mensaje]"`.
-3. Escribe una función `procesarEvento(const Notificador& n)` que recibe una referencia a la interfaz y envía el mensaje `"Evento registrado"`.
-4. En `main()`, crea objetos de ambos tipos y pásalos a `procesarEvento()` para demostrar que la función puede operar con cualquier implementación sin conocer su tipo.
+La interfaz debe incluir varios métodos virtuales puros:
+
+* `enviarMensaje(const std::string&)`
+* `establecerRemitente(const std::string&)`
+* `obtenerTipo() const`
+
+Implementa tres clases concretas:
+
+* `NotificadorEmail`
+* `NotificadorSMS`
+* `NotificadorPush` (para notificaciones en aplicaciones o web)
+
+Después, implementa una función `registrarEvento()` que reciba una referencia a `Notificador` y simule el envío de un mensaje de alerta.
 
 
 ## Ejercicio 3: Devolución de interfaces mediante punteros inteligentes
@@ -55,4 +63,5 @@ Diseña un pequeño sistema para crear **dispositivos de salida de audio** que i
    * Usar `std::unique_ptr` en todas las funciones.
    * No utilizar punteros crudos.
    * Emplear `override` en las clases derivadas.
+
 
