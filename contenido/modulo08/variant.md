@@ -38,8 +38,9 @@ int main() {
 
 ## `std::visit`
 
-Cuando un `std::variant` puede contener distintos tipos, necesitamos una forma segura de **acceder al valor almacenado sin conocer su tipo concreto**.
-Esa función la cumple `std::visit`.
+Cuando un `std::variant` puede contener distintos tipos, necesitamos una forma **segura y unificada de acceder al valor almacenado**, sin importar cuál sea su tipo actual.
+Esa función la cumple `std::visit`
+`std::visit` recibe una función (o un objeto función) y un `std::variant` y ejecuta automáticamente esa función sobre el valor actual del variant, llamando a la versión que corresponde al tipo real que contiene en ese momento.
 
 ```cpp
 #include <iostream>
@@ -54,14 +55,13 @@ int main() {
 }
 ```
 
+* 
 * `dato` puede contener un `int` o un `std::string`.
-* `std::visit` ejecuta la función proporcionada (una *lambda* en este caso) con el valor actual.
-* La lambda genérica `[](auto&& valor)` se adapta automáticamente al tipo del valor almacenado.
-* En `[](auto&& valor)`:
-    * `auto` significa que el tipo se deduce automáticamente (puede ser `int`, `std::string`, etc.).
-    * `&&` significa que la función acepta el valor **por referencia universal**, es decir, **sirve para cualquier tipo** y **no hace copias innecesarias**.
-* `auto&&` permite que la lambda funcione con **cualquier tipo** que contenga el `std::variant`, de forma eficiente.
-*`std::visit` evita el uso de comprobaciones de tipo manuales (`if`, `dynamic_cast`, etc.) y garantiza seguridad de tipo en tiempo de compilación.
+* `std::visit` ejecuta la función (una **lambda**) sobre el valor actualmente almacenado.
+* La lambda genérica `[](auto&& valor)` se adapta automáticamente al tipo real del valor:
+  `auto` deduce el tipo, y `&&` permite recibir el valor sin copiarlo (igual que en el movimiento).
+
+En resumen, `std::visit` permite trabajar con los distintos tipos de un `std::variant` **de forma segura, eficiente y sin comprobaciones manuales** como `if` o `dynamic_cast`.
 
 
 ## Ejemplo completo: procesar distintos tipos de eventos
