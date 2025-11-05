@@ -1,19 +1,18 @@
 # Plantillas de clase: `std::variant` y `std::visit`
 
-En el desarrollo de software, es habitual que una variable deba poder almacenar **uno de varios tipos posibles**, pero **solo uno a la vez**.
-Tradicionalmente, este problema se resolvía con *uniones* (`union`) en C o mediante jerarquías de clases y polimorfismo dinámico en C++.
-Sin embargo, ambos enfoques presentan limitaciones:
+## `std::variant`?
 
-* las uniones no ofrecen **seguridad de tipo**,
-* el polimorfismo dinámico añade **sobrecarga en tiempo de ejecución**.
+En C++17 se introdujo la plantilla de clase `std::variant`, que permite almacenar **uno de varios tipos posibles**, garantizando **seguridad de tipo en tiempo de compilación**.
 
-C++17 introduce **`std::variant`**, una clase plantilla que representa una **alternativa segura en tiempo de compilación** a estos mecanismos.
-Se trata de una herramienta moderna para implementar **tipos discriminados** (*sum types*), comunes en lenguajes funcionales, que aporta expresividad, seguridad y eficiencia.
+Un `std::variant` puede considerarse como un **contenedor de valor alternativo**:
+solo puede contener **un valor activo a la vez**, pero el tipo de ese valor puede ser **uno de los declarados en su definición**.
 
-## ¿Qué es `std::variant`?
+Por ejemplo, un `std::variant<int, std::string>` puede almacenar un `int` o una `std::string`, pero nunca ambos al mismo tiempo.
 
-`std::variant<Ts...>` es una plantilla que puede almacenar **un valor de uno (y solo uno)** de los tipos indicados como parámetros.
-Internamente mantiene un índice que indica cuál de los tipos está activo.
+El compilador controla qué operaciones son válidas en función del tipo actualmente almacenado, lo que evita errores y elimina la necesidad de comprobaciones manuales en tiempo de ejecución.
+
+`std::variant` es especialmente útil cuando un objeto o función debe manejar **valores de diferentes tipos** de manera flexible, manteniendo **seguridad, eficiencia y expresividad** en el código.
+
 
 ```cpp
 #include <iostream>
@@ -37,7 +36,7 @@ int main() {
 * El tipo activo se rastrea automáticamente en tiempo de compilación.
 * `std::get<int>(variant)` devuelve el valor almacenado en el std::variant si el tipo activo es int, lanzando una excepción si no coincide.
 
-## ¿Qué es `std::visit`?
+## `std::visit`
 
 Cuando un `std::variant` puede contener distintos tipos, necesitamos una forma segura de **acceder al valor almacenado sin conocer su tipo concreto**.
 Esa función la cumple `std::visit`.
