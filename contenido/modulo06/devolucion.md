@@ -24,42 +24,47 @@ Cuando el objeto devuelto tiene **una única propiedad** (nadie más necesita co
 
 ```cpp
 #include <iostream>
+#include <memory>
 
-// Clase base (no abstracta)
-class Figura {
+// Interfaz base
+class Forma {
 public:
-    virtual void dibujar() const {
-        std::cout << "Dibujando una figura genérica\n";
-    }
-
-    virtual ~Figura() = default;
+    virtual void dibujar() const = 0;
+    virtual ~Forma() = default;
 };
 
-// Clase derivada
-class Circulo : public Figura {
+// Implementaciones concretas
+class Circulo : public Forma {
 public:
     void dibujar() const override {
-        std::cout << "Dibujando un Círculo\n";
+        std::cout << "Dibujando un círculo\n";
     }
 };
 
-// Función que devuelve un objeto por valor (provoca object slicing)
-Figura crearFiguraPorValor() {
-    Circulo c;
-    return c;  // Se permite, pero se produce "object slicing"
+class Rectangulo : public Forma {
+public:
+    void dibujar() const override {
+        std::cout << "Dibujando un rectángulo\n";
+    }
+};
+
+// Función que devuelve la interfaz
+std::unique_ptr<Forma> crearForma(bool esCirculo) {
+    if (esCirculo)
+        return std::make_unique<Circulo>();
+    else
+        return std::make_unique<Rectangulo>();
 }
 
 int main() {
-    std::cout << "== Ejemplo con devolución por valor ==\n";
-    Figura f = crearFiguraPorValor();  // Se copia solo la parte base
-    f.dibujar();  // Muestra: "Dibujando una figura genérica"
+    auto forma1 = crearForma(true);   // Crea un círculo
+    auto forma2 = crearForma(false);  // Crea un rectángulo
 
-    return 0;
+    forma1->dibujar();  // Llamada polimórfica: Circulo::dibujar()
+    forma2->dibujar();  // Llamada polimórfica: Rectangulo::dibujar()
 }
-
 ```
 
-* Hemos usado una clase no abstracta, para que se pueda instanciar y se pueda devolver su valor.
 * La función `crearForma()` devuelve un `std::unique_ptr<Forma>`, ocultando el tipo concreto del objeto creado.
 * El cliente recibe un puntero a la interfaz `Forma` y puede usarlo sin conocer si se trata de un `Circulo` o un `Rectangulo`.
 * El polimorfismo dinámico garantiza que la llamada a `dibujar()` invoque la implementación adecuada.

@@ -80,11 +80,14 @@ En consecuencia, el comportamiento propio del tipo derivado se pierde, y el obje
 ```cpp
 #include <iostream>
 
-// Clase base abstracta
+// Clase base (no abstracta)
 class Figura {
 public:
-    virtual void dibujar() const = 0;     // Método virtual puro
-    virtual ~Figura() = default;          // Destructor virtual
+    virtual void dibujar() const {
+        std::cout << "Dibujando una figura genérica\n";
+    }
+
+    virtual ~Figura() = default;
 };
 
 // Clase derivada
@@ -98,19 +101,20 @@ public:
 // Función que devuelve un objeto por valor (provoca object slicing)
 Figura crearFiguraPorValor() {
     Circulo c;
-    return c;  // Se produce "object slicing"
+    return c;  // Se permite, pero se produce "object slicing"
 }
 
 int main() {
     std::cout << "== Ejemplo con devolución por valor ==\n";
     Figura f = crearFiguraPorValor();  // Se copia solo la parte base
-    f.dibujar();  // Error conceptual: no se llama a Circulo::dibujar()
-                  // Se comporta como una Figura “recortada”
+    f.dibujar();  // Muestra: "Dibujando una figura genérica"
 
     return 0;
 }
+
 ```
 
+* Hemos usado una clase no abstracta, para que se pueda instanciar y se pueda devolver su valor.
 * La función `crearFiguraPorValor()` devuelve un objeto de tipo `Figura` **por valor**.
 * Aunque dentro de la función se crea un `Circulo`, al devolverlo como `Figura` **solo se conserva la parte base del objeto**.
 * La información específica de `Circulo` (sus atributos o comportamiento propio) **se pierde** durante la copia.
