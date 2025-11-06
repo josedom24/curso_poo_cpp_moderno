@@ -39,26 +39,58 @@ int main() {
 ## `std::visit`
 
 Cuando un `std::variant` puede contener distintos tipos, necesitamos una forma **segura y unificada de acceder al valor almacenado**, sin importar cuál sea su tipo actual. `std::visit` recibe una función (o un objeto función) y un `std::variant` y ejecuta automáticamente esa función sobre el valor actual del variant, llamando a la versión que corresponde al tipo real que contiene en ese momento.
+Perfecto 👍
+Aquí tienes un ejemplo más completo que muestra cómo `std::variant` puede almacenar **diferentes tipos de datos (int y std::string)**, y cómo se usa `std::visit` para acceder al valor actual, incluso después de cambiar el contenido del `variant`.
+
+---
 
 ```cpp
 #include <iostream>
 #include <variant>
+#include <string>
 
 int main() {
-    std::variant<int, std::string> dato = "Hola";
+    // std::variant puede contener un valor de cualquiera de los tipos listados
+    std::variant<int, std::string> dato;
 
+    // Asignamos inicialmente una cadena
+    dato = "Hola mundo";
+
+    // Primer uso de std::visit:
+    //    std::visit aplica una función (lambda, en este caso)
+    //    al valor actualmente almacenado en el variant
     std::visit([](auto&& valor) {
-        std::cout << "Valor: " << valor << '\n';
+        std::cout << "Valor inicial: " << valor << '\n';
     }, dato);
+
+    // Ahora cambiamos el contenido del variant a un entero
+    dato = 42;
+
+    // Segundo uso de std::visit:
+    //    Se vuelve a ejecutar la misma función sobre el nuevo valor
+    std::visit([](auto&& valor) {
+        std::cout << "Nuevo valor: " << valor << '\n';
+    }, dato);
+
+    // Podemos comprobar qué tipo contiene actualmente el variant
+    if (std::holds_alternative<int>(dato)) {
+        std::cout << "El variant contiene un entero.\n";
+    } else if (std::holds_alternative<std::string>(dato)) {
+        std::cout << "El variant contiene una cadena.\n";
+    }
+
+    // Acceder directamente al valor si sabemos su tipo
+    std::cout << "Acceso directo al entero: " << std::get<int>(dato) << '\n';
+
+    return 0;
 }
 ```
 
-* `dato` puede contener un `int` o un `std::string`.
-* `std::visit` ejecuta la función (una **lambda**) sobre el valor actualmente almacenado.
-* La lambda genérica `[](auto&& valor)` se adapta automáticamente al tipo real del valor:
-  `auto` deduce el tipo, y `&&` permite recibir el valor sin copiarlo (igual que en el movimiento).
-
-En resumen, `std::visit` permite trabajar con los distintos tipos de un `std::variant` **de forma segura, eficiente y sin comprobaciones manuales** como `if` o `dynamic_cast`.
+* **`std::variant<int, std::string>`**: Define un tipo que puede contener **un entero o una cadena** (solo uno a la vez).
+* **`std::visit()`**:  Aplica una función a lo que haya dentro del `variant`, sin importar el tipo actual.
+* La lambda genérica `[](auto&& valor)` se adapta automáticamente al tipo real del valor: `auto` deduce el tipo, y `&&` permite recibir el valor sin copiarlo (igual que en el movimiento).
+* **`std::holds_alternative<T>(v)`**: Permite comprobar si el `variant` contiene un valor de tipo `T`.
+* **`std::get<T>(v)`**: Devuelve el valor si el tipo actual es `T`, o lanza una excepción `std::bad_variant_access` si no coincide.
 
 
 ## Ejemplo completo: procesar distintos tipos de eventos
