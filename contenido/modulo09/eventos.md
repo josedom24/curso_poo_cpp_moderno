@@ -77,6 +77,7 @@ inline void procesarEvento(const Evento& e) {
 * `std::visit()` aplica una función a la variante, ejecutando la acción adecuada según el tipo almacenado.
 * La lambda `[](const auto& ev)` es **genérica**: el compilador deduce automáticamente el tipo (`EventoLectura`, `EventoError`, etc.) y ejecuta el bloque correspondiente.
 * El uso de `if constexpr` garantiza que solo el bloque correspondiente al tipo real del evento se compile.
+* `std::is_same_v<A, B>` devuelve un valor booleano constante (true o false) que indica si los tipos A y B son exactamente el mismo tipo.
 
 
 ## Integración con el sistema
