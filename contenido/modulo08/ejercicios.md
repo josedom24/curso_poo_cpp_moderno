@@ -2,16 +2,22 @@
 
 ## Ejercicio 1: Clase plantilla básica
 
-Crea una clase plantilla `Caja<T>` que permita almacenar un valor de tipo genérico.
+Diseña una clase plantilla `Sensor<T>` que modele un **sensor genérico** capaz de almacenar y mostrar una lectura de cualquier tipo de dato.
 
-1. Define una plantilla de clase con un único parámetro de tipo `T`.
+1. Define una **plantilla de clase** con un parámetro de tipo `T`, que represente el tipo de dato de la lectura (por ejemplo, `int`, `double`, `std::string`, etc.).
 2. La clase debe incluir:
 
-   * un atributo privado `valor` de tipo `T`;
-   * un método `setValor(const T&)` para asignar el valor;
-   * un método `getValor()` que devuelva el valor;
-   * un método `mostrar()` que imprima el contenido de la caja.
-3. Comprueba su funcionamiento con diferentes tipos de datos.
+   * Un **atributo privado** `lectura` de tipo `T`.
+   * Un **método** `setLectura(const T&)` para asignar un nuevo valor de lectura.
+   * Un **método** `getLectura()` que devuelva el valor almacenado.
+   * Un **método** `mostrar()` que imprima en pantalla la lectura actual con un mensaje descriptivo.
+3. En la función `main()`, crea varios sensores de distinto tipo:
+
+   * Un sensor de temperatura (`double`).
+   * Un sensor de humedad (`int`).
+   * Un sensor de estado (`std::string`, por ejemplo `"OK"` o `"ERROR"`).
+4. Muestra por pantalla los valores de cada sensor.
+
 
 ## Ejercicio 2: Clase plantilla con varios parámetros
 
