@@ -46,61 +46,111 @@ Aquí `Caja` tiene un comportamiento genérico, pero se redefine completamente c
 ## Especialización parcial
 
 La **especialización parcial** modifica el comportamiento **solo para ciertos patrones de tipos**, manteniendo otros genéricos.
-Por ejemplo, podemos tratar los punteros de manera diferente:
+Por ejemplo, podemos tratar los vectores de forma diferente:
 
 ```cpp
 #include <iostream>
 #include <vector>
 #include <string>
+#include <numeric>
+#include <sstream>
 
-// Plantilla genérica (para cualquier tipo simple)
+// Clase plantilla genérica para acumular valores de tipo T
 template <typename T>
-class Contenedor {
+class Acumulador {
 private:
-    T valor;
+    std::vector<T> datos;  // Contenedor interno
 
 public:
-    Contenedor(T v) : valor(v) {}
+    // Añade un valor al acumulador
+    void agregar(const T& valor) {
+        datos.push_back(valor);
+    }
 
+    // Devuelve la cantidad de elementos
+    std::size_t tamano() const {
+        return datos.size();
+    }
+
+    // Muestra todos los elementos en una sola línea
     void mostrar() const {
-        std::cout << "Elemento único: " << valor << '\n';
+        std::cout << "[ ";
+        for (const auto& x : datos)
+            std::cout << x << ' ';
+        std::cout << "]\n";
+    }
+
+    // Convierte el contenido a una cadena de texto
+    std::string comoTexto() const {
+        std::ostringstream os;
+        for (const auto& x : datos)
+            os << x << ' ';
+        return os.str();
     }
 };
 
-// Especialización parcial para std::vector<T>
+// Especialización parcial para tipos vectoriales: Acumulador<std::vector<T>>
 template <typename T>
-class Contenedor<std::vector<T>> {
+class Acumulador<std::vector<T>> {
 private:
-    std::vector<T> valores;
+    std::vector<std::vector<T>> datos;  // Contiene varios vectores del mismo tipo
 
 public:
-    Contenedor(const std::vector<T>& v) : valores(v) {}
+    // Agrega un vector completo al acumulador
+    void agregar(const std::vector<T>& vec) {
+        datos.push_back(vec);
+    }
 
+    // Devuelve la cantidad de vectores almacenados
+    std::size_t tamano() const {
+        return datos.size();
+    }
+
+    // Muestra los vectores almacenados
     void mostrar() const {
-        std::cout << "Colección de elementos (" << valores.size() << "): ";
-        for (const auto& e : valores)
-            std::cout << e << " ";
-        std::cout << '\n';
+        std::cout << "Contenido de vectores:\n";
+        for (const auto& v : datos) {
+            std::cout << "[ ";
+            for (const auto& x : v)
+                std::cout << x << ' ';
+            std::cout << "]\n";
+        }
+    }
+
+    // Combina todos los vectores en uno solo
+    std::vector<T> combinar() const {
+        std::vector<T> resultado;
+        for (const auto& v : datos)
+            resultado.insert(resultado.end(), v.begin(), v.end());
+        return resultado;
     }
 };
 
 int main() {
-    Contenedor<int> c1(42);                          // versión genérica
-    Contenedor<std::string> c2("Hola");              // versión genérica
-    Contenedor<std::vector<int>> c3({1, 2, 3, 4});   // especialización parcial
-    Contenedor<std::vector<std::string>> c4({"uno", "dos", "tres"}); // especialización parcial
+    // Acumulador genérico (para strings)
+    Acumulador<std::string> palabras;
+    palabras.agregar("Hola");
+    palabras.agregar("mundo");
+    palabras.agregar("C++");
+    palabras.mostrar();
+    std::cout << "Como texto: " << palabras.comoTexto() << "\n\n";
 
-    c1.mostrar();
-    c2.mostrar();
-    c3.mostrar();
-    c4.mostrar();
+    // Acumulador especializado para vectores
+    Acumulador<std::vector<int>> listas;
+    listas.agregar({1, 2, 3});
+    listas.agregar({4, 5});
+    listas.mostrar();
 
-    return 0;
+    auto combinado = listas.combinar();
+    std::cout << "Vector combinado: [ ";
+    for (int x : combinado)
+        std::cout << x << ' ';
+    std::cout << "]\n";
 }
 ```
 
-
-* La plantilla genérica `Contenedor<T>` almacena un único valor y lo muestra con un mensaje simple.
-* La **especialización parcial** `Contenedor<std::vector<T>>` redefine la clase solo cuando el parámetro de tipo es un `std::vector` de cualquier tipo `T`.
-* En ese caso, la clase trata al objeto como una **colección** y muestra todos sus elementos.
+* **Plantilla genérica principal (`Acumulador<T>`):** permite acumular valores de cualquier tipo `T`, con operaciones comunes como agregar, mostrar y convertir a texto.
+* **Especialización parcial (`Acumulador<std::vector<T>>`):** define un comportamiento específico cuando el tipo es un vector de cualquier tipo `T`, conservando el carácter genérico gracias al parámetro de plantilla interno.
+* **Diferencia con la especialización total:** esta versión no se limita a un tipo concreto (como `int`), sino que sirve para *todos los vectores posibles* (`std::vector<int>`, `std::vector<double>`, `std::vector<std::string>`, etc.).
+* **Nuevo comportamiento especializado:** en lugar de acumular valores individuales, almacena varios vectores y permite combinarlos en un solo vector mediante el método `combinar()`.
 
