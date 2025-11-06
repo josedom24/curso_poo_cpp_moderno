@@ -1,6 +1,6 @@
 # Introducción a las plantillas de clases
 
-En el desarrollo de software, es habitual la necesidad de definir clases que operen sobre distintos tipos de datos. Una solución ingenua consistiría en crear múltiples versiones de una misma clasE, una por cada tipo necesario, lo cual genera duplicación de código, mayores costes de mantenimiento y pérdida de claridad.
+En el desarrollo de software, es habitual la necesidad de definir clases que operen sobre distintos tipos de datos. Una solución ingenua consistiría en crear múltiples versiones de una misma clase, una por cada tipo necesario, lo cual genera duplicación de código, mayores costes de mantenimiento y pérdida de claridad.
 
 La **programación genérica** en C++ moderno ofrece una solución elegante a este problema mediante el uso de **plantillas (templates)**.
 Una plantilla permite definir estructuras de datos y algoritmos en términos de **tipos genéricos**, de forma que el compilador genera automáticamente las versiones concretas necesarias al ser instanciadas.
