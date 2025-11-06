@@ -21,45 +21,102 @@ Diseña una clase plantilla `Sensor<T>` que modele un **sensor genérico** capaz
 
 ## Ejercicio 2: Clase plantilla con varios parámetros
 
-Implementa una clase genérica `Par<T1, T2>` que almacene dos valores de tipos posiblemente distintos.
+Diseña una clase plantilla `Medida<T, U>` que permita **representar una magnitud física** junto con su **unidad de medida**.
 
-1. La clase debe tener dos atributos: `primero` (tipo `T1`) y `segundo` (tipo `T2`).
-2. Debe incluir:
+1. Define una **plantilla de clase** con dos parámetros de tipo:
 
-   * un constructor que reciba ambos valores;
-   * métodos `getPrimero()` y `getSegundo()`;
-   * un método `mostrar()` que imprima ambos valores.
-3. Instancia la clase con combinaciones de tipos distintos para comprobar su funcionamiento.
+   * `T` → para el **valor numérico** de la medida.
+   * `U` → para la **unidad**, que puede ser una cadena (`std::string`) u otro tipo.
+
+2. La clase debe incluir:
+
+   * Un **atributo privado** `valor` de tipo `T`.
+   * Un **atributo privado** `unidad` de tipo `U`.
+   * Un **constructor** que reciba ambos valores.
+   * Métodos `getValor()` y `getUnidad()` para acceder a ellos.
+   * Un método `mostrar()` que imprima la medida en formato legible (por ejemplo, `"23.5 °C"` o `"100 km/h"`).
+
+3. En la función `main()`, crea varios objetos de tipo `Medida` con diferentes combinaciones de tipos:
+
+   * Temperatura (`double`, `std::string`)
+   * Distancia (`int`, `std::string`)
+   * Tiempo (`float`, `const char*`)
+   * Velocidad (`double`, `std::string`)
+
+4. Muestra los valores por pantalla usando el método `mostrar()`.
 
 
 ## Ejercicio 3: Especialización de plantillas
 
-Implementa una clase plantilla `Contenedor<T>` con una especialización total para el tipo `std::string`.
+Diseña una clase plantilla `Registro<T>` que almacene un valor genérico y muestre información sobre su contenido.
+Implementa una **especialización total** para el tipo `bool`, de forma que el comportamiento sea distinto para valores lógicos.
 
-1. Define la versión genérica con un método `mostrar()` que imprima `"Tipo genérico"`.
-2. Crea una especialización total para `std::string` que imprima `"Tipo texto"`.
-3. Comprueba el comportamiento con instancias de distintos tipos.
+1. Define una plantilla de clase `Registro<T>` con:
+
+   * Un atributo privado `valor` de tipo `T`.
+   * Un constructor que reciba el valor inicial.
+   * Un método `mostrar()` que imprima el contenido con el formato:
+
+     ```
+     Valor almacenado: <valor>
+     ```
+
+2. Crea una **especialización total** de `Registro<bool>` que redefina el método `mostrar()` para imprimir:
+
+   * `"Valor lógico: verdadero"` cuando el valor sea `true`.
+   * `"Valor lógico: falso"` cuando el valor sea `false`.
+
+3. En la función `main()`, crea instancias de `Registro` con distintos tipos de datos (`int`, `double`, `std::string`, `bool`) y muestra su comportamiento.
 
 
 ## Ejercicio 4: Uso de `std::optional`
 
-Crea una función que busque un número dentro de un `std::vector<int>` utilizando `std::optional` para representar la posibilidad de que no se encuentre el valor.
+Implementa una función que lea dos números enteros desde el teclado y calcule su cociente (división entera), utilizando `std::optional` para manejar el caso en que la división no sea válida (por ejemplo, cuando el divisor sea cero).
 
 1. Define la función:
 
    ```cpp
-   std::optional<int> buscar(const std::vector<int>& v, int objetivo);
+   std::optional<double> dividir(int numerador, int denominador);
    ```
-2. Si el número está en el vector, devuelve su valor; si no, devuelve `std::nullopt`.
-3. En `main()`, usa `value_or()` para imprimir el resultado o un valor por defecto cuando el `optional` esté vacío.
+
+   * Si el denominador es distinto de cero, devuelve el resultado de la división.
+   * Si el denominador es cero, devuelve `std::nullopt` (para indicar que no hay valor válido).
+
+2. En la función `main()`:
+
+   * Pide al usuario que introduzca dos números enteros: numerador y denominador.
+   * Llama a la función `dividir()`.
+   * Comprueba si el resultado contiene un valor antes de usarlo.
+   * Si el resultado está vacío (`std::nullopt`), muestra un mensaje de error indicando que la división por cero no es posible.
+   * Usa `value_or(0.0)` para mostrar un valor por defecto en ese caso.
+
+3. Asegúrate de que el programa no se detiene por una excepción, sino que gestiona el error de manera controlada.
+
 
 
 ## Ejercicio 5: Uso de `std::variant` y `std::visit`
 
-Diseña un programa que procese datos heterogéneos usando `std::variant` y `std::visit`.
+Implementa un programa que gestione diferentes tipos de operaciones bancarias usando `std::variant` para representar los distintos tipos de datos y `std::visit` para procesarlos de forma uniforme.
 
-1. Define un tipo `using Dato = std::variant<int, std::string, double>;`.
-2. Crea un `std::vector<Dato>` con distintos tipos de valores.
-3. Usa `std::visit()` con una lambda genérica para imprimir el contenido.
-4. (Opcional) Implementa una clase *visitor* con sobrecarga de `operator()` para manejar cada tipo de forma diferente.
+1. Define un alias de tipo:
+
+   ```cpp
+   using Operacion = std::variant<int, double, std::string>;
+   ```
+
+   * `int`: representa un código de operación (por ejemplo, 1 = ingreso, 2 = retiro).
+   * `double`: representa una cantidad monetaria.
+   * `std::string`: representa un comentario o descripción de la transacción.
+
+2. Crea un `std::vector<Operacion>` con una secuencia de operaciones de distinto tipo, por ejemplo:
+
+   ```cpp
+   {1, 250.0, "Ingreso en efectivo", 2, 100.0, "Retiro en cajero"}
+   ```
+
+3. Usa `std::visit()` con una **clase visitante** que procese cada tipo de operación:
+
+   * Si es `int`, mostrar `"Operación: INGRESO"` o `"Operación: RETIRO"`.
+   * Si es `double`, mostrar `"Cantidad: <valor>"`.
+   * Si es `std::string`, mostrar `"Comentario: <texto>"`.
 
