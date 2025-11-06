@@ -72,48 +72,57 @@ igual que hicimos antes con lambdas o `std::function`.
 #include <iostream>
 #include <vector>
 
-template <typename Accion>
-class Procesador {
+class Accion {
 public:
-    explicit Procesador(Accion accion) : accion_(accion) {}
-
-    void ejecutar(const std::vector<int>& datos) const {
-        for (int valor : datos)
-            accion_(valor);  // Inyección de comportamiento
-    }
-
-private:
-    Accion accion_;
+    virtual void operator()(int x) const = 0;
+    virtual ~Accion() = default;
 };
 
-class Mostrar {
+class Mostrar : public Accion {
 public:
-    void operator()(int x) const {
+    void operator()(int x) const override {
         std::cout << "Valor: " << x << '\n';
     }
 };
 
-class Cuadrado {
+class Cuadrado : public Accion {
 public:
-    void operator()(int x) const {
+    void operator()(int x) const override {
         std::cout << x << "² = " << x * x << '\n';
     }
+};
+
+// El procesador no es dueño de la acción, solo la usa
+class Procesador {
+public:
+    explicit Procesador(const Accion& accion) : accion_(accion) {}
+
+    void ejecutar(const std::vector<int>& datos) const {
+        for (int valor : datos)
+            accion_(valor);
+    }
+
+private:
+    const Accion& accion_; // referencia constante, sin propiedad
 };
 
 int main() {
     std::vector<int> numeros = {1, 2, 3};
 
-    Procesador<Mostrar> p1(Mostrar{});
-    Procesador<Cuadrado> p2(Cuadrado{});
+    Mostrar mostrar;
+    Cuadrado cuadrado;
+
+    Procesador p1(mostrar);
+    Procesador p2(cuadrado);
 
     p1.ejecutar(numeros);
     p2.ejecutar(numeros);
 }
+
 ```
 
-* `Procesador` es una clase genérica que **no sabe qué hacer con los datos**. Solo los recorre y **llama al comportamiento inyectado** mediante `accion_`.
-* `Mostrar` y `Cuadrado` son functores distintos, con comportamientos diferentes.
-* El mismo `Procesador` puede reutilizarse con distintas acciones, sin modificarse.
-* `Mostrar{}` y `Cuadrado{}` nos permiten construir objetos temporales usando inicialización uniforme, que se pasan directamente a `Procesador` para usarlo internamente, y posteriormente se eliminan.
-* Este patrón reproduce la idea de "comportamiento intercambiable", pero usando clases invocables en lugar de funciones o lambdas.
+* **Cada clase derivada (`Mostrar`, `Cuadrado`) define su propio comportamiento** sobre el operador `()`, actuando como *functor* (objeto que se puede “llamar” como una función).
+* **El `Procesador` recibe una referencia a un objeto `Accion`**, sin conocer su tipo concreto, lo que permite **inyectar diferentes comportamientos** en tiempo de ejecución.
+* **La llamada `accion_(valor)` dentro de `Procesador::ejecutar`** invoca polimórficamente el operador `()` del functor concreto, aplicando la acción específica a cada elemento del vector.
+
 
