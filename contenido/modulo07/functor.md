@@ -117,36 +117,3 @@ int main() {
 * `Mostrar{}` y `Cuadrado{}` nos permiten construir objetos temporales usando inicialización uniforme, que se pasan directamente a `Procesador` para usarlo internamente, y posteriormente se eliminan.
 * Este patrón reproduce la idea de "comportamiento intercambiable", pero usando clases invocables en lugar de funciones o lambdas.
 
-## Uso con algoritmos de la STL
-
-Los functores también se utilizan como **criterios** o **acciones** en algoritmos genéricos de la biblioteca estándar, del mismo modo que las lambdas.
-
-```cpp
-#include <algorithm>
-#include <vector>
-#include <iostream>
-
-class EsPar {
-public:
-    bool operator()(int valor) const {
-        return valor % 2 == 0;
-    }
-};
-
-int main() {
-    std::vector<int> datos = {1, 2, 3, 4, 5};
-
-    // Usamos el functor como criterio de búsqueda
-    auto it = std::find_if(datos.begin(), datos.end(), EsPar{});
-
-    if (it != datos.end())
-        std::cout << "Primer número par: " << *it << '\n';
-}
-```
-* `EsPar` es una **clase functora** que define el operador `()` para comprobar si un valor es par.
-* `std::find_if` recorre el contenedor y aplica este criterio a cada elemento.
-* Al encontrar el primer número par, devuelve un iterador al elemento correspondiente.
-* El functor se crea de forma temporal (`EsPar{}`), sin necesidad de instanciarlo previamente.
-
-En el siguiente apartado estudiaremos cómo **inyectar comportamientos mediante composición**,
-lo que nos llevará al **patrón de estrategia** y a un uso más estructurado del diseño polimórfico.
