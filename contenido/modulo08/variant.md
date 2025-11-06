@@ -1,6 +1,6 @@
 # Plantillas de clase: `std::variant` y `std::visit`
 
-## `std::variant`?
+## `std::variant`
 
 En C++17 se introdujo la plantilla de clase `std::variant`, que permite almacenar **uno de varios tipos posibles**, garantizando **seguridad de tipo en tiempo de compilación**.
 
