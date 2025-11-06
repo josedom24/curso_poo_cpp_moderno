@@ -55,7 +55,6 @@ int main() {
 }
 ```
 
-* 
 * `dato` puede contener un `int` o un `std::string`.
 * `std::visit` ejecuta la función (una **lambda**) sobre el valor actualmente almacenado.
 * La lambda genérica `[](auto&& valor)` se adapta automáticamente al tipo real del valor:
