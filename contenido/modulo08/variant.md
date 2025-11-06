@@ -38,9 +38,7 @@ int main() {
 
 ## `std::visit`
 
-Cuando un `std::variant` puede contener distintos tipos, necesitamos una forma **segura y unificada de acceder al valor almacenado**, sin importar cuál sea su tipo actual.
-Esa función la cumple `std::visit`
-`std::visit` recibe una función (o un objeto función) y un `std::variant` y ejecuta automáticamente esa función sobre el valor actual del variant, llamando a la versión que corresponde al tipo real que contiene en ese momento.
+Cuando un `std::variant` puede contener distintos tipos, necesitamos una forma **segura y unificada de acceder al valor almacenado**, sin importar cuál sea su tipo actual. `std::visit` recibe una función (o un objeto función) y un `std::variant` y ejecuta automáticamente esa función sobre el valor actual del variant, llamando a la versión que corresponde al tipo real que contiene en ese momento.
 
 ```cpp
 #include <iostream>
