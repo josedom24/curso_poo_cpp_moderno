@@ -45,7 +45,7 @@ Aquí `Caja` tiene un comportamiento genérico, pero se redefine completamente c
 
 ## Especialización parcial
 
-La **especialización parcial** modifica el comportamiento **solo para ciertos patrones de tipos**, manteniendo otros genéricos.
+La **especialización parcial** modifica el comportamiento **para un conjunto de tipos**. Generalmente, se usa con tipos dependientes de otros parámetros (por ejemplo, `std::vector<T>`,` std::array<T>`, etc.).
 Por ejemplo, podemos tratar los vectores de forma diferente:
 
 ```cpp
