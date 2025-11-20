@@ -1,18 +1,6 @@
 # Ejercicios sobre gestión de memoria dinámica
 
-## Ejercicio 1: Clase con gestión automática de recurso (RAII básico)
-
-Crea una clase que gestione de forma automática un recurso de memoria dinámica aplicando el patrón RAII.
-
-1. Implementa una clase `Recurso` que:
-
-   * Reserve memoria para un entero en su constructor.
-   * Libere la memoria en su destructor.
-   * Permita establecer y obtener el valor almacenado.
-2. En `main()`, crea y utiliza un objeto `Recurso` para comprobar que la memoria se libera automáticamente al finalizar su vida útil.
-
-
-## Ejercicio 2: Propiedad exclusiva con `std::unique_ptr`
+## Ejercicio 1: Propiedad exclusiva con `std::unique_ptr`
 
 Crea un programa que utilice `std::unique_ptr` para gestionar recursos con **propiedad exclusiva**.
 
@@ -22,7 +10,7 @@ Crea un programa que utilice `std::unique_ptr` para gestionar recursos con **pro
 4. Comprueba que el puntero original deja de ser propietario tras la transferencia.
 
 
-## Ejercicio 3: Propiedad compartida con `std::shared_ptr`
+## Ejercicio 2: Propiedad compartida con `std::shared_ptr`
 
 Diseña un programa que utilice `std::shared_ptr` para simular un recurso compartido entre varios objetos.
 
@@ -32,7 +20,7 @@ Diseña un programa que utilice `std::shared_ptr` para simular un recurso compar
 4. Comprueba que el recurso se libera automáticamente cuando el último `shared_ptr` desaparece.
 
 
-## Ejercicio 4: Prevención de ciclos de referencias con `std::weak_ptr`
+## Ejercicio 3: Prevención de ciclos de referencias con `std::weak_ptr`
 
 Implementa una pequeña estructura de objetos enlazados que utilice `std::weak_ptr` para evitar ciclos de referencias.
 
