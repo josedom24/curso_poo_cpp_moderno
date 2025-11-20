@@ -31,5 +31,5 @@ Implementa una pequeña estructura de objetos enlazados que utilice `std::weak_p
    * Un `std::weak_ptr<Nodo> anterior`.
 2. Crea tres nodos y enlázalos en una lista doblemente enlazada.
 3. Usa `use_count()` para verificar que el contador de referencias no crece indefinidamente.
-4. realiza un recorrido desde el `nodo1` al `nodo3`. Y posteriormente otroo recorrido desde el `nodo3` al `nodo1`.
+4. Realiza un recorrido desde el `nodo1` al `nodo3`. Y posteriormente otroo recorrido desde el `nodo3` al `nodo1`.
 5. Explica cómo el uso de `weak_ptr` evita la fuga de memoria causada por referencias circulares.
