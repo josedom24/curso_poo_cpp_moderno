@@ -23,21 +23,22 @@ En este ejemplo, un mismo algoritmo (`std::sort`) y una misma transformación (`
 
 int main() {
     std::vector<int> v = {4, 1, 3, 2};
-    std::array<int, 4> a = {8, 5, 7, 6};
+    std::array<double, 4> a = {8.2, 5.0, 7.4, 6.6};
 
     std::sort(v.begin(), v.end());
     std::sort(a.begin(), a.end());
 
     std::transform(v.begin(), v.end(), v.begin(), [](int x){ return x * 2; });
-    std::transform(a.begin(), a.end(), a.begin(), [](int x){ return x * 2; });
+    std::transform(a.begin(), a.end(), a.begin(), [](double x){ return x * 2; });
 
     for (int x : v) std::cout << x << " ";  // 2 4 6 8
     std::cout << '\n';
-    for (int x : a) std::cout << x << " ";  // 10 12 14 16
+    for (double x : a) std::cout << x << " ";  // 10 13.2 14.8 16.4
+    return 0;
 }
 ```
 
-* `std::vector<int>` y `std::array<int,4>` son **instancias de plantillas de clase**.
+* `std::vector<int>` y `std::array<double,4>` son **instancias de plantillas de clase**.
 * `std::sort` y `std::transform` son **funciones plantilla** que funcionan con cualquier contenedor que proporcione iteradores.
 * No es necesario duplicar código para cada tipo de contenedor: los algoritmos son reutilizables y consistentes.
 
