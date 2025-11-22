@@ -29,44 +29,44 @@ Creamos una cabecera llamada `Eventos.h` que define los posibles tipos de evento
 // Tipos de eventos concretos
 // ---------------------------------------------------------------------------
 
-// Representa una lectura válida de un sensor
 struct EventoLectura {
     std::string nombre;
     double valor;
 };
 
-// Representa un fallo al leer un sensor
 struct EventoError {
     std::string nombre;
 };
 
-// Representa la activación de un actuador
 struct EventoAccion {
     std::string nombre;
 };
 
-// ---------------------------------------------------------------------------
-// Tipo variante que puede contener cualquiera de los eventos anteriores
-// ---------------------------------------------------------------------------
+// Variante
 using Evento = std::variant<EventoLectura, EventoError, EventoAccion>;
+
+// ---------------------------------------------------------------------------
+// Procesa cada evento
+// ---------------------------------------------------------------------------
+struct ProcesadorEventos {
+    void operator()(const EventoLectura& ev) const {
+        std::cout << "[Lectura] " << ev.nombre << ": " << ev.valor << '\n';
+    }
+
+    void operator()(const EventoError& ev) const {
+        std::cout << "[Error] Fallo en " << ev.nombre << '\n';
+    }
+
+    void operator()(const EventoAccion& ev) const {
+        std::cout << "[Acción] " << ev.nombre << " ejecutado\n";
+    }
+};
 
 // ---------------------------------------------------------------------------
 // Función que procesa eventos genéricos mediante std::visit
 // ---------------------------------------------------------------------------
-inline void procesarEvento(const Evento& e) {
-    std::visit([](const auto& ev) {
-        using T = std::decay_t<decltype(ev)>;
-
-        if constexpr (std::is_same_v<T, EventoLectura>) {
-            std::cout << "[Lectura] " << ev.nombre << ": " << ev.valor << '\n';
-        }
-        else if constexpr (std::is_same_v<T, EventoError>) {
-            std::cout << "[Error] Fallo en " << ev.nombre << '\n';
-        }
-        else if constexpr (std::is_same_v<T, EventoAccion>) {
-            std::cout << "[Acción] " << ev.nombre << " ejecutado\n";
-        }
-    }, e);
+void procesarEvento(const Evento& e) {
+    std::visit(ProcesadorEventos{}, e);
 }
 
 #endif // EVENTOS_H
@@ -74,11 +74,8 @@ inline void procesarEvento(const Evento& e) {
 
 * Se definen **tres estructuras simples** que modelan distintos eventos del sistema: `EventoLectura`, `EventoError` y `EventoAccion`.
 * `using Evento = std::variant<...>` crea un tipo genérico que puede contener cualquiera de esos tres.
-* `std::visit()` aplica una función a la variante, ejecutando la acción adecuada según el tipo almacenado.
-* La lambda `[](const auto& ev)` es **genérica**: el compilador deduce automáticamente el tipo (`EventoLectura`, `EventoError`, etc.) y ejecuta el bloque correspondiente.
-* El uso de `if constexpr` garantiza que solo el bloque correspondiente al tipo real del evento se compile.
-* `std::is_same_v<A, B>` devuelve un valor booleano constante (true o false) que indica si los tipos A y B son exactamente el mismo tipo.
-
+* `std::visit()` ejecuta sobre el evento el functor `ProcesadorEventos{}`, que ha sobreescrito el `operator()` según el tipo de evento que reciba.
+* Según el tipo real contenido en el `std::variant`, C++ llama automáticamente al `operator()` correspondiente:
 
 ## Integración con el sistema
 
