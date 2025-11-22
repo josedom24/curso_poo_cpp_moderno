@@ -107,7 +107,7 @@ int main() {
             eventos.push_back(EventoAccion{"Alarma"});
         }));
 
-    // --- Simulación de lecturas ---
+    // --- Simulación de lecturas y activación de actuadores ---
     std::cout << "\n--- Lecturas de sensores ---\n";
     for (const auto& d : controlador.getDispositivos()) {
         if (auto s = dynamic_cast<Sensor*>(d.get())) {
@@ -117,6 +117,9 @@ int main() {
             else
                 eventos.push_back(EventoError{s->getNombre()});
         }
+        else if (auto a = dynamic_cast<Actuador*>(d.get())) {
+            a->activar();
+        }   
     }
 
     // --- Procesamiento de eventos ---
