@@ -87,4 +87,4 @@
     * [Implementación del controlador del sistema](contenido/modulo09/controlador.md)
     * [Manejo de eventos genéricos mediante std::variant y std::visit](contenido/modulo09/eventos.md)
     * [Integración en un programa principal](contenido/modulo09/main.md)
-    * [Análisis del diseño resultante y conclusiones finales del curso](contenido/modulo09/end.md)
+
