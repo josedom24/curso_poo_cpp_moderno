@@ -24,10 +24,19 @@ Crea una interfaz `EstrategiaImpresion` con un método virtual puro `imprimir(co
 
 ## Ejercicio 3: Encapsulación de comportamiento con `std::function`
 
-1. Escribe una función `ejecutarOperacion(int a, int b, std::function<int(int,int)> op)` que imprima el resultado de aplicar `op(a, b)`.
-2. En `main()`, define tres lambdas: `suma`, `resta` y `multiplicacion`.
-3. Llama a `ejecutarOperacion()` pasando cada una de ellas.
-4. Observa cómo `std::function` permite cambiar el comportamiento sin modificar la función principal.
+Escribe una función
+
+`validarEntrada(const std::string& valor, std::function<bool(const std::string&)> validador)`
+
+que reciba una cadena y una función de validación. La función debe imprimir si la entrada es válida o no dependiendo del resultado de `validador(valor)`.
+
+En `main()`, define tres lambdas:
+
+1. `esNumero`: comprueba si la cadena contiene únicamente dígitos.
+2. `esEmailSimple`: comprueba que la cadena contiene exactamente un `@` y al menos un `.` después.
+3. `longitudAdecuada`: comprueba si la longitud está entre 5 y 10 caracteres.
+
+Llama a `validarEntrada()` varias veces usando distintos valores y distintos validadores, para observar cómo la validación cambia sin modificar la función principal.
 
 
 ## Ejercicio 4: Functores con estado interno
