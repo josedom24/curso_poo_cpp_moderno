@@ -15,12 +15,15 @@ Crea una interfaz `EstrategiaImpresion` con un método virtual puro `imprimir(co
 
 ## Ejercicio 2: Uso de lambdas para comportamiento intercambiable
 
-1. Crea un vector de enteros `{5, 2, 8, 1, 4}`.
-2. Usa `std::sort` con una **lambda** para ordenarlo de forma ascendente.
-3. Ordénalo nuevamente de forma descendente usando otra lambda distinta.
-4. Muestra los resultados por consola tras cada ordenación.
-5. Reflexiona: ¿cómo cambia el comportamiento de la misma función (`std::sort`) según la lambda usada?
+Dado un vector de cadenas:
 
+```cpp
+{"cereza", "manzana", "banana", "arándano", "kiwi"}
+```
+
+1. Usa `std::find_if` con una lambda para buscar la **primera cadena que tenga más de 5 caracteres**.
+2. Vuelve a usar `std::find_if` con **otra lambda distinta**, que busque la **primera cadena que empiece por la letra 'b'**.
+3. Muestra el resultado de cada búsqueda (o indica que no se ha encontrado nada).
 
 ## Ejercicio 3: Encapsulación de comportamiento con `std::function`
 
@@ -41,27 +44,41 @@ Llama a `validarEntrada()` varias veces usando distintos valores y distintos val
 
 ## Ejercicio 4: Functores con estado interno
 
-1. Define una clase `Contador` con un atributo privado `int incremento_`.
-2. Implementa `operator()(int valor)` que devuelva `valor + incremento_`.
-3. En `main()`, crea dos objetos:
+Define una clase `FormateadorMensaje` con un atributo privado `std::string prefijo_`.
 
-   * Uno con incremento 1 (simula un contador que avanza de uno en uno).
-   * Otro con incremento 10.
-4. Aplica ambos a un conjunto de valores (por ejemplo, `{0, 5, 10}`) y muestra los resultados.
-5. Reflexiona: ¿por qué un functor es útil cuando se necesita mantener estado?
+* En el constructor, inicializa `prefijo_` con el valor que se le pase como parámetro.
+* Implementa `operator()(const std::string& mensaje)` para que devuelva una cadena con el formato:
+  `prefijo_ + ": " + mensaje`.
 
+En `main()`:
+
+1. Crea un objeto `FormateadorMensaje info("INFO")`.
+2. Crea un objeto `FormateadorMensaje error("ERROR")`.
+3. Define un conjunto de mensajes, por ejemplo: `{"Inicio del programa", "Archivo no encontrado", "Operación completada"}`.
+4. Aplica ambos functores a cada mensaje y muestra el resultado por pantalla, algo como:
+
+   * `INFO: Inicio del programa`
+   * `ERROR: Inicio del programa`
+   * ...
 
 ## Ejercicio 5: Inyección de comportamiento mediante composición
 
-Crea una clase `Calculadora` que permita **inyectar operaciones** aritméticas:
+Supón que tienes valores leídos de un sensor, y quieres aplicar diferentes estrategias de filtrado sin crear una jerarquía de clases para cada una.
 
-1. Define un alias `Operacion` como `std::function<int(int,int)>`.
-2. Implementa un constructor que reciba una `Operacion` y un método `ejecutar(int, int)` que la use.
-3. En `main()`, crea tres instancias:
+1. Define un alias
+   `using Filtro = std::function<double(double)>;`
 
-   * Una con lambda de suma.
-   * Otra con lambda de resta.
-   * Otra con lambda de multiplicación.
-4. Muestra los resultados de `ejecutar(6, 2)` para cada calculadora.
-5. Reflexiona: ¿por qué esta técnica es más flexible que crear subclases como `CalculadoraSuma`?
+2. Crea una clase `ProcesadorSensor` que reciba un `Filtro` en su constructor y lo almacene internamente.
+
+3. Implementa un método `double procesar(double valor)` que aplique el filtro recibido.
+
+4. En `main()`, crea tres `ProcesadorSensor` distintos:
+
+   * Uno con una lambda que no modifica el valor (filtro *identidad*).
+   * Otro con una lambda que aplica un *umbral mínimo*, por ejemplo:
+     si `valor < 10`, devolver `10`, en caso contrario devolver `valor`.
+   * Otro con una lambda que aplique un *suavizado simple*, por ejemplo:
+     devolver `(valor * 0.8)`.
+
+5. Aplica cada filtro a un valor ejemplo, por ejemplo `5.0`, y muestra los resultados.
 
